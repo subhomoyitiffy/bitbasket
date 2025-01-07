@@ -1,0 +1,44 @@
+{
+    "name": "phpexperts/simple-dto",
+    "description": "A quick and easy DTO package.",
+    "keywords": [
+        "dto",
+        "data transfer objects",
+        "restful",
+        "api"
+    ],
+    "homepage": "https://www.phpexperts.pro/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PHP Experts, Inc.",
+            "homepage": "https://www.phpexperts.pro/"
+        },
+        {
+            "name": "Theodore R. Smith",
+            "homepage": "https://www.linkedin.com/in/tedrsmith"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "nesbot/carbon": "2.*|3.*",
+        "phpexperts/datatype-validator": "^1.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "8.*|9.*|10.*",
+        "phpstan/phpstan": "*",
+        "symfony/var-dumper": "*",
+        "povils/phpmnd": "*",
+        "squizlabs/php_codesniffer": "*",
+        "phpexperts/dockerize": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPExperts\\SimpleDTO\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { "PHPExperts\\SimpleDTO\\Tests\\" : "tests/" }
+    }
+}
