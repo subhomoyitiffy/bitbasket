@@ -37,6 +37,13 @@ class AuthController extends BaseApiController
             if (! $token = JWTAuth::attempt($credentials)) {
                 return $this->sendError('Unauthorized', 'Email or Password not matched.', Response::HTTP_UNAUTHORIZED);
             }
+            if(auth()->user()->status == 0){
+                return $this->sendError('Unauthorized', 'Your account is not verified yet. Please verify your account to login.', Response::HTTP_UNAUTHORIZED);
+            }
+            if(auth()->user()->status == 2){
+                return $this->sendError('Unauthorized', 'Your account is declined by the admin. Please contact admin.', Response::HTTP_UNAUTHORIZED);
+            }
+
             return $this->sendResponse([
                                         'token_type' => 'bearer',
                                         'token' => $token,
