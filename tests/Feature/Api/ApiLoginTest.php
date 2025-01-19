@@ -7,8 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\User;
 use Tests\TestCase;
+use App\Models\User;
 
 class ApiLoginTest extends TestCase
 {
@@ -22,6 +22,7 @@ class ApiLoginTest extends TestCase
         $user = User::factory()->create([
             'role_id'=> env('MEMBER_ROLE_ID'),
             'password' => Hash::make('password123'),
+            'status'=> 1
         ]);
 
         // Simulate a successful login
