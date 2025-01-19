@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('general_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->string('slug');
+            $table->string('key', 100);
+            $table->string('slug', 100);
             $table->string('value');
-            $table->tinyInteger('is_active');
+            $table->tinyInteger('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

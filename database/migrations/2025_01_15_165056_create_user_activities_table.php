@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_activities', function (Blueprint $table) {
             $table->id();
-            $table->string('user_email');
-            $table->string('user_name');
+            $table->string('user_email', 100);
+            $table->string('user_name', 100);
             $table->enum('user_type', ['ADMIN', 'USER']);
-            $table->string('ip_address');
+            $table->string('ip_address', 50);
             $table->tinyInteger('activity_type')->comment('0=>failed login, 1=>success login, 2=>logout');
             $table->longText('activity_details');
             $table->enum('platform_type', ['WEB','MOBILE','ANDROID','IOS'])->default('WEB');
