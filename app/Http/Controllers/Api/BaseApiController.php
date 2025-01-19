@@ -16,7 +16,7 @@ class BaseApiController extends Controller
      * success response method.
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function sendResponse($result = [], $message = 'Request response is here.')
     {
     	$response = [

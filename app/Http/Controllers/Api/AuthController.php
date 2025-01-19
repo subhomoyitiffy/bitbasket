@@ -37,10 +37,17 @@ class AuthController extends BaseApiController
             if (! $token = JWTAuth::attempt($credentials)) {
                 return $this->sendError('Unauthorized', 'Email or Password not matched.', Response::HTTP_UNAUTHORIZED);
             }
+            if(auth()->user()->status == 0){
+                return $this->sendError('Unauthorized', 'Your account is not verified yet. Please verify your account to login.', Response::HTTP_UNAUTHORIZED);
+            }
+            if(auth()->user()->status == 2){
+                return $this->sendError('Unauthorized', 'Your account is declined by the admin. Please contact admin.', Response::HTTP_UNAUTHORIZED);
+            }
+
             return $this->sendResponse([
                                         'token_type' => 'bearer',
                                         'token' => $token,
-                                        'user' => auth()->user(),
+                                        'user' => User::where('id', auth()->user()->id)->with('user_details')->get()
                                     ], 'Login has successfully done.');
         } catch (JWTException $e) {
             return $this->sendError('Error', 'Login has failed.',  Response::HTTP_UNAUTHORIZED);
@@ -63,7 +70,7 @@ class AuthController extends BaseApiController
     public function getUser()
     {
         try {
-            return $this->sendResponse(auth()->user());
+            return $this->sendResponse(User::where('id', auth()->user()->id)->with('user_details')->get());
         } catch (JWTException $exception) {
             return $this->sendError('Error', 'Sorry, the user cannot be logged out.',  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
