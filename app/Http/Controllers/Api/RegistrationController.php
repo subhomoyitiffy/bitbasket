@@ -145,7 +145,7 @@ class RegistrationController extends BaseApiController
                         ->first();
 
         if(!$user){
-            return $this->sendError('Error', 'Request email is not found.', Response::HTTP_UNAUTHORIZED);
+            return $this->sendError('Error', 'Request email is not found Or OTP not matched.', Response::HTTP_UNAUTHORIZED);
         }
 
         $current_dt = date('Y-m-d H:i:s');

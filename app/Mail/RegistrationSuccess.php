@@ -19,7 +19,7 @@ class RegistrationSuccess extends Mailable
      * @return void
      */
     public $email, $full_name, $content;
-    public function __construct($email, $full_name, $content)
+    public function __construct($email = '', $full_name = '', $content = '')
     {
         $this->email = $email;
         $this->full_name = $full_name;
@@ -34,7 +34,7 @@ class RegistrationSuccess extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Registration Completion With A Ride Company',
+            subject: 'Registration Completed',
         );
     }
 

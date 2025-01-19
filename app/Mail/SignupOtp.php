@@ -19,7 +19,7 @@ class SignupOtp extends Mailable
      * @return void
      */
     public $name, $otp, $email, $password, $content;
-    public function __construct($name, $otp, $content)
+    public function __construct($name = '', $otp = '', $content = '')
     {
         $this->name = $name;
         $this->otp = $otp;
@@ -34,7 +34,7 @@ class SignupOtp extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Signup OTP With A Ride Company',
+            subject: 'Signup OTP',
         );
     }
 
