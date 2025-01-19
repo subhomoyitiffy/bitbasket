@@ -8,11 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseApiController extends Controller
 {
+    protected $member_role_id;
+    function __construct() {
+        $this->member_role_id = env('MEMBER_ROLE_ID');
+    }
     /**
      * success response method.
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function sendResponse($result = [], $message = 'Request response is here.')
     {
     	$response = [

@@ -188,7 +188,7 @@
                                                 style="font-size:0px;padding:10px 25px; background: #ae860c;">
                                                 <div
                                                     style="font-family:'Lato', system-ui, sans-serif;text-align:center;">
-                                                    <h1 style="margin: 0;">Registration Completion With A Ride Company</h1>
+                                                    <h1 style="margin: 0;">Registration Completion With {{ env('APP_NAME') }}.</h1>
                                                 </div>
                                             </td>
                                         </tr>

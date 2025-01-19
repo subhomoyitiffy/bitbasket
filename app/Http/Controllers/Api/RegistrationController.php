@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\BaseApiController as BaseApiController;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 use Validator;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\Mail\ForgotPassword;
-use App\Mail\ResetPassword;
 use App\Mail\RegistrationSuccess;
 use App\Mail\SignupOtp;
 
@@ -25,11 +24,11 @@ class RegistrationController extends BaseApiController
     {
         $validator = Validator::make($request->all(), [
             'country' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users',
-            'country_code' => 'required',
-            'phone' => 'required|unique:users',
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'email' => 'required|email|max:100|unique:users',
+            'country_code' => 'required|max:5',
+            'phone' => 'required|max:15|unique:users',
             'password' => 'required|min:6',
             'c_password' => 'required|same:password',
 
@@ -51,9 +50,11 @@ class RegistrationController extends BaseApiController
             $otp_mail_hash = base64_encode($otp);
 
             $user_id = User::insertGetId([
-                'role_id'=> 2,
+                'role_id'=> $this->member_role_id,
                 'name'=> $request->first_name.' '.$request->last_name,
                 'email'=> $request->email,
+                'country_code' => $request->country_code,
+                'phone'=> $request->phone,
                 'password'=> Hash::make($request->password),
                 'status'=> 0,
                 'remember_token' => $otp_mail_hash,
@@ -131,14 +132,14 @@ class RegistrationController extends BaseApiController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'remember_token' => 'required',
+            'otp' => 'required|min:4|max:4',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = User::where('email', $request->input('email'))
+        $user = User::where('email', $request->email)
                         ->where('status',  0)
                         ->where('remember_token',  base64_encode($request->otp))
                         ->first();
@@ -148,12 +149,12 @@ class RegistrationController extends BaseApiController
         }
 
         $current_dt = date('Y-m-d H:i:s');
-        if($current_dt > $user->email_verified_at ){
-            return $this->sendError('Warning', 'OTP validation time expired.', Response::HTTP_UNAUTHORIZED);
-        }
+        // if($current_dt > $user->email_verified_at ){
+        //     return $this->sendError('Warning', 'OTP validation time expired.', Response::HTTP_UNAUTHORIZED);
+        // }
 
         $user_obj = User::find($user->id);
-        $user_obj->is_active = 1;
+        $user_obj->status = 1;
         $user_obj->remember_token = '';
         $user_obj->email_verified_at = date('Y-m-d H:i:s');
         $user_obj->save();

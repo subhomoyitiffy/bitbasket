@@ -4,8 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommonController;
+use App\Http\Controllers\Api\RegistrationController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/sign-up', [RegistrationController::class, 'registration']);
+Route::post('/sign-up/otp-verification', [RegistrationController::class, 'register_verification']);
+
+Route::get('/state-list', [CommonController::class, 'getStates']);
 
 Route::group([
     'middleware' => ['auth:api'],
