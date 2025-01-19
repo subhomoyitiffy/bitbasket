@@ -37,12 +37,12 @@ class BaseApiController extends Controller
     {
     	$response = [
             'success' => false,
-            'error' => $error,
+            'error' => $errorMessages,
         ];
 
-        if(!empty($errorMessages)){
+        /* if(!empty($errorMessages)){
             $response['data'] = $errorMessages;
-        }
+        } */
 
         return response()->json($response, $code);
     }
