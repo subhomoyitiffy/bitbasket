@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+use App\Models\GeneralSetting;
 use Session;
 class Helper{
  
@@ -195,6 +196,11 @@ class Helper{
         } else {
             return FALSE;
         }
+    }
+    public static function getSettingValue($slug){
+        $generalSetting     = GeneralSetting::select('value')->where('slug', '=', $slug)->first();
+        // echo '<pre>';print_r($generalSetting);die;
+        return $generalSetting->value;
     }
 }
 ?>

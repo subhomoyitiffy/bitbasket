@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\UserActivity;
 use App\Models\EmailLog;
 use Session;
-use Helper;
+use App\Helpers\Helper;
 abstract class Controller
 {
     use AuthorizesRequests;
@@ -215,7 +215,7 @@ abstract class Controller
     // front before login layout
     public function front_before_login_layout($title, $page_name, $data)
     {
-        $data['generalSetting']     = GeneralSetting::find('1');
+        $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
         $data['user']               = [];
         $data['title']              = $title.' :: '.$data['generalSetting']->site_name;
         $data['page_header']        = $title;
@@ -232,7 +232,7 @@ abstract class Controller
     // front after login layout
     public function front_after_login_layout($title, $page_name, $data)
     {
-        $data['generalSetting']     = GeneralSetting::find('1');
+        $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
         $data['title']              = $title.' :: '.$data['generalSetting']->site_name;
         $data['page_header']        = $title;
         $user_id                    = session('user_id');
@@ -249,8 +249,8 @@ abstract class Controller
     // admin authentication layout
     public function admin_before_login_layout($title, $page_name, $data)
     {
-        $data['generalSetting']     = GeneralSetting::find('1');
-        $data['title']              = $title.' :: '.$data['generalSetting']->site_name;
+        $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
+        $data['title']              = $title.' :: '.Helper::getSettingValue('site_name');
         $data['page_header']        = $title;
         $data['head']               = view('elements.head', $data);
         $data['maincontent']        = view('maincontents.'.$page_name, $data);
@@ -260,8 +260,8 @@ abstract class Controller
     public function admin_after_login_layout($title, $page_name, $data)
     {
         Helper::pr(session()->all());
-        $data['generalSetting']     = GeneralSetting::find('1');
-        $data['title']              = $title.' :: '.$data['generalSetting']->site_name;
+        $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
+        $data['title']              = $title.' :: '.Helper::getSettingValue('site_name');
         $data['page_header']        = $title;
         $user_id                    = session('user_id');
         $data['admin']              = Admin::find($user_id);
@@ -277,6 +277,10 @@ abstract class Controller
         $data['sidebar']            = view('elements.sidebar', $data);
         $data['maincontent']        = view('maincontents.'.$page_name, $data);
         return view('layout-after-login', $data);
+    }
+    public function getSettingValue($slug){
+        $generalSetting     = GeneralSetting::select('value')->where('slug', '=', $slug)->first();
+        return $generalSetting ;
     }
     // currency converter
     public function convertCurrency($amount, $from, $to)

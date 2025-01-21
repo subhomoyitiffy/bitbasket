@@ -12,15 +12,11 @@ use App\Models\UserActivity;
 use App\Models\User;
 
 use Auth;
-use Mail;
-use App\Mail\ForgotPwdMail;
 use Session;
 use Helper;
 use Hash;
 use DB;
-use DateTime;
-use DateInterval;
-use DatePeriod;
+
 class UserController extends Controller
 {
     /* authentication */
@@ -72,7 +68,7 @@ class UserController extends Controller
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
             }
-            echo 'signin page';die;
+            
             $data                           = [];
             $title                          = 'Sign In';
             $page_name                      = 'signin';
