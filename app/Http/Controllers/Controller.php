@@ -252,26 +252,25 @@ abstract class Controller
         $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
         $data['title']              = $title.' :: '.Helper::getSettingValue('site_name');
         $data['page_header']        = $title;
-        $data['head']               = view('elements.head', $data);
+        $data['head']               = view('elements.before-head', $data);
         $data['maincontent']        = view('maincontents.'.$page_name, $data);
         return view('layout-before-login', $data);
     }
     // admin after login layout
     public function admin_after_login_layout($title, $page_name, $data)
     {
-        Helper::pr(session()->all());
         $data['generalSetting']     = GeneralSetting::select('key', 'value')->orderBy('id', 'ASC')->get();
         $data['title']              = $title.' :: '.Helper::getSettingValue('site_name');
         $data['page_header']        = $title;
         $user_id                    = session('user_id');
-        $data['admin']              = Admin::find($user_id);
-        $userAccess                 = UserAccess::where('user_id', '=', $user_id)->where('status', '=', 1)->first();
-        if($userAccess) {
-            $data['module_id']      = json_decode($userAccess->module_id);
-        } else {
-            $data['module_id']      = [];
-        }
-        $data['head']               = view('elements.head', $data);
+        $data['user']               = User::find($user_id);
+        // $userAccess                 = UserAccess::where('user_id', '=', $user_id)->where('status', '=', 1)->first();
+        // if($userAccess) {
+        //     $data['module_id']      = json_decode($userAccess->module_id);
+        // } else {
+        //     $data['module_id']      = [];
+        // }
+        $data['head']               = view('elements.after-head', $data);
         $data['header']             = view('elements.header', $data);
         $data['footer']             = view('elements.footer', $data);
         $data['sidebar']            = view('elements.sidebar', $data);

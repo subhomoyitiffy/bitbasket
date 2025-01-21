@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Route;
     Route::match(['get', 'post'], '/', [UserController::class, 'login']);
     Route::match(['get','post'],'/forgot-password', [UserController::class, 'forgotPassword']);
     Route::match(['get','post'],'/validateOtp/{id}', [UserController::class, 'validateOtp']);
-    Route::match(['get','post'],'/changePassword/{id}', [UserController::class, 'changePassword']);
-    Route::group(['middleware' => ['user']], function(){
+    Route::match(['get','post'],'/resendOtp/{id}', [UserController::class, 'resendOtp']);
+    Route::match(['get','post'],'/resetPassword/{id}', [UserController::class, 'resetPassword']);
+    Route::group(['middleware' => ['auth:user']], function(){
         Route::get('dashboard', [UserController::class, 'dashboard']);
         Route::get('logout', [UserController::class, 'logout']);
         Route::get('email-logs', [UserController::class, 'emailLogs']);

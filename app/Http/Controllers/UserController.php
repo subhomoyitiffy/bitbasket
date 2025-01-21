@@ -13,7 +13,7 @@ use App\Models\User;
 
 use Auth;
 use Session;
-use Helper;
+use App\Helpers\Helper;
 use Hash;
 use DB;
 
@@ -28,14 +28,16 @@ class UserController extends Controller
                             'password'  => 'required|max:30',
                         ];
                 if($this->validate($request, $rules)){
-                    if(Auth::guard('admin')->attempt(['email' => $postData['email'], 'password' => $postData['password'], 'status' => 1])){
-                        // Helper::pr(Auth::guard('admin')->user());put
-                        $sessionData = Auth::guard('admin')->user();
+                    $email      = strip_tags($postData['email']);
+                    $password   = strip_tags($postData['password']);
+                    if(Auth::guard('user')->attempt(['email' => $email, 'password' => $password, 'status' => 1, 'role_id' => 0])){
+                        // Helper::pr(Auth::guard('user')->user());
+                        $sessionData = Auth::guard('user')->user();
                         $request->session()->put('user_id', $sessionData->id);
                         $request->session()->put('name', $sessionData->name);
-                        $request->session()->put('type', $sessionData->type);
+                        $request->session()->put('role_id', $sessionData->role_id);
                         $request->session()->put('email', $sessionData->email);
-                        $request->session()->put('is_admin_login', 1);
+                        $request->session()->put('is_user_login', 1);
                         /* user activity */
                             $activityData = [
                                 'user_email'        => $sessionData->email,
@@ -48,12 +50,12 @@ class UserController extends Controller
                             ];
                             UserActivity::insert($activityData);
                         /* user activity */
-                        return redirect('admin/dashboard');
+                        return redirect('dashboard');
                     } else {
                         /* user activity */
                             $activityData = [
-                                'user_email'        => $postData['email'],
-                                'user_name'         => 'Super Admin',
+                                'user_email'        => $email,
+                                'user_name'         => 'Master Admin',
                                 'user_type'         => 'ADMIN',
                                 'ip_address'        => $request->ip(),
                                 'activity_type'     => 0,
@@ -68,7 +70,7 @@ class UserController extends Controller
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
             }
-            
+
             $data                           = [];
             $title                          = 'Sign In';
             $page_name                      = 'signin';
@@ -81,19 +83,19 @@ class UserController extends Controller
                             'email' => 'required|email|max:255',
                         ];
                 if($this->validate($request, $rules)){
-                    $checkEmail                   = User::where('email','=',$postData['email'])->get();
+                    $checkEmail                   = User::where('email','=',strip_tags($postData['email']))->get();
                     if(count($checkEmail) > 0){
-                        $row     =  User::where('email', '=', $postData['email'])->first();
-                        $otp     =  rand(999,10000);
+                        $row     =  User::where('email', '=', strip_tags($postData['email']))->first();
+                        $otp     =  rand(100000,999999);
                         $fields  =  [
-                                        'otp' => $otp
+                                        'remember_token' => $otp
                                     ];
                         User::where('id', '=', $row->id)->update($fields);
                         $to = $row->email;
                         $subject = "Reset Password";
-                        $message = "Your Reset Password is :" . $otp;
-                        // $this->sendMail('avijit@keylines.net',$subject,$message);
-                        return redirect('/admin/validateOtp/'.Helper::encoded($row->id))->with('success_message', 'OTP Sent To Your Registered Email !!!');
+                        $message = "Your OTP For Reset Password is :" . $otp;
+                        // $this->sendMail($postData['email'],$subject,$message);
+                        return redirect('validateOtp/'.Helper::encoded($row->id))->with('success_message', 'OTP Sent To Your Registered Email !!!');
                     }else{
                         return redirect()->back()->with('error_message', 'Please Enter a Registered Email !!!');
                     }
@@ -116,23 +118,26 @@ class UserController extends Controller
                             'otp2'     => 'required|max:1',
                             'otp3'     => 'required|max:1',
                             'otp4'     => 'required|max:1',
+                            'otp5'     => 'required|max:1',
+                            'otp6'     => 'required|max:1',
                         ];
                 if($this->validate($request, $rules)){
-                    // $id     = $postData['id'];
-                    $otp1   = $postData['otp1'];
-                    $otp2   = $postData['otp2'];
-                    $otp3   = $postData['otp3'];
-                    $otp4   = $postData['otp4'];
-                    $newotp    = ($otp1.$otp2.$otp3.$otp4);
+                    $otp1   = strip_tags($postData['otp1']);
+                    $otp2   = strip_tags($postData['otp2']);
+                    $otp3   = strip_tags($postData['otp3']);
+                    $otp4   = strip_tags($postData['otp4']);
+                    $otp5   = strip_tags($postData['otp5']);
+                    $otp6   = strip_tags($postData['otp6']);
+                    $newotp    = ($otp1.$otp2.$otp3.$otp4.$otp5.$otp6);
                     $checkUser = User::where('id', '=', $id)->first();
                     if($checkUser){
-                        $otp = $checkUser->otp;
+                        $otp = $checkUser->remember_token;
                         if($otp == $newotp){
                             $postData = [
-                                            'otp'        => '',
+                                            'remember_token'        => '',
                                         ];
                             User::where('id', '=', $checkUser->id)->update($postData);
-                            return redirect('/admin/changePassword/'.Helper::encoded($checkUser->id))->with('success_message', 'OTP Validated. Just Reset Your Password !!!');
+                            return redirect('resetPassword/'.Helper::encoded($checkUser->id))->with('success_message', 'OTP Verified. Just Reset Your Password !!!');
                         } else {
                             return redirect()->back()->with('error_message', 'OTP Mismatched !!!');
                         }
@@ -143,27 +148,52 @@ class UserController extends Controller
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
             }
-            $title                          = 'OTP';
+            $title                          = 'Verify OTP';
             $page_name                      = 'validotp';
             echo $this->admin_before_login_layout($title,$page_name,$data);
         }
-        public function changePassword(Request $request ,$id){
+        public function resendOtp(Request $request, $id){
+            $id                             = Helper::decoded($id);
+            $checkEmail                     = User::where('id','=',$id)->get();
+            if(count($checkEmail) > 0){
+                $row     =  User::where('id','=',$id)->first();
+                $otp     =  rand(100000,999999);
+                $fields  =  [
+                                'remember_token' => $otp
+                            ];
+                User::where('id', '=', $row->id)->update($fields);
+                $to         = $row->email;
+                $subject    = "Reset Password";
+                $message    = "Your OTP For Reset Password is :" . $otp;
+                // $this->sendMail($postData['email'],$subject,$message);
+                return redirect('validateOtp/'.Helper::encoded($row->id))->with('success_message', 'New OTP Resend To Your Registered Email !!!');
+            }else{
+                return redirect()->back()->with('error_message', 'Please Enter a Registered Email !!!');
+            }
+        }
+        public function resetPassword(Request $request ,$id){
             $ID = Helper::decoded($id);
             if($request->isMethod('post')){
-                $postData = $request->all();
-                if($postData['new_password'] != $postData['old_password'] ){
-                    return redirect()->back()->with('error_message', 'Password Doesn\'t match !!!');
-                } else {
-                    $postData = [
-                                    'password'        => Hash::make($postData['new_password']),
-                                ];
-                    User::where('id', '=', $ID)->update($postData);
-                    return redirect('/admin')->with('success_message', 'Password Reset Successfully. Please Sign In !!!');
+                $rules = [
+                            'password'              => 'required|max:15|min:8',
+                            'confirm-password'      => 'required|max:15|min:8'
+                        ];
+                if($this->validate($request, $rules)){
+                    $postData = $request->all();
+                    if($postData['password'] != $postData['confirm-password'] ){
+                        return redirect()->back()->with('error_message', 'Password Doesn\'t match !!!');
+                    } else {
+                        $fields = [
+                                        'password'        => Hash::make(strip_tags($postData['password'])),
+                                    ];
+                        User::where('id', '=', $ID)->update($fields);
+                        return redirect('/')->with('success_message', 'Password Reset Successfully. Please Sign In !!!');
+                    }
                 }
             }
-            $data                           = [];
-            $title                          = 'Change Password';
-            $page_name                      = 'change-password';
+            $data['user']                   = User::where('id','=',$ID)->first();
+            $title                          = 'Reset Password';
+            $page_name                      = 'reset-password';
             echo $this->admin_before_login_layout($title,$page_name,$data);
         }
         public function logout(Request $request){
@@ -183,117 +213,15 @@ class UserController extends Controller
             /* user activity */
             $request->session()->forget(['user_id', 'name', 'email']);
             // Helper::pr(session()->all());die;
-            Auth::guard('admin')->logout();
-            return redirect()->back()->with('success_message', 'You Are Successfully Logged Out !!!');
+            Auth::guard('user')->logout();
+            return redirect('/')->with('success_message', 'You Are Successfully Logged Out !!!');
         }
     /* authentication */
     /* dashboard */
-        public function dashboardOld(Request $request){
-            $data['total_products']                                     = Product::where('status', '!=', 3)->count();
-            $data['total_new_products']                                 = Product::where('status', '!=', 3)->where('is_new', '=', 1)->count();
-            $data['total_active_products']                              = Product::where('status', '=', 1)->count();
-
-            $data['total_orders']                                       = Order::count();
-            $data['total_new_orders']                                   = Order::where('status', '=', 1)->count();
-            $data['total_rejected_orders']                              = Order::where('status', '=', 6)->count();
-            $data['total_cancelled_orders']                             = Order::where('status', '=', 7)->count();
-
-            $data['total_customers']                                    = User::where('status', '!=', 3)->count();
-            $data['total_sales']                                        = Order::sum('net_amt');
-            $data['total_refunds']                                      = Order::where('is_refund', '=', 1)->sum('refund_amount');
-
-            
-            $data['filter_keyword']                                     = '';
-            $data['filter_keyword_text']                                = 'All Time';
-            $title                                                      = 'Dashboard';
-            $page_name                                                  = 'dashboard';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
         public function dashboard(Request $request){
-            $data['total_view']                                         = UserView::count();
-            $data['total_visit']                                        = UserVisit::count();
-            $data['total_active_products']                              = Product::where('status', '=', 1)->count();
-            $data['total_deactive_products']                            = Product::where('status', '=', 0)->count();
-            $data['total_draft_products']                               = Product::where('status', '=', 2)->count();
-
-            $data['total_sales']                                        = Order::sum('net_amt');
-            $data['total_orders']                                       = Order::count();
-            $data['total_new_orders']                                   = Order::where('status', '=', 1)->count();
-            $data['total_processing_orders']                            = Order::where('status', '=', 2)->count();
-            $data['total_incomplete_orders']                            = Order::where('status', '=', 3)->count();
-            $data['total_shipped_orders']                               = Order::where('status', '=', 4)->count();
-            $data['total_complete_orders']                              = Order::where('status', '=', 5)->count();
-            $data['total_rejected_orders']                              = Order::where('status', '=', 6)->count();
-            $data['total_cancelled_orders']                             = Order::where('status', '=', 7)->count();
-
-            $data['recent_activities']                                  = DB::table('user_website_activities')
-                                                                                ->join('users', 'user_website_activities.user_id', '=', 'users.id')
-                                                                                ->select('user_website_activities.*', 'users.profile_image')
-                                                                                ->orderBy('user_website_activities.id', 'DESC')
-                                                                                ->limit(10)
-                                                                                ->get();
-
-            $data['filter_keyword']                                     = '';
-            $data['filter_keyword_text']                                = 'All Time';
-
-            $title                                                      = 'Dashboard New';
-            $page_name                                                  = 'dashboard-new';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
-        public function stats(Request $request){
-            $data['total_view']                                         = UserView::count();
-            $data['total_visit']                                        = UserVisit::count();
-            $data['total_active_products']                              = Product::where('status', '=', 1)->count();
-            $data['total_deactive_products']                            = Product::where('status', '=', 0)->count();
-            $data['total_draft_products']                               = Product::where('status', '=', 2)->count();
-
-            $data['total_sales']                                        = Order::sum('net_amt');
-            $data['total_orders']                                       = Order::count();
-            $data['total_new_orders']                                   = Order::where('status', '=', 1)->count();
-            $data['total_processing_orders']                            = Order::where('status', '=', 2)->count();
-            $data['total_incomplete_orders']                            = Order::where('status', '=', 3)->count();
-            $data['total_shipped_orders']                               = Order::where('status', '=', 4)->count();
-            $data['total_complete_orders']                              = Order::where('status', '=', 5)->count();
-            $data['total_rejected_orders']                              = Order::where('status', '=', 6)->count();
-            $data['total_cancelled_orders']                             = Order::where('status', '=', 7)->count();
-
-            $data['total_wishlist']                                     = UserWishlist::count();
-            $data['total_review']                                       = UserReview::count();
-            $data['total_cart']                                         = OrderDetail::where('is_cart', '=', 1)->count();
-
-            $data['recent_activities']                                  = DB::table('user_website_activities')
-                                                                                ->join('users', 'user_website_activities.user_id', '=', 'users.id')
-                                                                                ->select('user_website_activities.*', 'users.profile_image')
-                                                                                ->orderBy('user_website_activities.id', 'DESC')
-                                                                                ->limit(10)
-                                                                                ->get();
-
-            $data['products']                                           = DB::table('products')
-                                                                            ->select('products.id', 'products.name', 'products.cover_image')
-                                                                            ->where('products.status', '!=', 3)
-                                                                            ->orderBy('products.id', 'DESC')
-                                                                            ->paginate(10);
-
-            $data['filter_keyword']                                     = '';
-            $data['filter_keyword_text']                                = 'All Time';
-
-            $data['viewCounts'] = [];
-            $data['viewMonths'] = [];
-            $startDate = '2024-12-01'; // Replace with your starting date
-            $monthYearArray = $this->getMonthYearList($startDate);
-            $viewCounts = [];
-            $viewMonths = [];
-            if(!empty($monthYearArray)){
-                for($k=0;$k<count($monthYearArray);$k++){
-                    $fDate = $monthYearArray[$k]['year'] . '-' . $monthYearArray[$k]['month'] . '-01';
-                    $tDate = $monthYearArray[$k]['year'] . '-' . $monthYearArray[$k]['month'] . '-31';
-                    $data['viewCounts'][] = UserView::where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-                    $data['viewMonths'][] = "'".$monthYearArray[$k]['month_name'] . "-" . $monthYearArray[$k]['year']."'";
-                }
-            }
-            
-            $title                                                      = 'Stats';
-            $page_name                                                  = 'stats';
+            $data               = [];
+            $title              = 'Dashboard';
+            $page_name          = 'dashboard';
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
         public function getMonthYearList($startDate) {
@@ -376,7 +304,7 @@ class UserController extends Controller
                 $filter_keyword_text = 'Last Year';
             }
             if($postData['filter_keyword'] == ''){
-                return redirect()->to('/admin/dashboard');
+                return redirect()->to('dashboard');
             }
             $data['filter_keyword']                                     = $postData['filter_keyword'];
             $data['filter_keyword_text']                                = $filter_keyword_text;

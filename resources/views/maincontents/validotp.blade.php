@@ -1,71 +1,80 @@
-<div class="container">
-  <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-          <div class="d-flex justify-content-center py-4">
-            <a href="<?=url('admin')?>" class="d-flex align-items-center w-auto">
-              <img src="<?=env('UPLOADS_URL').$generalSetting->site_logo?>" alt="<?=$generalSetting->site_name?>">
-              <!-- <span class="d-none d-lg-block"><?=$generalSetting->site_name?></span> -->
-            </a>
-          </div><!-- End Logo -->
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="pt-4 pb-2">
-                <h5 class="card-title text-center pb-0 fs-4">Please enter your OTP</h5>
-              </div>
-              @if(session('success_message'))
-                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show autohide" role="alert">
-                  {{ session('success_message') }}
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-              @endif
-              @if(session('error_message'))
-                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show autohide" role="alert">
-                  {{ session('error_message') }}
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-              @endif
-              <form id="otpForm" method="POST" action="" class="row g-3">
-                @csrf
-                <div class="col-12">
-                  <div class="input-group has-validation">
-                    <input type="text" style="margin: 10px;height: 60px;border: 2px solid black;" name="otp1" class="form-control otpInput" id="otp1" maxlength="1" required>
-                    <input type="text" style="margin: 10px;height: 60px;border: 2px solid black;" name="otp2" class="form-control otpInput" id="otp2" maxlength="1" required>
-                    <input type="text" style="margin: 10px;height: 60px;border: 2px solid black;" name="otp3" class="form-control otpInput" id="otp3" maxlength="1" required>
-                    <input type="text" style="margin: 10px;height: 60px;border: 2px solid black;" name="otp4" class="form-control otpInput" id="otp4" maxlength="1" required>
-                    <div class="invalid-feedback">Please enter your otp.</div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <button class="btn btn-primary w-100" type="submit">Submit</button>
-                </div>
-            </div>
-          </div>
-          <div class="credits">
-            Designed by <a target="_blank" href="https://keylines.net/">Keylines Digitech Pvt. Ltd.</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-<script>
-  const otpInputs = document.querySelectorAll(".otpInput");
-  otpInputs.forEach((input, index) => {
-      input.addEventListener("input", function() {
-          if (this.value.length >= 1) {
-              if (index < otpInputs.length - 1) {
-                  otpInputs[index + 1].focus();
-              }
-          }
-      });
-      input.addEventListener("keydown", function(event) {
-          if (event.key === "Backspace" && this.value.length === 0) {
-              if (index > 0) {
-                  otpInputs[index - 1].focus();
-              }
-          }
-      });
-  });
-</script>
+<?php
+use App\Helpers\Helper;
+?>
+<div class="authentication-wrapper authentication-cover">
+   <div class="authentication-inner row m-0">
+      <!-- /Left Text -->
+      <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center">
+         <div class="flex-row text-center mx-auto">
+            <img src="<?=((Helper::getSettingValue('site_logo') != '')?env('UPLOADS_URL').Helper::getSettingValue('site_logo'):env('NO_IMAGE'))?>" alt="<?=Helper::getSettingValue('site_name')?>" width="520" class="img-fluid authentication-cover-img">
+            <div class="mx-auto">
+               <p>
+                  <?=Helper::getSettingValue('description')?>
+               </p>
+            </div>
+         </div>
+      </div>
+      <!-- /Left Text -->
+      <!-- Login -->
+      <div class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg p-sm-5 p-4">
+          <div class="w-px-400 mx-auto">
+            <?php if(session('success_message')){?>
+               <div class="alert alert-success alert-dismissible autohide" role="alert">
+                  <h6 class="alert-heading mb-1"><i class="bx bx-xs bx-desktop align-top me-2"></i>Success!</h6>
+                  <span><?=session('success_message')?></span>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                  </button>
+               </div>
+            <?php }?>
+            <?php if(session('error_message')){?>
+               <div class="alert alert-danger alert-dismissible autohide" role="alert">
+                  <h6 class="alert-heading mb-1"><i class="bx bx-xs bx-store align-top me-2"></i>Danger!</h6>
+                  <span><?=session('error_message')?></span>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                  </button>
+               </div>
+            <?php }?>
+            <!-- Logo -->
+            <div class="app-brand mb-4">
+               <a href="<?=url('/')?>" class="app-brand-link gap-2 mb-2">
+                  <span class="app-brand-text demo h3 mb-0 fw-bold"><?=Helper::getSettingValue('site_name')?></span>
+               </a>
+            </div>
+            <!-- /Logo -->
+            <h4 class="mb-2"><?=$page_header?> 💬</h4>
+            <p class="text-start mb-4">
+              We sent a verification code to your email. Enter the code from the email in the field below.
+              <span class="fw-medium d-block mt-2">******@domain.com</span>
+            </p>
+            <p class="mb-0 fw-medium">Type your 6 digit security code</p>
+            <form id="twoStepsForm" action="" method="POST">
+              @csrf
+              <div class="mb-3">
+                <div class="auth-input-wrapper d-flex align-items-center justify-content-sm-between numeral-mask-wrapper">
+                  <input type="password" name="otp1" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1" autofocus>
+                  <input type="password" name="otp2" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1">
+                  <input type="password" name="otp3" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1">
+                  <input type="password" name="otp4" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1">
+                  <input type="password" name="otp5" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1">
+                  <input type="password" name="otp6" class="form-control auth-input h-px-50 text-center numeral-mask mx-1 my-2" maxlength="1">
+                </div>
+                <!-- Create a hidden field which is combined by 3 fields above -->
+                <input type="hidden" name="otp" />
+              </div>
+              <button type="submit" class="btn btn-primary d-grid w-100 mb-3">
+                Verify my account
+              </button>
+              <div class="text-center">Didn't get the code?
+                <a href="<?=url('resendOtp/' . Helper::encoded($id))?>">
+                  Resend
+                </a>
+              </div>
+            </form>
+            <div class="mb-2 mb-md-0">
+               © <script>document.write(new Date().getFullYear())</script>, developed & maintained by <a href="https://itiffyconsultants.com/" target="_blank" class="footer-link fw-medium">Itiffy Consultants</a>
+            </div>
+         </div>
+      </div>
+      <!-- /Login -->
+   </div>
+</div>

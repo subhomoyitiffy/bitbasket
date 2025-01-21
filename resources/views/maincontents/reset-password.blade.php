@@ -41,22 +41,34 @@ use App\Helpers\Helper;
                </a>
             </div>
             <!-- /Logo -->
-            <h4 class="mb-2"><?=$page_header?>? 🔒</h4>
-            <p class="mb-4">Enter your email and we'll send you instructions to reset your password</p>
+            <h4 class="mb-2">Reset Password 🔒</h4>
+            <p class="mb-4">for <span class="fw-medium"><?=(($user)?$user->email:'')?></span></p>
             <form id="formAuthentication" class="mb-3" action="" method="POST">
               @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus>
+              <div class="mb-3 form-password-toggle">
+                <label class="form-label" for="password">New Password</label>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="password" class="form-control" name="password" minlength="8" maxlength="15" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
               </div>
-              <button type="submit" class="btn btn-primary d-grid w-100">Send OTP</button>
+              <div class="mb-3 form-password-toggle">
+                <label class="form-label" for="confirm-password">Confirm Password</label>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="confirm-password" class="form-control" name="confirm-password" minlength="8" maxlength="15" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
+              </div>
+              <button class="btn btn-primary d-grid w-100 mb-3">
+                Set new password
+              </button>
+              <div class="text-center">
+                <a href="<?=url('/')?>">
+                  <i class="bx bx-chevron-left scaleX-n1-rtl"></i>
+                  Back to login
+                </a>
+              </div>
             </form>
-            <div class="text-center">
-              <a href="<?=url('/')?>" class="d-flex align-items-center justify-content-center">
-                <i class="bx bx-chevron-left scaleX-n1-rtl"></i>
-                Back to login
-              </a>
-            </div>
             <div class="mb-2 mb-md-0">
                © <script>document.write(new Date().getFullYear())</script>, developed & maintained by <a href="https://itiffyconsultants.com/" target="_blank" class="footer-link fw-medium">Itiffy Consultants</a>
             </div>

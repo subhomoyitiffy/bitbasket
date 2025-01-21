@@ -22,6 +22,7 @@ use App\Helpers\Helper;
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/js/menu.js"></script>
       <!-- endbuild -->
       <!-- Vendors JS -->
+      <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/libs/cleavejs/cleave.js"></script>
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/libs/%40form-validation/umd/bundle/popular.min.js"></script>
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/libs/%40form-validation/umd/plugin-bootstrap5/index.min.js"></script>
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/libs/%40form-validation/umd/plugin-auto-focus/index.min.js"></script>
@@ -29,5 +30,11 @@ use App\Helpers\Helper;
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/js/main.js"></script>
       <!-- Page JS -->
       <script src="<?=env('ADMIN_ASSETS_URL')?>assets/js/pages-auth.js"></script>
+      <script src="<?=env('ADMIN_ASSETS_URL')?>assets/js/pages-auth-two-steps.js"></script>
+      <script type="text/javascript">
+         $(function(){
+            $('.autohide').delay(5000).fadeOut('slow');
+         });
+      </script>
    </body>
 </html>
