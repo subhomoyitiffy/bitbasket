@@ -6,10 +6,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommonController;
 use App\Http\Controllers\Api\RegistrationController;
+use App\Http\Controllers\Api\ForgotpasswordController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sign-up', [RegistrationController::class, 'registration']);
 Route::post('/sign-up/otp-verification', [RegistrationController::class, 'register_verification']);
+
+Route::post('/forgot-password', [ForgotpasswordController::class, 'forgot_password']);
+Route::post('/forgot-password/otp-verification', [ForgotpasswordController::class, 'otp_verification']);
+Route::post('/forgot-password/reset_password', [ForgotpasswordController::class, 'reset_password']);
 
 Route::get('/state-list', [CommonController::class, 'getStates']);
 
