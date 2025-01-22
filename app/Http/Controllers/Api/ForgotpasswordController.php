@@ -79,7 +79,9 @@ class ForgotpasswordController extends BaseApiController
             return $this->sendError('Warning', 'OTP validation time expired.', Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->sendResponse([], 'OTP verification has successfully done. Update your password.');
+        return $this->sendResponse([
+            'reset_password_hash'=> base64_encode($request->otp)
+        ], 'OTP verification has successfully done. Update your password.');
     }
 
     /**
@@ -91,7 +93,9 @@ class ForgotpasswordController extends BaseApiController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'reset_password_hash' => 'required'
+            'reset_password_hash' => 'required',
+            'password' => 'required|min:6',
+            'c_password' => 'required|same:password'
         ]);
 
         if($validator->fails()){
