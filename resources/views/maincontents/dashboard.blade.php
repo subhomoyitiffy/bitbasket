@@ -1,3 +1,8 @@
+<?php
+use App\Helpers\Helper;
+$user_type = session('type');
+?>
+<h4><?=$page_header?></h4>
 <div class="row">
    <!-- Website Analytics-->
    <div class="col-lg-6 col-md-12 mb-4">

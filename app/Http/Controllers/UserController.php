@@ -647,7 +647,7 @@ class UserController extends Controller
         }
         public function emailLogsDetails(Request $request,$id ){
             $id = Helper::decoded($id);
-            $data['logData']                   = EmailLog::where('id', '=', $id)->orderBy('id', 'DESC')->first();
+            $data['logData']                = EmailLog::where('id', '=', $id)->orderBy('id', 'DESC')->first();
             $title                          = 'Email Logs Details';
             $page_name                      = 'email-logs-info';
             echo $this->admin_after_login_layout($title,$page_name,$data);
@@ -655,9 +655,9 @@ class UserController extends Controller
     /* email logs */
     /* login logs */
         public function loginLogs(){
-            $data['rows1']                   = UserActivity::where('activity_type', '=', 0)->orderBy('activity_id', 'DESC')->get();
-            $data['rows2']                   = UserActivity::where('activity_type', '=', 1)->orderBy('activity_id', 'DESC')->get();
-            $data['rows3']                   = UserActivity::where('activity_type', '=', 2)->orderBy('activity_id', 'DESC')->get();
+            $data['rows1']                   = UserActivity::where('activity_type', '=', 0)->orderBy('id', 'DESC')->get();
+            $data['rows2']                   = UserActivity::where('activity_type', '=', 1)->orderBy('id', 'DESC')->get();
+            $data['rows3']                   = UserActivity::where('activity_type', '=', 2)->orderBy('id', 'DESC')->get();
             $title                          = 'Login Logs';
             $page_name                      = 'login-logs';
             echo $this->admin_after_login_layout($title,$page_name,$data);

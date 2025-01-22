@@ -2,9 +2,10 @@
 use App\Helpers\Helper;
 $user_type = session('type');
 ?>
-<h4 class="py-3 breadcrumb-wrapper mb-4">
+<h4><?=$page_header?></h4>
+<h6 class="py-3 breadcrumb-wrapper mb-4">
    <span class="text-muted fw-light"><a href="<?=url('dashboard')?>">Dashboard</a> /</span> <?=$page_header?>
-</h4>
+</h6>
 <div class="row">
     <div class="nav-align-top mb-4">
       <?php if(session('success_message')){?>
