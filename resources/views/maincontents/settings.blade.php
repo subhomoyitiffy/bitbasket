@@ -1,861 +1,515 @@
 <?php
+use App\Helpers\Helper;
 $user_type = session('type');
 ?>
-<div class="pagetitle">
-  <h1><?=$page_header?></h1>
-  <nav>
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="<?=url('admin/dashboard')?>">Home</a></li>
-      <li class="breadcrumb-item active"><?=$page_header?></li>
-    </ol>
-  </nav>
-</div><!-- End Page Title -->
-<section class="section profile">
-  <div class="row">
-    <div class="col-xl-12">
-      @if(session('success_message'))
-        <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show autohide" role="alert">
-          {{ session('success_message') }}
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      @endif
-      @if(session('error_message'))
-        <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show autohide" role="alert">
-          {{ session('error_message') }}
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      @endif
-    </div>
-    <div class="col-xl-2">
-      <div class="card">
-        <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-          <?php if($admin->image != ''){?>
-            <img src="<?=env('UPLOADS_URL').$admin->image?>" alt="<?=$admin->name?>" class="rounded-circle">
-          <?php } else {?>
-            <img src="<?=env('NO_IMAGE')?>" alt="<?=$admin->name?>" class="img-thumbnail" class="rounded-circle" style="width: 150px; height: 150px; margin-top: 10px;">
-          <?php }?>
-          <h2><?=session('name')?></h2>
-          <h3><?=session('type')?></h3>
-          <!-- <div class="social-links mt-2">
-            <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-          </div> -->
-        </div>
+<h4 class="py-3 breadcrumb-wrapper mb-4">
+   <span class="text-muted fw-light"><a href="<?=url('dashboard')?>">Dashboard</a> /</span> <?=$page_header?>
+</h4>
+<div class="row">
+    <div class="nav-align-top mb-4">
+      <?php if(session('success_message')){?>
+         <div class="alert alert-success alert-dismissible autohide" role="alert">
+            <h6 class="alert-heading mb-1"><i class="bx bx-xs bx-desktop align-top me-2"></i>Success!</h6>
+            <span><?=session('success_message')?></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+         </div>
+      <?php }?>
+      <?php if(session('error_message')){?>
+         <div class="alert alert-danger alert-dismissible autohide" role="alert">
+            <h6 class="alert-heading mb-1"><i class="bx bx-xs bx-store align-top me-2"></i>Danger!</h6>
+            <span><?=session('error_message')?></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+         </div>
+      <?php }?>
+      <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+        <li class="nav-item">
+          <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile" aria-selected="true"><i class="tf-icons bx bx-home me-1"></i> Profile</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-general" aria-controls="navs-pills-justified-general" aria-selected="false"><i class="tf-icons bx bx-user me-1"></i> General</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-password" aria-controls="navs-pills-justified-password" aria-selected="false"><i class="tf-icons bx bx-lock me-1"></i> Change Password</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-email" aria-controls="navs-pills-justified-email" aria-selected="false"><i class="tf-icons bx bx-envelope me-1"></i> Email</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-email-template" aria-controls="navs-pills-justified-email-template" aria-selected="false"><i class="tf-icons bx bx-message-square me-1"></i> Email Templates</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-payment" aria-controls="navs-pills-justified-payment" aria-selected="false"><i class="tf-icons bx bx-dollar me-1"></i> Payment</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-sms" aria-controls="navs-pills-justified-sms" aria-selected="false"><i class="tf-icons bx bx-mobile me-1"></i> SMS</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-footer" aria-controls="navs-pills-justified-footer" aria-selected="false"><i class="tf-icons bx bx-ball me-1"></i> Footer</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-seo" aria-controls="navs-pills-justified-seo" aria-selected="false"><i class="tf-icons bx bx-line-chart me-1"></i> SEO</button>
+        </li>
+      </ul>
+      <div class="tab-content">
+         <div class="tab-pane fade show active" id="navs-pills-justified-profile" role="tabpanel">
+            <h4>Profile Settings</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('profile-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-4">
+                           <label for="name" class="form-label">Name</label>
+                           <input class="form-control" type="text" id="name" name="name" value="<?=(($user)?$user->name:'')?>" required autofocus />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="email" class="form-label">Email</label>
+                           <input class="form-control" type="text" id="email" name="email" value="<?=(($user)?$user->email:'')?>" required placeholder="john.doe@example.com" />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="phone" class="form-label">Phone</label>
+                           <input class="form-control" type="text" id="phone" name="phone" value="<?=(($user)?$user->phone:'')?>" required placeholder="9876543210" />
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <div class="d-flex align-items-start align-items-sm-center gap-4">
+                              <img src="<?=(($user->profile_image != '')?env('UPLOADS_URL').$user->profile_image:env('NO_IMAGE_AVATAR'))?>" alt="<?=$user->name?>" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                              <div class="button-wrapper">
+                                 <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                 <span class="d-none d-sm-block">Upload new photo</span>
+                                 <i class="bx bx-upload d-block d-sm-none"></i>
+                                 <input type="file" id="upload" class="account-file-input" name="profile_image" hidden accept="image/png, image/jpeg, image/jpg, image/webp, image/avif, image/gif" />
+                                 </label>
+                                 <?php
+                                 $pageLink = Request::url();
+                                 ?>
+                                 <a href="<?=url('common-delete-image/' . Helper::encoded($pageLink) . '/users/profile_image/id/' . (($user)?$user->id:0))?>" class="btn btn-label-secondary account-image-reset mb-4" onclick="return confirm('Do you want to remove this image ?');">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                 </a>
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+            <!-- <div class="card">
+               <h5 class="card-header">Delete Account</h5>
+               <div class="card-body">
+                  <div class="mb-3 col-12 mb-0">
+                     <div class="alert alert-warning">
+                        <h6 class="alert-heading mb-1">Are you sure you want to delete your account?</h6>
+                        <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                     </div>
+                  </div>
+                  <form id="formAccountDeactivation" onsubmit="return false">
+                     <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation" />
+                        <label class="form-check-label" for="accountActivation">I confirm my account deactivation</label>
+                     </div>
+                     <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
+                  </form>
+               </div>
+            </div> -->
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-general" role="tabpanel">
+            <h4>General Settings</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('general-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-6">
+                           <label for="site_name" class="form-label">Site Name</label>
+                           <input class="form-control" type="text" id="site_name" name="site_name" value="<?=Helper::getSettingValue('site_name')?>" required placeholder="Site Name" autofocus />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="site_phone" class="form-label">Site Phone</label>
+                           <input class="form-control" type="text" id="site_phone" name="site_phone" value="<?=Helper::getSettingValue('site_phone')?>" required placeholder="Site Phone" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="site_phone2" class="form-label">Site Phone 2</label>
+                           <input class="form-control" type="text" id="site_phone2" name="site_phone2" value="<?=Helper::getSettingValue('site_phone2')?>" required placeholder="Site Phone 2" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="site_mail" class="form-label">Site Email</label>
+                           <input class="form-control" type="email" id="site_mail" name="site_mail" value="<?=Helper::getSettingValue('site_mail')?>" required placeholder="SMTP Host" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="system_email" class="form-label">System Email</label>
+                           <input class="form-control" type="email" id="system_email" name="system_email" value="<?=Helper::getSettingValue('system_email')?>" required placeholder="System Email" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="site_url" class="form-label">Site URL</label>
+                           <input class="form-control" type="text" id="site_url" name="site_url" value="<?=Helper::getSettingValue('site_url')?>" placeholder="Site URL" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="topbar_text" class="form-label">Topbar Text</label>
+                           <textraea class="form-control" id="ckeditor15" name="topbar_text" required><?=Helper::getSettingValue('topbar_text')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="address" class="form-label">Address</label>
+                           <textraea class="form-control" id="ckeditor8" name="address" required><?=Helper::getSettingValue('address')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="description" class="form-label">Description</label>
+                           <textraea class="form-control" id="ckeditor9" name="description" required><?=Helper::getSettingValue('description')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="copyright_statement" class="form-label">Copyright Statement</label>
+                           <textraea class="form-control" id="ckeditor10" name="copyright_statement" required><?=Helper::getSettingValue('copyright_statement')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="google_map_api_code" class="form-label">Google Map API Code</label>
+                           <textraea class="form-control" id="ckeditor11" name="google_map_api_code" required><?=Helper::getSettingValue('google_map_api_code')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="google_analytics_code" class="form-label">Google Analytics Code</label>
+                           <textraea class="form-control" id="ckeditor12" name="google_analytics_code" required><?=Helper::getSettingValue('google_analytics_code')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="google_pixel_code" class="form-label">Google Pixel Code</label>
+                           <textraea class="form-control" id="ckeditor13" name="google_pixel_code" required><?=Helper::getSettingValue('google_pixel_code')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="facebook_tracking_code" class="form-label">Facebook Tracking Code</label>
+                           <textraea class="form-control" id="ckeditor14" name="facebook_tracking_code" required><?=Helper::getSettingValue('facebook_tracking_code')?></textraea>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="theme_color" class="form-label">Theme Color</label>
+                           <input class="form-control" type="color" id="theme_color" name="theme_color" value="<?=Helper::getSettingValue('theme_color')?>" placeholder="Theme Color" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="font_color" class="form-label">Font Color</label>
+                           <input class="form-control" type="color" id="font_color" name="font_color" value="<?=Helper::getSettingValue('font_color')?>" placeholder="Font Color" />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                           <label for="twitter_profile" class="form-label">Twitter Profile</label>
+                           <input class="form-control" type="text" id="twitter_profile" name="twitter_profile" value="<?=Helper::getSettingValue('twitter_profile')?>" placeholder="Twitter Profile" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="facebook_profile" class="form-label">Facebook Profile</label>
+                           <input class="form-control" type="text" id="facebook_profile" name="facebook_profile" value="<?=Helper::getSettingValue('facebook_profile')?>" placeholder="Facebook Profile" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="instagram_profile" class="form-label">Instagram Profile</label>
+                           <input class="form-control" type="text" id="instagram_profile" name="instagram_profile" value="<?=Helper::getSettingValue('instagram_profile')?>" placeholder="Instagram Profile" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="linkedin_profile" class="form-label">Linkedin Profile</label>
+                           <input class="form-control" type="text" id="linkedin_profile" name="linkedin_profile" value="<?=Helper::getSettingValue('linkedin_profile')?>" placeholder="Linkedin Profile" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="youtube_profile" class="form-label">Youtube Profile</label>
+                           <input class="form-control" type="text" id="youtube_profile" name="youtube_profile" value="<?=Helper::getSettingValue('youtube_profile')?>" placeholder="Youtube Profile" />
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                           <div class="d-flex align-items-start align-items-sm-center gap-4">
+                              <img src="<?=((Helper::getSettingValue('site_logo') != '')?env('UPLOADS_URL').Helper::getSettingValue('site_logo'):env('NO_IMAGE'))?>" alt="<?=Helper::getSettingValue('site_name')?>" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                              <div class="button-wrapper">
+                                 <label for="upload2" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                 <span class="d-none d-sm-block">Upload Logo</span>
+                                 <i class="bx bx-upload d-block d-sm-none"></i>
+                                 <input type="file" id="upload2" class="account-file-input" name="site_logo" hidden accept="image/png, image/jpeg, image/jpg, image/webp, image/avif, image/gif" />
+                                 </label>
+                                 <?php
+                                 $pageLink = Request::url();
+                                 ?>
+                                 <!-- <a href="<?=url('common-delete-image/' . Helper::encoded($pageLink) . '/users/site_logo/id/' . (($user)?$user->id:0))?>" class="btn btn-label-secondary account-image-reset mb-4" onclick="return confirm('Do you want to remove this image ?');">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                 </a> -->
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <div class="d-flex align-items-start align-items-sm-center gap-4">
+                              <img src="<?=((Helper::getSettingValue('site_footer_logo') != '')?env('UPLOADS_URL').Helper::getSettingValue('site_footer_logo'):env('NO_IMAGE'))?>" alt="<?=Helper::getSettingValue('site_name')?>" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                              <div class="button-wrapper">
+                                 <label for="upload3" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                 <span class="d-none d-sm-block">Upload Footer Logo</span>
+                                 <i class="bx bx-upload d-block d-sm-none"></i>
+                                 <input type="file" id="upload3" class="account-file-input" name="site_footer_logo" hidden accept="image/png, image/jpeg, image/jpg, image/webp, image/avif, image/gif" />
+                                 </label>
+                                 <?php
+                                 $pageLink = Request::url();
+                                 ?>
+                                 <!-- <a href="<?=url('common-delete-image/' . Helper::encoded($pageLink) . '/users/site_footer_logo/id/' . (($user)?$user->id:0))?>" class="btn btn-label-secondary account-image-reset mb-4" onclick="return confirm('Do you want to remove this image ?');">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                 </a> -->
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <div class="d-flex align-items-start align-items-sm-center gap-4">
+                              <img src="<?=((Helper::getSettingValue('site_favicon') != '')?env('UPLOADS_URL').Helper::getSettingValue('site_favicon'):env('NO_IMAGE'))?>" alt="<?=Helper::getSettingValue('site_name')?>" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                              <div class="button-wrapper">
+                                 <label for="upload4" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                 <span class="d-none d-sm-block">Upload Favicon</span>
+                                 <i class="bx bx-upload d-block d-sm-none"></i>
+                                 <input type="file" id="upload4" class="account-file-input" name="site_favicon" hidden accept="image/png, image/jpeg, image/jpg, image/webp, image/avif, image/gif" />
+                                 </label>
+                                 <?php
+                                 $pageLink = Request::url();
+                                 ?>
+                                 <!-- <a href="<?=url('common-delete-image/' . Helper::encoded($pageLink) . '/users/site_favicon/id/' . (($user)?$user->id:0))?>" class="btn btn-label-secondary account-image-reset mb-4" onclick="return confirm('Do you want to remove this image ?');">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                 </a> -->
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-password" role="tabpanel">
+            <h4>Change Password</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('change-password')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-4">
+                           <label for="old_password" class="form-label">Old Password</label>
+                           <input class="form-control" type="password" id="old_password" name="old_password" placeholder="********" required autofocus />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="new_password" class="form-label">New Password</label>
+                           <input class="form-control" type="password" id="new_password" name="new_password" placeholder="********" required />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="confirm_password" class="form-label">Confirm Password</label>
+                           <input class="form-control" type="password" id="confirm_password" name="confirm_password" placeholder="********" required />
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-email" role="tabpanel">
+            <h4>Email Configuration</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('email-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-6">
+                           <label for="from_email" class="form-label">From Email</label>
+                           <input class="form-control" type="text" id="from_email" name="from_email" value="<?=Helper::getSettingValue('from_email')?>" required placeholder="From Email" autofocus />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="from_name" class="form-label">From Name</label>
+                           <input class="form-control" type="text" id="from_name" name="from_name" value="<?=Helper::getSettingValue('from_name')?>" required placeholder="From Name" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="smtp_host" class="form-label">SMTP Host</label>
+                           <input class="form-control" type="text" id="smtp_host" name="smtp_host" value="<?=Helper::getSettingValue('smtp_host')?>" required placeholder="SMTP Host" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="smtp_username" class="form-label">SMTP Username</label>
+                           <input class="form-control" type="text" id="smtp_username" name="smtp_username" value="<?=Helper::getSettingValue('smtp_username')?>" required placeholder="SMTP Username" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="smtp_password" class="form-label">SMTP Password</label>
+                           <input class="form-control" type="text" id="smtp_password" name="smtp_password" value="<?=Helper::getSettingValue('smtp_password')?>" required placeholder="SMTP Password" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="smtp_port" class="form-label">SMTP Port</label>
+                           <input class="form-control" type="text" id="smtp_port" name="smtp_port" value="<?=Helper::getSettingValue('smtp_port')?>" required placeholder="SMTP Port" />
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-email-template" role="tabpanel">
+            <h4>Email Templates</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('email-template')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-12">
+                           <label for="email_template_user_signup" class="form-label">User Signup</label>
+                           <textarea class="form-control" id="ckeditor4" name="email_template_user_signup" placeholder="User Signup"><?=Helper::getSettingValue('email_template_user_signup')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="email_template_forgot_password" class="form-label">Forgot Password</label>
+                           <textarea class="form-control" id="ckeditor5" name="email_template_forgot_password" placeholder="Forgot Password"><?=Helper::getSettingValue('email_template_forgot_password')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="email_template_change_password" class="form-label">Change Password</label>
+                           <textarea class="form-control" id="ckeditor6" name="email_template_change_password" placeholder="Change Password"><?=Helper::getSettingValue('email_template_change_password')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="email_template_failed_login" class="form-label">Failed Login</label>
+                           <textarea class="form-control" id="ckeditor7" name="email_template_failed_login" placeholder="Failed Login"><?=Helper::getSettingValue('email_template_failed_login')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="email_template_contactus" class="form-label">Contact Us</label>
+                           <textarea class="form-control" id="ckeditor17" name="email_template_contactus" placeholder="Contact Us"><?=Helper::getSettingValue('email_template_contactus')?></textarea>
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-payment" role="tabpanel">
+            <h4>Payment Configuration</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('payment-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-12">
+                           <label for="stripe_payment_type" class="form-label">Stripe Payment Mode</label>
+                           <select id="stripe_payment_type" class="select2 form-select" name="stripe_payment_type">
+                              <option value="" selected>Select Stripe Payment Mode</option>
+                              <option value="1" <?=((Helper::getSettingValue('stripe_payment_type') == 1)?'selected':'')?>>Sandbox</option>
+                              <option value="2" <?=((Helper::getSettingValue('stripe_payment_type') == 2)?'selected':'')?>>Live</option>
+                           </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="stripe_sandbox_sk" class="form-label">Stripe Sandbox Secret Key</label>
+                           <input class="form-control" type="text" id="stripe_sandbox_sk" name="stripe_sandbox_sk" value="<?=Helper::getSettingValue('stripe_sandbox_sk')?>" required placeholder="Stripe Sandbox Secret Key" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="stripe_sandbox_pk" class="form-label">Stripe Sandbox Public Key</label>
+                           <input class="form-control" type="text" id="stripe_sandbox_pk" name="stripe_sandbox_pk" value="<?=Helper::getSettingValue('stripe_sandbox_pk')?>" required placeholder="Stripe Sandbox Public Key" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="stripe_live_sk" class="form-label">Stripe Live Secret Key</label>
+                           <input class="form-control" type="text" id="stripe_live_sk" name="stripe_live_sk" value="<?=Helper::getSettingValue('stripe_live_sk')?>" required placeholder="Stripe Live Secret Key" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                           <label for="stripe_live_pk" class="form-label">Stripe Live Public Key</label>
+                           <input class="form-control" type="text" id="stripe_live_pk" name="stripe_live_pk" value="<?=Helper::getSettingValue('stripe_live_pk')?>" required placeholder="Stripe Live Public Key" />
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-sms" role="tabpanel">
+            <h4>SMS Configuration</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('sms-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-4">
+                           <label for="sms_authentication_key" class="form-label">SMS Authentication Key</label>
+                           <input class="form-control" type="text" id="sms_authentication_key" name="sms_authentication_key" value="<?=Helper::getSettingValue('sms_authentication_key')?>" required placeholder="SMS Authentication Key" autofocus />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="sms_sender_id" class="form-label">SMS Sender ID</label>
+                           <input class="form-control" type="text" id="sms_sender_id" name="sms_sender_id" value="<?=Helper::getSettingValue('sms_sender_id')?>" required placeholder="SMS Sender ID" />
+                        </div>
+                        <div class="mb-3 col-md-4">
+                           <label for="sms_base_url" class="form-label">SMS Base URL</label>
+                           <input class="form-control" type="text" id="sms_base_url" name="sms_base_url" value="<?=Helper::getSettingValue('sms_base_url')?>" required placeholder="SMS Base URL" />
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-footer" role="tabpanel">
+            <h4>Footer Settings</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('footer-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-12">
+                           <label for="footer_text" class="form-label">Footer Text</label>
+                           <textarea class="form-control" id="ckeditor18" name="footer_text" placeholder="Footer Text"><?=Helper::getSettingValue('footer_text')?></textarea>
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
+         <div class="tab-pane fade" id="navs-pills-justified-seo" role="tabpanel">
+            <h4>SEO Settings</h4>
+            <div class="card mb-4">
+               <div class="card-body">
+                  <form id="formAccountSettings" action="<?=url('seo-settings')?>" method="POST" enctype="multipart/form-data">
+                     @csrf
+                     <div class="row">
+                        <div class="mb-3 col-md-12">
+                           <label for="meta_title" class="form-label">Meta Title</label>
+                           <textarea class="form-control" id="ckeditor1" name="meta_title" placeholder="Meta Title"><?=Helper::getSettingValue('meta_title')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="meta_description" class="form-label">Meta Description</label>
+                           <textarea class="form-control" id="ckeditor2" name="meta_description" placeholder="Meta Description"><?=Helper::getSettingValue('meta_description')?></textarea>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                           <label for="meta_keywords" class="form-label">Meta Keywords</label>
+                           <textarea class="form-control" id="ckeditor3" name="meta_keywords" placeholder="Meta Keywords"><?=Helper::getSettingValue('meta_keywords')?></textarea>
+                        </div>
+                     </div>
+                     <div class="mt-2">
+                        <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+               <!-- /Account -->
+            </div>
+         </div>
       </div>
     </div>
-    <div class="col-xl-10">
-      <div class="card">
-        <div class="card-body pt-3">
-          <!-- Bordered Tabs -->
-          <ul class="nav nav-tabs nav-tabs-bordered">
-            <li class="nav-item">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab1">Profile</button>
-            </li>
-            <?php if($user_type == 'ma'){?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab2">General</button>
-            </li>
-            <?php }?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab3">Change Password</button>
-            </li>
-            <?php if($user_type == 'ma'){?>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab4">Email</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab9">Email Templates</button>
-            </li>
-            <!-- <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab5">SMS</button>
-            </li> -->
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab8">Payment</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab6">Footer</button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab7">SEO</button>
-            </li>
-            <!-- <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab10">Color</button>
-            </li> -->
-            <?php }?>
-          </ul>
-          <div class="tab-content pt-2">
-            <div class="tab-pane fade show active profile-overview" id="tab1">
-              <!-- profile settings Form -->
-              <form method="POST" action="{{ url('admin/profile-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="name" class="col-md-4 col-lg-3 col-form-label">Name</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="name" class="form-control" id="name" value="<?=$admin->name?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="email" class="form-control" id="email" value="<?=$admin->email?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="mobile" class="col-md-4 col-lg-3 col-form-label">Mobile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="mobile" class="form-control" id="mobile" value="<?=$admin->mobile?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="image" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="file" name="image" class="form-control" id="profile_image">
-                    <small class="text-info">* Only JPG, JPEG, ICO, SVG, PNG files are allowed</small><br>
-                    <?php if($admin->image != ''){?>
-                      <img src="<?=env('UPLOADS_URL').$admin->image?>" alt="<?=$admin->name?>" style="width: 150px; height: 150px; margin-top: 10px;">
-                    <?php } else {?>
-                      <img src="<?=env('NO_IMAGE')?>" alt="<?=$admin->name?>" class="img-thumbnail" style="width: 150px; height: 150px; margin-top: 10px;">
-                    <?php }?>
-                    
-                    <!-- <div class="pt-2">
-                      <a href="#profile_image" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                      <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
-                    </div> -->
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End profile settings Form -->
-            </div>
-            <div class="tab-pane fade profile-edit pt-3" id="tab2">
-              <!-- general settings Form -->
-              <form method="POST" action="{{ url('admin/general-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="site_name" class="col-md-4 col-lg-3 col-form-label">Site Name</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="site_name" type="text" class="form-control" id="site_name" value="<?=$setting->site_name?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="site_phone" class="col-md-4 col-lg-3 col-form-label">Site Phone</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="site_phone" type="text" class="form-control" id="site_phone" value="<?=$setting->site_phone?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="site_mail" class="col-md-4 col-lg-3 col-form-label">Site Email</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="site_mail" type="email" class="form-control" id="site_mail" value="<?=$setting->site_mail?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="system_email" class="col-md-4 col-lg-3 col-form-label">System Email</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="system_email" type="email" class="form-control" id="system_email" value="<?=$setting->system_email?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="site_url" class="col-md-4 col-lg-3 col-form-label">Site URL</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="site_url" type="url" class="form-control" id="site_url" value="<?=$setting->site_url?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="description" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="description" class="form-control" id="description" rows="5"><?=$setting->description?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="timing" class="col-md-4 col-lg-3 col-form-label">Timing</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="timing" class="form-control" id="timing" rows="3"><?=$setting->timing?></textarea>
-                  </div>
-                </div>
-                <!-- <div class="row mb-3">
-                  <label for="copyright_statement" class="col-md-4 col-lg-3 col-form-label">Copyright Statement</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="copyright_statement" class="form-control" id="copyright_statement" rows="5"><?=$setting->copyright_statement?></textarea>
-                  </div>
-                </div> -->
-                <div class="row mb-3">
-                  <label for="google_map_api_code" class="col-md-4 col-lg-3 col-form-label">Google Map API Code</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="google_map_api_code" class="form-control" id="google_map_api_code" rows="5"><?=$setting->google_map_api_code?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="google_analytics_code" class="col-md-4 col-lg-3 col-form-label">Google Map Embed Code</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="google_analytics_code" class="form-control" id="google_analytics_code" rows="5"><?=$setting->google_analytics_code?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="google_pixel_code" class="col-md-4 col-lg-3 col-form-label">Google Pixel Code</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="google_pixel_code" class="form-control" id="google_pixel_code" rows="5"><?=$setting->google_pixel_code?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="facebook_tracking_code" class="col-md-4 col-lg-3 col-form-label">Facebook Tracking Code</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="facebook_tracking_code" class="form-control" id="facebook_tracking_code" rows="5"><?=$setting->facebook_tracking_code?></textarea>
-                  </div>
-                </div>
-                <!-- <div class="row mb-3">
-                  <label for="theme_color" class="col-md-4 col-lg-3 col-form-label">Theme Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="theme_color" type="color" class="form-control" id="theme_color" value="<?=$setting->theme_color?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="font_color" class="col-md-4 col-lg-3 col-form-label">Font Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="font_color" type="color" class="form-control" id="font_color" value="<?=$setting->font_color?>">
-                  </div>
-                </div> -->
-                <div class="row mb-3">
-                  <label for="twitter_profile" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="twitter_profile" type="text" class="form-control" id="twitter_profile" value="<?=$setting->twitter_profile?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="facebook_profile" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="facebook_profile" type="text" class="form-control" id="facebook_profile" value="<?=$setting->facebook_profile?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="instagram_profile" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="instagram_profile" type="text" class="form-control" id="instagram_profile" value="<?=$setting->instagram_profile?>">
-                  </div>
-                </div>
-                <!-- <div class="row mb-3">
-                  <label for="linkedin_profile" class="col-md-4 col-lg-3 col-form-label">Pinterest Profile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="linkedin_profile" type="text" class="form-control" id="linkedin_profile" value="<?=$setting->linkedin_profile?>">
-                  </div>
-                </div> -->
-                <div class="row mb-3">
-                  <label for="youtube_profile" class="col-md-4 col-lg-3 col-form-label">Youtube Profile</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="youtube_profile" type="text" class="form-control" id="youtube_profile" value="<?=$setting->youtube_profile?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="topbar_text" class="col-md-4 col-lg-3 col-form-label">Topbar Text</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea name="topbar_text" class="form-control" id="topbar_text" rows="5"><?=$setting->topbar_text?></textarea>
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label for="shipping_charge" class="col-md-4 col-lg-3 col-form-label">Shipping Charge</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="shipping_charge" type="text" class="form-control" id="shipping_charge" value="<?=$setting->shipping_charge?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="tax_percent" class="col-md-4 col-lg-3 col-form-label">Tax (%)</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="tax_percent" type="text" class="form-control" id="tax_percent" value="<?=$setting->tax_percent?>">
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label for="site_logo" class="col-md-4 col-lg-3 col-form-label">Logo</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="file" name="site_logo" class="form-control" id="site_logo">
-                    <small class="text-info">* Only jpg, jpeg, png, ico files are allowed</small><br>
-                    <?php if($setting->site_logo != ''){?>
-                      <img src="<?=env('UPLOADS_URL').$setting->site_logo?>" alt="<?=$setting->site_name?>">
-                    <?php } else {?>
-                      <img src="<?=env('NO_IMAGE')?>" alt="<?=$setting->site_name?>" class="img-thumbnail" style="width: 150px; height: 150px; margin-top: 10px;">
-                    <?php }?>
-                    
-                    <!-- <div class="pt-2">
-                      <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Remove Image"><i class="bi bi-trash"></i></a>
-                    </div> -->
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="site_footer_logo" class="col-md-4 col-lg-3 col-form-label">Footer Logo</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="file" name="site_footer_logo" class="form-control" id="site_footer_logo">
-                    <small class="text-info">* Only jpg, jpeg, png, ico files are allowed</small><br>
-                    <?php if($setting->site_footer_logo != ''){?>
-                      <img src="<?=env('UPLOADS_URL').$setting->site_footer_logo?>" alt="<?=$setting->site_name?>">
-                    <?php } else {?>
-                      <img src="<?=env('NO_IMAGE')?>" alt="<?=$setting->site_name?>" class="img-thumbnail" style="width: 150px; height: 150px; margin-top: 10px;">
-                    <?php }?>
-                    
-                    <!-- <div class="pt-2">
-                      <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Remove Image"><i class="bi bi-trash"></i></a>
-                    </div> -->
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="site_favicon" class="col-md-4 col-lg-3 col-form-label">Favicon</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="file" name="site_favicon" class="form-control" id="site_favicon">
-                    <small class="text-info">* Only jpg, jpeg, png, ico files are allowed</small><br>
-                    <?php if($setting->site_favicon != ''){?>
-                      <img src="<?=env('UPLOADS_URL').$setting->site_favicon?>" alt="<?=$setting->site_name?>">
-                    <?php } else {?>
-                      <img src="<?=env('NO_IMAGE')?>" alt="<?=$setting->site_name?>" class="img-thumbnail" style="width: 150px; height: 150px; margin-top: 10px;">
-                    <?php }?>
-                    
-                    <!-- <div class="pt-2">
-                      <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Remove Image"><i class="bi bi-trash"></i></a>
-                    </div> -->
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End general settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab3">
-              <!-- chnage password Form -->
-              <form method="POST" action="{{ url('admin/change-password') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="old_password" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="password" name="old_password" class="form-control" id="old_password">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="new_password" class="col-md-4 col-lg-3 col-form-label">New Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="password" name="new_password" class="form-control" id="new_password">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="confirm_password" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="password" name="confirm_password" class="form-control" id="confirm_password">
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End chnage password Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab4">
-              <!-- email settings Form -->
-              <form method="POST" action="{{ url('admin/email-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="from_email" class="col-md-4 col-lg-3 col-form-label">From Email</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="from_email" class="form-control" id="from_email" value="<?=$setting->from_email?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="from_name" class="col-md-4 col-lg-3 col-form-label">From Name</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="from_name" class="form-control" id="from_name" value="<?=$setting->from_name?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="smtp_host" class="col-md-4 col-lg-3 col-form-label">SMTP Host</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="smtp_host" class="form-control" id="smtp_host" value="<?=$setting->smtp_host?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="smtp_username" class="col-md-4 col-lg-3 col-form-label">SMTP Username</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="smtp_username" class="form-control" id="smtp_username" value="<?=$setting->smtp_username?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="smtp_password" class="col-md-4 col-lg-3 col-form-label">SMTP Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="smtp_password" class="form-control" id="smtp_password" value="<?=$setting->smtp_password?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="smtp_port" class="col-md-4 col-lg-3 col-form-label">SMTP Port</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="smtp_port" class="form-control" id="smtp_port" value="<?=$setting->smtp_port?>">
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End email settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab9">
-              <!-- seo settings Form -->
-              <form method="POST" action="{{ url('admin/email-template') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="email_template_user_signup" class="col-md-4 col-lg-3 col-form-label">User Signup</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="email_template_user_signup" class="form-control ckeditor" id="ckeditor1" rows="5"><?=$setting->email_template_user_signup?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="email_template_forgot_password" class="col-md-4 col-lg-3 col-form-label">Forgot Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="email_template_forgot_password" class="form-control ckeditor" id="ckeditor2" rows="5"><?=$setting->email_template_forgot_password?></textarea>
-                  </div>
-                  <!-- <div id="editor">
-                    <p>Hello from CKEditor 5!</p>
-                  </div> -->
-                </div>
-                <div class="row mb-3">
-                  <label for="email_template_change_password" class="col-md-4 col-lg-3 col-form-label">Change Password</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="email_template_change_password" class="form-control ckeditor" id="ckeditor3" rows="5"><?=$setting->email_template_change_password?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="email_template_failed_login" class="col-md-4 col-lg-3 col-form-label">Failed Login</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="email_template_failed_login" class="form-control ckeditor" id="ckeditor4" rows="5"><?=$setting->email_template_failed_login?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="email_template_contactus" class="col-md-4 col-lg-3 col-form-label">Contact Us</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="email_template_contactus" class="form-control ckeditor" id="ckeditor5" rows="5"><?=$setting->email_template_contactus?></textarea>
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End seo settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab5">
-              <!-- sms settings Form -->
-              <form method="POST" action="{{ url('admin/sms-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="sms_authentication_key" class="col-md-4 col-lg-3 col-form-label">Authentication Key</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="sms_authentication_key" class="form-control" id="sms_authentication_key" value="<?=$setting->sms_authentication_key?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="sms_sender_id" class="col-md-4 col-lg-3 col-form-label">Sender ID</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="sms_sender_id" class="form-control" id="sms_sender_id" value="<?=$setting->sms_sender_id?>">
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="sms_base_url" class="col-md-4 col-lg-3 col-form-label">Base URL</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input type="text" name="sms_base_url" class="form-control" id="sms_base_url" value="<?=$setting->sms_base_url?>">
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End sms settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab6">
-              <!-- footer settings Form -->
-              <form method="POST" action="{{ url('admin/footer-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="footer_text" class="col-md-4 col-lg-3 col-form-label">Footer Text</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="footer_text" class="form-control" id="ckeditor6" rows="5"><?=$setting->footer_text?></textarea>
-                  </div>
-                </div>
-
-                <label for="" class="col-md-4 col-lg-3 col-form-label"><b>Store</b></label>
-                <div class="field_wrapper1" style="border: 1px solid #8144f0;padding: 10px;margin-bottom: 10px;">
-                  <?php
-                  $footer_link_name = (($setting->footer_link_name != '')?json_decode($setting->footer_link_name):[]);
-                  $footer_link = (($setting->footer_link != '')?json_decode($setting->footer_link):[]);
-                  if(!empty($footer_link_name)){ for($i=0;$i<count($footer_link_name);$i++){
-                  ?>
-                      <div class="row">
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name[]" value="<?=$footer_link_name[$i]?>" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link" value="<?=$footer_link[$i]?>" name="footer_link[]" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-2" style="margin-top: 26px;">
-                              <a href="javascript:void(0);" class="remove_button1" title="Add field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>
-                          </div>                                    
-                      </div>
-                  <?php } }?>
-                  <div class="row">
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link" name="footer_link[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-2" style="margin-top: 26px;">
-                          <a href="javascript:void(0);" class="add_button1" title="Add field"><i class="fa fa-plus-circle fa-2x text-success"></i></a>
-                      </div>                                    
-                  </div>
-                </div>
-
-                <label for="" class="col-md-4 col-lg-3 col-form-label"><b>Help</b></label>
-                <div class="field_wrapper2" style="border: 1px solid #8144f0;padding: 10px;margin-bottom: 10px;">
-                  <?php
-                  $footer_link_name2 = (($setting->footer_link_name2 != '')?json_decode($setting->footer_link_name2):[]);
-                  $footer_link2 = (($setting->footer_link2 != '')?json_decode($setting->footer_link2):[]);
-                  if(!empty($footer_link_name2)){ for($i=0;$i<count($footer_link_name2);$i++){
-                  ?>
-                      <div class="row">
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name2[]" value="<?=$footer_link_name2[$i]?>" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link" value="<?=$footer_link2[$i]?>" name="footer_link2[]" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-2" style="margin-top: 26px;">
-                              <a href="javascript:void(0);" class="remove_button2" title="Add field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>
-                          </div>                                    
-                      </div>
-                  <?php } }?>
-                  <div class="row">
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name2[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link" name="footer_link2[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-2" style="margin-top: 26px;">
-                          <a href="javascript:void(0);" class="add_button2" title="Add field"><i class="fa fa-plus-circle fa-2x text-success"></i></a>
-                      </div>                                    
-                  </div>
-                </div>
-
-                <label for="" class="col-md-4 col-lg-3 col-form-label"><b>Support</b></label>
-                <div class="field_wrapper3" style="border: 1px solid #8144f0;padding: 10px;margin-bottom: 10px;">
-                  <?php
-                  $footer_link_name3 = (($setting->footer_link_name3 != '')?json_decode($setting->footer_link_name3):[]);
-                  $footer_link3 = (($setting->footer_link3 != '')?json_decode($setting->footer_link3):[]);
-                  if(!empty($footer_link_name3)){ for($i=0;$i<count($footer_link_name3);$i++){
-                  ?>
-                      <div class="row">
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name3[]" value="<?=$footer_link_name3[$i]?>" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-5">
-                              <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                              <span class="input-with-icon">
-                                  <input type="text" class="form-control requiredCheck" data-check="Link" value="<?=$footer_link3[$i]?>" name="footer_link3[]" autocomplete="off">
-                              </span>
-                          </div>
-                          <div class="col-md-2" style="margin-top: 26px;">
-                              <a href="javascript:void(0);" class="remove_button3" title="Add field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>
-                          </div>                                    
-                      </div>
-                  <?php } }?>
-                  <div class="row">
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name3[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-5">
-                          <label for="lefticon" class="control-label">Link<span class="red">*</span></label>
-                          <span class="input-with-icon">
-                              <input type="text" class="form-control requiredCheck" data-check="Link" name="footer_link3[]" autocomplete="off">
-                          </span>
-                      </div>
-                      <div class="col-md-2" style="margin-top: 26px;">
-                          <a href="javascript:void(0);" class="add_button3" title="Add field"><i class="fa fa-plus-circle fa-2x text-success"></i></a>
-                      </div>                                    
-                  </div>
-                </div>
-
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End footer settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab7">
-              <!-- seo settings Form -->
-              <form method="POST" action="{{ url('admin/seo-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="meta_title" class="col-md-4 col-lg-3 col-form-label">Meta Title</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="meta_title" class="form-control" id="ckeditor7" rows="5"><?=$setting->meta_title?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="meta_description" class="col-md-4 col-lg-3 col-form-label">Meta Description</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="meta_description" class="form-control" id="ckeditor8" rows="5"><?=$setting->meta_description?></textarea>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="meta_keywords" class="col-md-4 col-lg-3 col-form-label">Meta Keywords</label>
-                  <div class="col-md-8 col-lg-9">
-                    <textarea type="text" name="meta_keywords" class="form-control" id="ckeditor9" rows="5"><?=$setting->meta_keywords?></textarea>
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End seo settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab8">
-              <!-- payment settings Form -->
-              <form method="POST" action="{{ url('admin/payment-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="authorizenet_payment_type" class="col-md-4 col-lg-3 col-form-label">Authorizenet Payment Environment</label>
-                  <div class="col-md-8 col-lg-9">
-                    <select name="authorizenet_payment_type" class="form-control" id="authorizenet_payment_type" required>
-                      <option value="" selected>Select Payment Environment</option>
-                      <option value="1" <?=(($setting->authorizenet_payment_type == 1)?'selected':'')?>>SANDBOX</option>
-                      <option value="2" <?=(($setting->authorizenet_payment_type == 2)?'selected':'')?>>LIVE</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="authorizenet_login_id" class="col-md-4 col-lg-3 col-form-label">Authorizenet Payment Login ID</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="authorizenet_login_id" type="text" class="form-control" id="authorizenet_login_id" value="<?=$setting->authorizenet_login_id?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="authorizenet_transaction_key" class="col-md-4 col-lg-3 col-form-label">Authorizenet Payment Transaction Key</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="authorizenet_transaction_key" type="text" class="form-control" id="authorizenet_transaction_key" value="<?=$setting->authorizenet_transaction_key?>" required>
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End payment settings Form -->
-            </div>
-            <div class="tab-pane fade pt-3" id="tab10">
-              <!-- color settings Form -->
-              <form method="POST" action="{{ url('admin/color-settings') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row mb-3">
-                  <label for="color_theme" class="col-md-4 col-lg-3 col-form-label">Theme Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_theme" type="color" class="form-control" id="color_theme" value="<?=$setting->color_theme?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_button" class="col-md-4 col-lg-3 col-form-label">Button Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_button" type="color" class="form-control" id="color_button" value="<?=$setting->color_button?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_title" class="col-md-4 col-lg-3 col-form-label">Title Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_title" type="color" class="form-control" id="color_title" value="<?=$setting->color_title?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_panel_bg" class="col-md-4 col-lg-3 col-form-label">Panel Background Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_panel_bg" type="color" class="form-control" id="color_panel_bg" value="<?=$setting->color_panel_bg?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_panel_text" class="col-md-4 col-lg-3 col-form-label">Panel Text Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_panel_text" type="color" class="form-control" id="color_panel_text" value="<?=$setting->color_panel_text?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_accept_button" class="col-md-4 col-lg-3 col-form-label">Accept Button Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_accept_button" type="color" class="form-control" id="color_accept_button" value="<?=$setting->color_accept_button?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_reject_button" class="col-md-4 col-lg-3 col-form-label">Reject Button Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_reject_button" type="color" class="form-control" id="color_reject_button" value="<?=$setting->color_reject_button?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_transfer_button" class="col-md-4 col-lg-3 col-form-label">Transfer Button Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_transfer_button" type="color" class="form-control" id="color_transfer_button" value="<?=$setting->color_transfer_button?>" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label for="color_complete_button" class="col-md-4 col-lg-3 col-form-label">Complete Button Color</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input name="color_complete_button" type="color" class="form-control" id="color_complete_button" value="<?=$setting->color_complete_button?>" required>
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form><!-- End payment settings Form -->
-            </div>
-          </div><!-- End Bordered Tabs -->
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){        
-        var maxField = 10; //Input fields increment limitation
-        var addButton = $('.add_button1'); //Add button selector
-        var wrapper = $('.field_wrapper1'); //Input field wrapper
-        var fieldHTML = '<div class="row">\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Link Text" name="footer_link_name[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Link" name="footer_link[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-2" style="margin-top: 26px;">\
-                                <a href="javascript:void(0);" class="remove_button1" title="Remove field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>\
-                            </div>\
-                        </div>'; //New input field html 
-        var x = 1; //Initial field counter is 1
-        
-        //Once add button is clicked
-        $(addButton).click(function(){
-            //Check maximum number of input fields
-            if(x < maxField){ 
-                x++; //Increment field counter
-                $(wrapper).append(fieldHTML); //Add field html
-            }
-        });
-        
-        //Once remove button is clicked
-        $(wrapper).on('click', '.remove_button1', function(e){
-            e.preventDefault();
-            $(this).parent('div').parent('div').remove(); //Remove field html
-            x--; //Decrement field counter
-        });
-    });
-
-    $(document).ready(function(){        
-        var maxField = 10; //Input fields increment limitation
-        var addButton = $('.add_button2'); //Add button selector
-        var wrapper = $('.field_wrapper2'); //Input field wrapper
-        var fieldHTML = '<div class="row">\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Second Column Link Text" name="footer_link_name2[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Second Column Link" name="footer_link2[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-2" style="margin-top: 33px;">\
-                                <a href="javascript:void(0);" class="remove_button2" title="Remove field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>\
-                            </div>\
-                        </div>'; //New input field html 
-        var x = 1; //Initial field counter is 1
-        
-        //Once add button is clicked
-        $(addButton).click(function(){
-            //Check maximum number of input fields
-            if(x < maxField){ 
-                x++; //Increment field counter
-                $(wrapper).append(fieldHTML); //Add field html
-            }
-        });
-        
-        //Once remove button is clicked
-        $(wrapper).on('click', '.remove_button2', function(e){
-            e.preventDefault();
-            $(this).parent('div').parent('div').remove(); //Remove field html
-            x--; //Decrement field counter
-        });
-    });
-
-    $(document).ready(function(){        
-        var maxField = 10; //Input fields increment limitation
-        var addButton = $('.add_button3'); //Add button selector
-        var wrapper = $('.field_wrapper3'); //Input field wrapper
-        var fieldHTML = '<div class="row">\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link Text<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Third Column Link Text" name="footer_link_name3[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-5">\
-                                <label for="lefticon" class="control-label">Link<span class="red">*</span></label>\
-                                <span class="input-with-icon">\
-                                    <input type="text" class="form-control requiredCheck" data-check="Third Column Link" name="footer_link3[]" autocomplete="off">\
-                                </span>\
-                            </div>\
-                            <div class="col-md-2" style="margin-top: 33px;">\
-                                <a href="javascript:void(0);" class="remove_button3" title="Remove field"><i class="fa fa-minus-circle fa-2x text-danger"></i></a>\
-                            </div>\
-                        </div>'; //New input field html 
-        var x = 1; //Initial field counter is 1
-        
-        //Once add button is clicked
-        $(addButton).click(function(){
-            //Check maximum number of input fields
-            if(x < maxField){ 
-                x++; //Increment field counter
-                $(wrapper).append(fieldHTML); //Add field html
-            }
-        });
-        
-        //Once remove button is clicked
-        $(wrapper).on('click', '.remove_button3', function(e){
-            e.preventDefault();
-            $(this).parent('div').parent('div').remove(); //Remove field html
-            x--; //Decrement field counter
-        });
-    });
-</script>
+</div>

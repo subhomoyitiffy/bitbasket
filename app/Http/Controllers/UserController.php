@@ -243,12 +243,6 @@ class UserController extends Controller
 
             return $monthYearList;
         }
-        public function message(Request $request){
-            $data = [];
-            $title                                                      = 'Message';
-            $page_name                                                  = 'message';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
         public function userAllActivity(Request $request){
             $data['rows']                                               = DB::table('user_website_activities')
                                                                                 ->join('users', 'user_website_activities.user_id', '=', 'users.id')
@@ -259,103 +253,12 @@ class UserController extends Controller
             $page_name                                                  = 'user-all-activity';
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
-        public function dashboardFilter(Request $request){
-            $postData = $request->all();
-            $fDate = '';
-            $tDate = '';
-            if($postData['filter_keyword'] == 'today'){
-                $fDate          = date('Y-m-d');
-                $tDate          = date('Y-m-d');
-                $filter_keyword_text = 'Today';
-            }
-            if($postData['filter_keyword'] == 'yesterday'){
-                $fDate          = date('Y-m-d',strtotime("-1 days"));
-                $tDate          = date('Y-m-d',strtotime("-1 days"));
-                $filter_keyword_text = 'Yesterday';
-            }
-            if($postData['filter_keyword'] == 'this_month'){
-                $fDate          = date('Y-m')."-01";
-                $tDate          = date('Y-m-d');
-                $filter_keyword_text = 'This Month';
-            }
-            if($postData['filter_keyword'] == 'last_month'){
-                $fDate          = date("Y-m-d", mktime(0, 0, 0, date("m")-1, 1));
-                $tDate          = date("Y-m-d", mktime(0, 0, 0, date("m"), 0));
-                $filter_keyword_text = 'Last Month';
-            }
-            if($postData['filter_keyword'] == 'last_7_days'){
-                $fDate          = date('Y-m-d', strtotime('-7 days'));
-                $tDate          = date('Y-m-d',strtotime("-1 days"));
-                $filter_keyword_text = 'Last 7 Days';
-            }
-            if($postData['filter_keyword'] == 'last_30_days'){
-                $fDate          = date('Y-m-d', strtotime('-30 days'));
-                $tDate          = date('Y-m-d',strtotime("-1 days"));
-                $filter_keyword_text = 'Last 30 Days';
-            }
-            if($postData['filter_keyword'] == 'this_year'){
-                $fDate          = date('Y')."-01-01";
-                $tDate          = date('Y')."-12-31";
-                $filter_keyword_text = 'This Year';
-            }
-            if($postData['filter_keyword'] == 'last_year'){
-                $fDate          = (date('Y') - 1)."-01-01";
-                $tDate          = (date('Y') - 1)."-12-31";
-                $filter_keyword_text = 'Last Year';
-            }
-            if($postData['filter_keyword'] == ''){
-                return redirect()->to('dashboard');
-            }
-            $data['filter_keyword']                                     = $postData['filter_keyword'];
-            $data['filter_keyword_text']                                = $filter_keyword_text;
-
-            // $data['total_products']                                     = Product::where('status', '!=', 3)->where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-            // $data['total_new_products']                                 = Product::where('status', '!=', 3)->where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->where('is_new', '=', 1)->count();
-            // $data['total_active_products']                              = Product::where('status', '=', 1)->where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-
-            // $data['total_orders']                                       = Order::count();
-            // $data['total_new_orders']                                   = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->where('status', '=', 1)->count();
-            // $data['total_rejected_orders']                              = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->where('status', '=', 6)->count();
-            // $data['total_cancelled_orders']                             = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->where('status', '=', 7)->count();
-
-            // $data['total_customers']                                    = User::where('status', '!=', 3)->where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-            // $data['total_sales']                                        = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->sum('net_amt');
-            // $data['total_refunds']                                      = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->where('is_refund', '=', 1)->sum('refund_amount');
-
-            $data['total_view']                                         = UserView::where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-            $data['total_visit']                                        = UserVisit::where('created_at', '>=', $fDate)->where('created_at', '<=', $tDate)->count();
-            $data['total_sales']                                        = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->sum('net_amt');
-            $data['total_orders']                                       = Order::where('order_date', '>=', $fDate)->where('order_date', '<=', $tDate)->count();
-
-            $data['total_active_products']                              = Product::where('status', '=', 1)->count();
-            $data['total_deactive_products']                            = Product::where('status', '=', 0)->count();
-            $data['total_draft_products']                               = Product::where('status', '=', 2)->count();
-
-            $data['total_new_orders']                                   = Order::where('status', '=', 1)->count();
-            $data['total_processing_orders']                            = Order::where('status', '=', 2)->count();
-            $data['total_incomplete_orders']                            = Order::where('status', '=', 3)->count();
-            $data['total_shipped_orders']                               = Order::where('status', '=', 4)->count();
-            $data['total_complete_orders']                              = Order::where('status', '=', 5)->count();
-            $data['total_rejected_orders']                              = Order::where('status', '=', 6)->count();
-            $data['total_cancelled_orders']                             = Order::where('status', '=', 7)->count();
-
-            $data['recent_activities']                                  = DB::table('user_website_activities')
-                                                                                ->join('users', 'user_website_activities.user_id', '=', 'users.id')
-                                                                                ->select('user_website_activities.*', 'users.profile_image')
-                                                                                ->orderBy('user_website_activities.id', 'DESC')
-                                                                                ->limit(10)
-                                                                                ->get();
-
-            $title                                                      = 'Dashboard';
-            $page_name                                                  = 'dashboard-new';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
     /* dashboard */
     /* settings */
         public function settings(Request $request){
             $uId                            = $request->session()->get('user_id');
             $data['setting']                = GeneralSetting::where('id', '=', 1)->first();
-            $data['admin']                  = User::where('id', '=', $uId)->first();
+            $data['user']                   = User::where('id', '=', $uId)->first();
             $title                          = 'Settings';
             $page_name                      = 'settings';
             echo $this->admin_after_login_layout($title,$page_name,$data);
@@ -365,30 +268,30 @@ class UserController extends Controller
             $row        = User::where('id', '=', $uId)->first();
             $postData   = $request->all();
             $rules      = [
-                'name'            => 'required',
-                'mobile'          => 'required',
-                'email'           => 'required',
+                'name'              => 'required',
+                'phone'             => 'required',
+                'email'             => 'required',
             ];
             if($this->validate($request, $rules)){
                 /* profile image */
-                $imageFile      = $request->file('image');
+                $imageFile      = $request->file('profile_image');
                 if($imageFile != ''){
                     $imageName      = $imageFile->getClientOriginalName();
-                    $uploadedFile   = $this->upload_single_file('image', $imageName, '', 'image');
+                    $uploadedFile   = $this->upload_single_file('profile_image', $imageName, '', 'image');
                     if($uploadedFile['status']){
-                        $image = $uploadedFile['newFilename'];
+                        $profile_image = $uploadedFile['newFilename'];
                     } else {
                         return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
                     }
                 } else {
-                    $image = $row->image;
+                    $profile_image = $row->profile_image;
                 }
                 /* profile image */
                 $fields = [
-                    'name'                  => $postData['name'],
-                    'mobile'                => $postData['mobile'],
-                    'email'                 => $postData['email'],
-                    'image'                 => $image
+                    'name'                  => strip_tags($postData['name']),
+                    'phone'                 => strip_tags($postData['phone']),
+                    'email'                 => strip_tags($postData['email']),
+                    'profile_image'         => $profile_image
                 ];
                 // Helper::pr($fields);
                 User::where('id', '=', $uId)->update($fields);
@@ -398,16 +301,15 @@ class UserController extends Controller
             }
         }
         public function general_settings(Request $request){
-            $row        = GeneralSetting::where('id', '=', 1)->first();
             $postData   = $request->all();
             $rules      = [
                 'site_name'            => 'required',
                 'site_phone'           => 'required',
                 'site_mail'            => 'required',
                 'system_email'         => 'required',
-                'site_url'             => 'required',
             ];
             if($this->validate($request, $rules)){
+                unset($postData['_token']);
                 /* site logo */
                     $imageFile      = $request->file('site_logo');
                     if($imageFile != ''){
@@ -419,7 +321,7 @@ class UserController extends Controller
                             return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
                         }
                     } else {
-                        $site_logo = $row->site_logo;
+                        $site_logo = Helper::getSettingValue('site_logo');
                     }
                 /* site logo */
                 /* site footer logo */
@@ -433,7 +335,7 @@ class UserController extends Controller
                             return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
                         }
                     } else {
-                        $site_footer_logo = $row->site_footer_logo;
+                        $site_footer_logo = Helper::getSettingValue('site_footer_logo');
                     }
                 /* site footer logo */
                 /* site favicon */
@@ -447,39 +349,29 @@ class UserController extends Controller
                             return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
                         }
                     } else {
-                        $site_favicon = $row->site_favicon;
+                        $site_favicon = Helper::getSettingValue('site_favicon');
                     }
                 /* site favicon */
-                $fields = [
-                    'site_name'                         => $postData['site_name'],
-                    'site_phone'                        => $postData['site_phone'],
-                    'site_mail'                         => $postData['site_mail'],
-                    'system_email'                      => $postData['system_email'],
-                    'site_url'                          => $postData['site_url'],
-                    'description'                       => $postData['description'],
-                    'timing'                            => $postData['timing'],
-                    // 'copyright_statement'               => $postData['copyright_statement'],
-                    'google_map_api_code'               => $postData['google_map_api_code'],
-                    'google_analytics_code'             => $postData['google_analytics_code'],
-                    'google_pixel_code'                 => $postData['google_pixel_code'],
-                    'facebook_tracking_code'            => $postData['facebook_tracking_code'],
-                    // 'theme_color'                       => $postData['theme_color'],
-                    // 'font_color'                        => $postData['font_color'],
-                    'twitter_profile'                   => $postData['twitter_profile'],
-                    'facebook_profile'                  => $postData['facebook_profile'],
-                    'instagram_profile'                 => $postData['instagram_profile'],
-                    // 'linkedin_profile'                  => $postData['linkedin_profile'],
-                    'youtube_profile'                   => $postData['youtube_profile'],
-                    'topbar_text'                       => $postData['topbar_text'],
-                    'shipping_charge'                   => $postData['shipping_charge'],
-                    'tax_percent'                       => $postData['tax_percent'],
-                    'site_logo'                         => $site_logo,
-                    'site_footer_logo'                  => $site_footer_logo,
-                    'site_favicon'                      => $site_favicon,
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
+                $fields2 = [
+                    'value'            => $site_logo
                 ];
-                // Helper::pr($fields);
-                GeneralSetting::where('id', '=', 1)->update($fields);
-                Product::where('shipping_type', '=', 'FIXED')->update(['shipping_rate' => $postData['shipping_charge']]);
+                GeneralSetting::where('key', '=', 'site_logo')->where('is_active', '=', 1)->update($fields2);
+                $fields3 = [
+                    'value'            => $site_footer_logo
+                ];
+                GeneralSetting::where('key', '=', 'site_footer_logo')->where('is_active', '=', 1)->update($fields3);
+                $fields4 = [
+                    'value'            => $site_favicon
+                ];
+                GeneralSetting::where('key', '=', 'site_favicon')->where('is_active', '=', 1)->update($fields4);
                 return redirect()->back()->with('success_message', 'General Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -490,14 +382,14 @@ class UserController extends Controller
             $adminData  = User::where('id', '=', $uId)->first();
             $postData   = $request->all();
             $rules      = [
-                'old_password'            => 'required',
-                'new_password'            => 'required',
-                'confirm_password'        => 'required',
+                'old_password'            => 'required|max:15|min:8',
+                'new_password'            => 'required|max:15|min:8',
+                'confirm_password'        => 'required|max:15|min:8',
             ];
             if($this->validate($request, $rules)){
-                $old_password       = $postData['old_password'];
-                $new_password       = $postData['new_password'];
-                $confirm_password   = $postData['confirm_password'];
+                $old_password       = strip_tags($postData['old_password']);
+                $new_password       = strip_tags($postData['new_password']);
+                $confirm_password   = strip_tags($postData['confirm_password']);
                 if(Hash::check($old_password, $adminData->password)){
                     if($new_password == $confirm_password){
                         $fields = [
@@ -526,15 +418,15 @@ class UserController extends Controller
                 'smtp_port'             => 'required',
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'from_email'            => $postData['from_email'],
-                    'from_name'             => $postData['from_name'],
-                    'smtp_host'             => $postData['smtp_host'],
-                    'smtp_username'         => $postData['smtp_username'],
-                    'smtp_password'         => $postData['smtp_password'],
-                    'smtp_port'             => $postData['smtp_port'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
                 return redirect()->back()->with('success_message', 'Email Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -547,16 +439,18 @@ class UserController extends Controller
                 'email_template_forgot_password'        => 'required',
                 'email_template_change_password'        => 'required',
                 'email_template_failed_login'           => 'required',
+                'email_template_contactus'              => 'required',
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'email_template_user_signup'            => $postData['email_template_user_signup'],
-                    'email_template_forgot_password'        => $postData['email_template_forgot_password'],
-                    'email_template_change_password'        => $postData['email_template_change_password'],
-                    'email_template_failed_login'           => $postData['email_template_failed_login'],
-                    'email_template_contactus'              => $postData['email_template_contactus'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
                 return redirect()->back()->with('success_message', 'Email Templates Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -570,12 +464,15 @@ class UserController extends Controller
                 'sms_base_url'                      => 'required',
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'sms_authentication_key'            => $postData['sms_authentication_key'],
-                    'sms_sender_id'                     => $postData['sms_sender_id'],
-                    'sms_base_url'                      => $postData['sms_base_url'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
                 return redirect()->back()->with('success_message', 'SMS Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -587,71 +484,80 @@ class UserController extends Controller
                 'footer_text'            => 'required',
             ];
             if($this->validate($request, $rules)){
-                $footer_link_name_array = $postData['footer_link_name'];
-                $footer_link_name       = [];
-                if(!empty($footer_link_name_array)){
-                    for($f=0;$f<count($footer_link_name_array);$f++){
-                        if($footer_link_name_array[$f]){
-                            $footer_link_name[]       = $footer_link_name_array[$f];
-                        }
+                // $footer_link_name_array = $postData['footer_link_name'];
+                // $footer_link_name       = [];
+                // if(!empty($footer_link_name_array)){
+                //     for($f=0;$f<count($footer_link_name_array);$f++){
+                //         if($footer_link_name_array[$f]){
+                //             $footer_link_name[]       = $footer_link_name_array[$f];
+                //         }
+                //     }
+                // }
+                // $footer_link_array = $postData['footer_link'];
+                // $footer_link       = [];
+                // if(!empty($footer_link_array)){
+                //     for($f=0;$f<count($footer_link_array);$f++){
+                //         if($footer_link_array[$f]){
+                //             $footer_link[]       = $footer_link_array[$f];
+                //         }
+                //     }
+                // }
+                // $footer_link_name_array2 = $postData['footer_link_name2'];
+                // $footer_link_name2       = [];
+                // if(!empty($footer_link_name_array2)){
+                //     for($f=0;$f<count($footer_link_name_array2);$f++){
+                //         if($footer_link_name_array2[$f]){
+                //             $footer_link_name2[]       = $footer_link_name_array2[$f];
+                //         }
+                //     }
+                // }
+                // $footer_link_array2 = $postData['footer_link2'];
+                // $footer_link2       = [];
+                // if(!empty($footer_link_array2)){
+                //     for($f=0;$f<count($footer_link_array2);$f++){
+                //         if($footer_link_array2[$f]){
+                //             $footer_link2[]       = $footer_link_array2[$f];
+                //         }
+                //     }
+                // }
+                // $footer_link_name_array3 = $postData['footer_link_name3'];
+                // $footer_link_name3       = [];
+                // if(!empty($footer_link_name_array3)){
+                //     for($f=0;$f<count($footer_link_name_array3);$f++){
+                //         if($footer_link_name_array3[$f]){
+                //             $footer_link_name3[]       = $footer_link_name_array3[$f];
+                //         }
+                //     }
+                // }
+                // $footer_link_array3 = $postData['footer_link3'];
+                // $footer_link3       = [];
+                // if(!empty($footer_link_array3)){
+                //     for($f=0;$f<count($footer_link_array3);$f++){
+                //         if($footer_link_array3[$f]){
+                //             $footer_link3[]       = $footer_link_array3[$f];
+                //         }
+                //     }
+                // }
+                // $fields = [
+                //     'footer_text'                   => $postData['footer_text'],
+                //     'footer_link_name'              => json_encode($footer_link_name),
+                //     'footer_link'                   => json_encode($footer_link),
+                //     'footer_link_name2'             => json_encode($footer_link_name2),
+                //     'footer_link2'                  => json_encode($footer_link2),
+                //     'footer_link_name3'             => json_encode($footer_link_name3),
+                //     'footer_link3'                  => json_encode($footer_link3),
+                // ];
+                // // Helper::pr($fields);
+                // GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
                     }
                 }
-                $footer_link_array = $postData['footer_link'];
-                $footer_link       = [];
-                if(!empty($footer_link_array)){
-                    for($f=0;$f<count($footer_link_array);$f++){
-                        if($footer_link_array[$f]){
-                            $footer_link[]       = $footer_link_array[$f];
-                        }
-                    }
-                }
-                $footer_link_name_array2 = $postData['footer_link_name2'];
-                $footer_link_name2       = [];
-                if(!empty($footer_link_name_array2)){
-                    for($f=0;$f<count($footer_link_name_array2);$f++){
-                        if($footer_link_name_array2[$f]){
-                            $footer_link_name2[]       = $footer_link_name_array2[$f];
-                        }
-                    }
-                }
-                $footer_link_array2 = $postData['footer_link2'];
-                $footer_link2       = [];
-                if(!empty($footer_link_array2)){
-                    for($f=0;$f<count($footer_link_array2);$f++){
-                        if($footer_link_array2[$f]){
-                            $footer_link2[]       = $footer_link_array2[$f];
-                        }
-                    }
-                }
-                $footer_link_name_array3 = $postData['footer_link_name3'];
-                $footer_link_name3       = [];
-                if(!empty($footer_link_name_array3)){
-                    for($f=0;$f<count($footer_link_name_array3);$f++){
-                        if($footer_link_name_array3[$f]){
-                            $footer_link_name3[]       = $footer_link_name_array3[$f];
-                        }
-                    }
-                }
-                $footer_link_array3 = $postData['footer_link3'];
-                $footer_link3       = [];
-                if(!empty($footer_link_array3)){
-                    for($f=0;$f<count($footer_link_array3);$f++){
-                        if($footer_link_array3[$f]){
-                            $footer_link3[]       = $footer_link_array3[$f];
-                        }
-                    }
-                }
-                $fields = [
-                    'footer_text'                   => $postData['footer_text'],
-                    'footer_link_name'              => json_encode($footer_link_name),
-                    'footer_link'                   => json_encode($footer_link),
-                    'footer_link_name2'             => json_encode($footer_link_name2),
-                    'footer_link2'                  => json_encode($footer_link2),
-                    'footer_link_name3'             => json_encode($footer_link_name3),
-                    'footer_link3'                  => json_encode($footer_link3),
-                ];
-                // Helper::pr($fields);
-                GeneralSetting::where('id', '=', 1)->update($fields);
                 return redirect()->back()->with('success_message', 'Footer Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -661,15 +567,19 @@ class UserController extends Controller
             $postData = $request->all();
             $rules = [
                 'meta_title'            => 'required',
-                'meta_description'      => 'required'
+                'meta_description'      => 'required',
+                'meta_keywords'         => 'required'
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'meta_title'            => $postData['meta_title'],
-                    'meta_description'      => $postData['meta_description'],
-                    'meta_keywords'         => $postData['meta_keywords'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
                 return redirect()->back()->with('success_message', 'SEO Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -678,18 +588,23 @@ class UserController extends Controller
         public function payment_settings(Request $request){
             $postData = $request->all();
             $rules = [
-                'authorizenet_payment_type'         => 'required',
-                'authorizenet_login_id'             => 'required',
-                'authorizenet_transaction_key'      => 'required',
+                'stripe_payment_type'       => 'required',
+                'stripe_sandbox_sk'         => 'required',
+                'stripe_sandbox_pk'         => 'required',
+                'stripe_live_sk'            => 'required',
+                'stripe_live_pk'            => 'required',
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'authorizenet_payment_type'         => $postData['authorizenet_payment_type'],
-                    'authorizenet_login_id'             => $postData['authorizenet_login_id'],
-                    'authorizenet_transaction_key'      => $postData['authorizenet_transaction_key'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
-                return redirect()->back()->with('success_message', 'Payment Settings Updated Successfully !!!');
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
+                return redirect()->back()->with('success_message', 'Stripe Payment Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
             }
@@ -708,18 +623,15 @@ class UserController extends Controller
                 'color_complete_button'     => 'required',
             ];
             if($this->validate($request, $rules)){
-                $fields = [
-                    'color_theme'                       => $postData['color_theme'],
-                    'color_button'                      => $postData['color_button'],
-                    'color_title'                       => $postData['color_title'],
-                    'color_panel_bg'                    => $postData['color_panel_bg'],
-                    'color_panel_text'                  => $postData['color_panel_text'],
-                    'color_accept_button'               => $postData['color_accept_button'],
-                    'color_reject_button'               => $postData['color_reject_button'],
-                    'color_transfer_button'             => $postData['color_transfer_button'],
-                    'color_complete_button'             => $postData['color_complete_button'],
-                ];
-                GeneralSetting::where('id', '=', 1)->update($fields);
+                unset($postData['_token']);
+                if(!empty($postData)){
+                    foreach($postData as $key => $value){
+                        $fields = [
+                            'value'            => strip_tags($postData[$key])
+                        ];
+                        GeneralSetting::where('key', '=', $key)->where('is_active', '=', 1)->update($fields);
+                    }
+                }
                 return redirect()->back()->with('success_message', 'Color Settings Updated Successfully !!!');
             } else {
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -782,4 +694,12 @@ class UserController extends Controller
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* image gallery */
+    public function commonDeleteImage($pageLink, $tableName, $fieldName, $primaryField, $refId){
+        $postData = [$fieldName => ''];
+        $pageLink = Helper::decoded($pageLink);
+        DB::table($tableName)
+                ->where($primaryField, '=', $refId)
+                ->update($postData);
+        return redirect()->to($pageLink)->with('success_message', 'Image Deleted Successfully !!!');
+    }
 }

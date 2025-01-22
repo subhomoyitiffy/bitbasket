@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('email-logs', [UserController::class, 'emailLogs']);
         Route::match(['get','post'],'/email-logs/details/{email}', [UserController::class, 'emailLogsDetails']);
         Route::get('login-logs', [UserController::class, 'loginLogs']);
+        Route::match(['get','post'], '/common-delete-image/{id1}/{id2}/{id3}/{id4}/{id5}', [UserController::class, 'commonDeleteImage']);
         /* setting */
             Route::get('settings', [UserController::class, 'settings']);
             Route::post('profile-settings', [UserController::class, 'profile_settings']);
