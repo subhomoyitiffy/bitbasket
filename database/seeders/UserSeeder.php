@@ -20,12 +20,14 @@ class UserSeeder extends Seeder
                 'name' => 'Admin User',
                 'email' => 'admin@bitbasket.com',
                 'password' => Hash::make('password'),
+                'status'    => 1
             ],
             [
                 'role_id'=> 2,
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => Hash::make('password'),
+                'status'    => 1
             ]
         ]);
     }
