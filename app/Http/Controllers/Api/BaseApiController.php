@@ -8,12 +8,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseApiController extends Controller
 {
+    protected $member_role_id;
+    function __construct() {
+        $this->member_role_id = env('MEMBER_ROLE_ID');
+    }
     /**
      * success response method.
      *
      * @return \Illuminate\Http\Response
-     */
-    public function sendResponse($result, $message = 'Request response is here.')
+    */
+    public function sendResponse($result = [], $message = 'Request response is here.')
     {
     	$response = [
             'success' => true,
@@ -33,12 +37,12 @@ class BaseApiController extends Controller
     {
     	$response = [
             'success' => false,
-            'error' => $error,
+            'error' => $errorMessages,
         ];
 
-        if(!empty($errorMessages)){
+        /* if(!empty($errorMessages)){
             $response['data'] = $errorMessages;
-        }
+        } */
 
         return response()->json($response, $code);
     }
