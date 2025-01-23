@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->integer('role_id');
+            $table->integer('role_id')->comment('0=master admin, 1=sub admin, 2=end user');
             $table->string('name', 100);
             $table->string('email', 100)->unique();
             $table->string('country_code', 5)->nullable();
             $table->string('phone', 15)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_image')->nullable();
             $table->rememberToken();
             $table->tinyInteger('status')->default(0)->comment('0 =>Verification pending, 1 =>Verified, 2 =>Declined by Admin');
             $table->softDeletes();
