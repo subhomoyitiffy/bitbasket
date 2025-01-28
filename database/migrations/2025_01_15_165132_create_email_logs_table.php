@@ -19,7 +19,8 @@ return new class extends Migration
             $table->longText('message');
             $table->tinyInteger('status');
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Auto-updates on change
         });
     }
 

@@ -24,7 +24,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->tinyInteger('status')->default(0)->comment('0 =>Verification pending, 1 =>Verified, 2 =>Declined by Admin');
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Auto-updates on change
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
