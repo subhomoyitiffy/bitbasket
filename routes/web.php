@@ -1,4 +1,6 @@
 <?php
+use App\Http\Controllers\FaqCategoryController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +33,24 @@ use Illuminate\Support\Facades\Route;
             Route::post('seo-settings', [UserController::class, 'seo_settings']);
             Route::post('payment-settings', [UserController::class, 'payment_settings']);
         /* setting */
+        /* FAQs */
+            /* faq category */
+                Route::get('faq-category/list', [FaqCategoryController::class, 'list']);
+                Route::match(['get', 'post'], 'faq-category/add', [FaqCategoryController::class, 'add']);
+                Route::match(['get', 'post'], 'faq-category/edit/{id}', [FaqCategoryController::class, 'edit']);
+                Route::get('faq-category/delete/{id}', [FaqCategoryController::class, 'delete']);
+                Route::get('faq-category/change-status/{id}', [FaqCategoryController::class, 'change_status']);
+                Route::get('faq-category/change-home-page-status/{id}', [FaqCategoryController::class, 'change_home_page_status']);
+            /* faq category */
+            /* faq */
+                Route::get('faq/list', [FaqController::class, 'list']);
+                Route::match(['get', 'post'], 'faq/add', [FaqController::class, 'add']);
+                Route::match(['get', 'post'], 'faq/edit/{id}', [FaqController::class, 'edit']);
+                Route::get('faq/delete/{id}', [FaqController::class, 'delete']);
+                Route::get('faq/change-status/{id}', [FaqController::class, 'change_status']);
+                Route::get('faq/change-home-page-status/{id}', [FaqController::class, 'change_home_page_status']);
+            /* faq */
+        /* FAQs */
     });
 /* Admin Panel */
 

@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('tax_registration_number')->nullable();
             $table->string('company_type')->nullable();
             $table->string('employer_identification_no')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Auto-updates on change
         });
     }
 

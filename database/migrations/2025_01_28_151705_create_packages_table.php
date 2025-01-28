@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('states', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->integer('country_id');
+            $table->string('name');
+            $table->longText('description');
+            $table->integer('duration');
+            $table->float('price', 10, 2)->default(0.00);
+            $table->tinyInteger('status')->default(1);
+            $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Auto-updates on change
         });
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('states');
+        Schema::dropIfExists('packages');
     }
 };

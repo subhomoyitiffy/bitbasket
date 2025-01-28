@@ -65,12 +65,12 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
       <ul class="menu-sub">
          <li class="menu-item <?=(($pageSegment == 'faq-category')?'active':'')?>">
-            <a href="javascript:void(0);" class="menu-link">
+            <a href="<?=url('faq-category/list')?>" class="menu-link">
                <div data-i18n="FAQ Category">FAQ Category</div>
             </a>
          </li>
          <li class="menu-item <?=(($pageSegment == 'faq')?'active':'')?>">
-            <a href="javascript:void(0);" class="menu-link">
+            <a href="<?=url('faq/list')?>" class="menu-link">
                <div data-i18n="FAQs">FAQs</div>
             </a>
          </li>

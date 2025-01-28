@@ -21,7 +21,8 @@ return new class extends Migration
             $table->longText('activity_details');
             $table->enum('platform_type', ['WEB','MOBILE','ANDROID','IOS'])->default('WEB');
             $table->softDeletes();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); // Auto-updates on change
         });
     }
 
