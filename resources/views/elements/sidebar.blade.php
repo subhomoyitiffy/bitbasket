@@ -77,8 +77,8 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </ul>
    </li>
    <!-- Membership Plans -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
+   <li class="menu-item <?=(($pageSegment == 'package')?'active':'')?>">
+      <a href="<?=url('package/list')?>" class="menu-link">
          <i class="menu-icon tf-icons fa fa-users"></i>
          <div data-i18n="Membership Plans">Membership Plans</div>
       </a>

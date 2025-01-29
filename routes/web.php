@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +52,14 @@ use Illuminate\Support\Facades\Route;
                 Route::get('faq/change-home-page-status/{id}', [FaqController::class, 'change_home_page_status']);
             /* faq */
         /* FAQs */
+        /* package */
+            Route::get('package/list', [PackageController::class, 'list']);
+            Route::match(['get', 'post'], 'package/add', [PackageController::class, 'add']);
+            Route::match(['get', 'post'], 'package/edit/{id}', [PackageController::class, 'edit']);
+            Route::get('package/delete/{id}', [PackageController::class, 'delete']);
+            Route::get('package/change-status/{id}', [PackageController::class, 'change_status']);
+            Route::get('package/change-home-page-status/{id}', [PackageController::class, 'change_home_page_status']);
+        /* package */
     });
 /* Admin Panel */
 
