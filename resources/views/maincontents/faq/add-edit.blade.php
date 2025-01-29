@@ -40,7 +40,7 @@ $controllerRoute = $module['controller_route'];
             <form id="formAccountSettings" action="" method="POST" enctype="multipart/form-data">
                @csrf
                <div class="row">
-                  <div class="mb-3 col-md-4">
+                  <div class="mb-3 col-md-12">
                      <label for="faq_category_id" class="form-label">Name</label>
                      <select name="faq_category_id" class="select2 form-select" id="faq_category_id" required>
                        <option value="" selected>Select FAQ Category</option>
@@ -49,13 +49,13 @@ $controllerRoute = $module['controller_route'];
                        <?php } }?>
                      </select>
                   </div>
-                  <div class="mb-3 col-md-4">
+                  <div class="mb-3 col-md-6">
                      <label for="question" class="form-label">Question</label>
-                     <textarea name="question" class="form-control" id="ckeditor1"><?=$question?></textarea>
+                     <textarea name="question" class="form-control" id="question" rows="5"><?=$question?></textarea>
                   </div>
-                  <div class="mb-3 col-md-4">
+                  <div class="mb-3 col-md-6">
                      <label for="answer" class="form-label">Answer</label>
-                     <textarea name="answer" class="form-control" id="ckeditor2"><?=$answer?></textarea>
+                     <textarea name="answer" class="form-control" id="answer" rows="5"><?=$answer?></textarea>
                   </div>
                </div>
                <div class="mt-2">

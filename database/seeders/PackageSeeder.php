@@ -19,21 +19,24 @@ class PackageSeeder extends Seeder
                 'description' => 'Basic package',
                 'duration' => 12,
                 'price' => 100.00,
-                'status'    => 1
+                'status'    => 1,
+                'no_of_users'    => 50,
             ],
             [
                 'name'=> 'GOLD',
                 'description' => 'Gold package',
                 'duration' => 18,
                 'price' => 150.00,
-                'status'    => 1
+                'status'    => 1,
+                'no_of_users'    => 100,
             ],
             [
                 'name'=> 'PLATINUM',
                 'description' => 'Platinum package',
                 'duration' => 24,
                 'price' => 200.00,
-                'status'    => 1
+                'status'    => 1,
+                'no_of_users'    => 200,
             ]
         ]);
     }
