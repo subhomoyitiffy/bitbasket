@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('tax_registration_number')->nullable();
             $table->string('company_type')->nullable();
             $table->string('employer_identification_no')->nullable();
+            $table->string('stripe_cust_id')->nullable();
             $table->timestamps();
         });
     }
