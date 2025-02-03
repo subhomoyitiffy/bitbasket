@@ -47,7 +47,10 @@ class AuthController extends BaseApiController
             return $this->sendResponse([
                                         'token_type' => 'bearer',
                                         'token' => $token,
-                                        'user' => User::where('id', auth()->user()->id)->with('user_details')->get()
+                                        'user' => User::where('id', auth()->user()->id)
+                                                        ->with('user_details')
+                                                        ->with('user_subscriptions')
+                                                        ->get()
                                     ], 'Login has successfully done.');
         } catch (JWTException $e) {
             return $this->sendError('Error', 'Login has failed.',  Response::HTTP_UNAUTHORIZED);

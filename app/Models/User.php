@@ -5,10 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -75,4 +77,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(UserDetails::class, 'user_id');
     }
+
+    /**
+     * Get the details list associated with the user.
+     */
+    public function user_subscriptions($is_active = [1]): BelongsToMany
+    {
+        return $this->belongsToMany(Package::class, 'user_subscriptions', 'user_id', 'subscription_id')
+                    ->whereIn('user_subscriptions.is_active', $is_active);
+    }
+
 }
