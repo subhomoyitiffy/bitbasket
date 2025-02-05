@@ -1,7 +1,9 @@
 <?php
 use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +43,6 @@ use Illuminate\Support\Facades\Route;
                 Route::match(['get', 'post'], 'faq-category/edit/{id}', [FaqCategoryController::class, 'edit']);
                 Route::get('faq-category/delete/{id}', [FaqCategoryController::class, 'delete']);
                 Route::get('faq-category/change-status/{id}', [FaqCategoryController::class, 'change_status']);
-                Route::get('faq-category/change-home-page-status/{id}', [FaqCategoryController::class, 'change_home_page_status']);
             /* faq category */
             /* faq */
                 Route::get('faq/list', [FaqController::class, 'list']);
@@ -49,7 +50,6 @@ use Illuminate\Support\Facades\Route;
                 Route::match(['get', 'post'], 'faq/edit/{id}', [FaqController::class, 'edit']);
                 Route::get('faq/delete/{id}', [FaqController::class, 'delete']);
                 Route::get('faq/change-status/{id}', [FaqController::class, 'change_status']);
-                Route::get('faq/change-home-page-status/{id}', [FaqController::class, 'change_home_page_status']);
             /* faq */
         /* FAQs */
         /* package */
@@ -58,8 +58,22 @@ use Illuminate\Support\Facades\Route;
             Route::match(['get', 'post'], 'package/edit/{id}', [PackageController::class, 'edit']);
             Route::get('package/delete/{id}', [PackageController::class, 'delete']);
             Route::get('package/change-status/{id}', [PackageController::class, 'change_status']);
-            Route::get('package/change-home-page-status/{id}', [PackageController::class, 'change_home_page_status']);
         /* package */
+        /* members */
+            Route::get('member/list', [MemberController::class, 'list']);
+            Route::match(['get', 'post'], 'member/add', [MemberController::class, 'add']);
+            Route::match(['get', 'post'], 'member/edit/{id}', [MemberController::class, 'edit']);
+            Route::get('member/delete/{id}', [MemberController::class, 'delete']);
+            Route::get('member/change-status/{id}', [MemberController::class, 'change_status']);
+            Route::get('member/membership-history/{id}', [MemberController::class, 'membershipHistory']);
+            Route::get('member/all-membership-history', [MemberController::class, 'allMembershipHistory']);
+            Route::get('member/all-member-membership-plan', [MemberController::class, 'allMemberMembershipPlan']);
+        /* members */
+        /* subscribers */
+            Route::get('subscriber/list', [SubscriberController::class, 'list']);
+            Route::get('subscriber/delete/{id}', [SubscriberController::class, 'delete']);
+            Route::get('subscriber/change-status/{id}', [SubscriberController::class, 'change_status']);
+        /* subscribers */
     });
 /* Admin Panel */
 

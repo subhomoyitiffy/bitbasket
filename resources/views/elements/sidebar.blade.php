@@ -84,22 +84,22 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
    </li>
    <!-- Members -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'list')?'active':'')?>">
+      <a href="<?=url('member/list')?>" class="menu-link">
          <i class="menu-icon tf-icons fa fa-users"></i>
          <div data-i18n="Members">Members</div>
       </a>
    </li>
    <!-- Member's Membership Plan -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'all-member-membership-plan')?'active':'')?>">
+      <a href="<?=url('member/all-member-membership-plan')?>" class="menu-link">
          <i class="menu-icon tf-icons fa fa-users"></i>
          <div data-i18n="Member's Membership Plan">Member's Membership Plan</div>
       </a>
    </li>
    <!-- Member's Membership History -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'all-membership-history')?'active':'')?>">
+      <a href="<?=url('member/all-membership-history')?>" class="menu-link">
          <i class="menu-icon tf-icons fa fa-users"></i>
          <div data-i18n="Member's Membership History">Member's Membership History</div>
       </a>
@@ -126,8 +126,8 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
    </li>
    <!-- Subscribed Users-->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
+   <li class="menu-item <?=(($pageSegment == 'subscriber')?'active':'')?>">
+      <a href="<?=url('subscriber/list')?>" class="menu-link">
          <i class="menu-icon tf-icons fa fa-users"></i>
          <div data-i18n="Subscribed Users">Subscribed Users</div>
       </a>
