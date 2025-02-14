@@ -34,3 +34,11 @@ use App\Helpers\Helper;
 <!-- <script src="<?=env('ADMIN_ASSETS_URL')?>assets/vendor/js/template-customizer.js"></script> -->
 <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 <script src="<?=env('ADMIN_ASSETS_URL')?>assets/js/config.js"></script>
+<style type="text/css">
+	.menu-icon {
+	    font-size: 1.0rem;
+	}
+	.menu-vertical .menu-item .menu-link {
+	    font-size: .7375rem;
+	}
+</style>

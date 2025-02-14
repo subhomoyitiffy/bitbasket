@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\GeneralSetting;
 use App\Models\Package;
+use App\Models\State;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\Models\UserSubscription;
@@ -51,21 +52,60 @@ class MemberController extends Controller
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
-                    'name'                  => 'required',
-                    'description'           => 'required',
-                    'duration'              => 'required',
-                    'price'                 => 'required',
-                    'no_of_users'           => 'required',
+                    'first_name'                    => 'required',
+                    'last_name'                     => 'required',
+                    'email'                         => 'required',
+                    'phone'                         => 'required',
+                    'status'                        => 'required',
                 ];
                 if($this->validate($request, $rules)){
+                    $fullname = $postData['first_name'].' '.$postData['last_name'];
+                    /* profile image */
+                        $imageFile      = $request->file('profile_image');
+                        if($imageFile != ''){
+                            $imageName      = $imageFile->getClientOriginalName();
+                            $uploadedFile   = $this->upload_single_file('profile_image', $imageName, 'user', 'image');
+                            if($uploadedFile['status']){
+                                $profile_image = $uploadedFile['newFilename'];
+                            } else {
+                                return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
+                            }
+                        } else {
+                            $profile_image = '';
+                        }
+                    /* profile image */
                     $fields = [
-                        'name'                  => strip_tags($postData['name']),
-                        'description'           => strip_tags($postData['description']),
-                        'duration'              => strip_tags($postData['duration']),
-                        'price'                 => strip_tags($postData['price']),
-                        'no_of_users'           => strip_tags($postData['no_of_users']),
+                        'role_id'           => 2,
+                        'name'              => strip_tags($fullname),
+                        'email'             => strip_tags($postData['email']),
+                        'country_code'      => strip_tags($postData['country_code']),
+                        'phone'             => strip_tags($postData['phone']),
+                        'password'          => Hash::make(strip_tags($postData['password'])),
+                        'profile_image'     => $profile_image,
+                        'status'            => strip_tags($postData['status']),
                     ];
-                    User::insert($fields);
+                    // Helper::pr($fields);
+                    $user_id = User::insertGetId($fields);
+
+                    $fields2 = [
+                        'user_id'                               => $user_id,
+                        'country'                               => strip_tags($postData['country']),
+                        'first_name'                            => strip_tags($postData['first_name']),
+                        'last_name'                             => strip_tags($postData['last_name']),
+                        'email'                                 => strip_tags($postData['email']),
+                        'country_code'                          => strip_tags($postData['country_code']),
+                        'phone'                                 => strip_tags($postData['phone']),
+                        'city_id'                               => strip_tags($postData['city_id']),
+                        'emarati'                               => strip_tags($postData['emarati']),
+                        'business_license'                      => strip_tags($postData['business_license']),
+                        'tax_registration_number'               => strip_tags($postData['tax_registration_number']),
+                        'company_type'                          => strip_tags($postData['company_type']),
+                        'employer_identification_no'            => strip_tags($postData['employer_identification_no']),
+                        'created_at'                            => date('Y-m-d H:i:s'),
+                        'updated_at'                            => date('Y-m-d H:i:s'),
+                    ];
+                    // Helper::pr($fields2);
+                    UserDetails::insert($fields2);
                     return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Inserted Successfully !!!');
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -75,6 +115,8 @@ class MemberController extends Controller
             $title                          = $this->data['title'].' Add';
             $page_name                      = 'member.add-edit';
             $data['row']                    = [];
+            $data['row2']                   = [];
+            $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* add */
@@ -84,26 +126,64 @@ class MemberController extends Controller
             $id                             = Helper::decoded($id);
             $title                          = $this->data['title'].' Update';
             $page_name                      = 'member.add-edit';
-            $data['row']                    = User::where($this->data['primary_key'], '=', $id)->first();
+            $data['row']                    = DB::table('users')->where($this->data['primary_key'], '=', $id)->first();
+            $data['row2']                   = DB::table('user_details')->where('user_id', '=', $id)->first();
+            $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
 
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
-                    'name'                  => 'required',
-                    'description'           => 'required',
-                    'duration'              => 'required',
-                    'price'                 => 'required',
-                    'no_of_users'           => 'required',
+                    'first_name'                    => 'required',
+                    'last_name'                     => 'required',
+                    'email'                         => 'required',
+                    'phone'                         => 'required',
+                    'status'                        => 'required',
                 ];
                 if($this->validate($request, $rules)){
+                    $fullname = $postData['first_name'].' '.$postData['last_name'];
+                    /* profile image */
+                        $imageFile      = $request->file('profile_image');
+                        if($imageFile != ''){
+                            $imageName      = $imageFile->getClientOriginalName();
+                            $uploadedFile   = $this->upload_single_file('profile_image', $imageName, 'user', 'image');
+                            if($uploadedFile['status']){
+                                $profile_image = $uploadedFile['newFilename'];
+                            } else {
+                                return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
+                            }
+                        } else {
+                            $profile_image = $data['row']->profile_image;
+                        }
+                    /* profile image */
                     $fields = [
-                        'name'                  => strip_tags($postData['name']),
-                        'description'           => strip_tags($postData['description']),
-                        'duration'              => strip_tags($postData['duration']),
-                        'price'                 => strip_tags($postData['price']),
-                        'no_of_users'           => strip_tags($postData['no_of_users']),
+                        'name'              => strip_tags($fullname),
+                        'email'             => strip_tags($postData['email']),
+                        'country_code'      => strip_tags($postData['country_code']),
+                        'phone'             => strip_tags($postData['phone']),
+                        'password'          => Hash::make(strip_tags($postData['password'])),
+                        'profile_image'     => $profile_image,
+                        'status'            => strip_tags($postData['status']),
                     ];
-                    User::where($this->data['primary_key'], '=', $id)->update($fields);
+                    DB::table('users')->where('id', '=', $id)->update($fields);
+                    $user_id = $id;
+
+                    $fields2 = [
+                        'user_id'                               => $user_id,
+                        'country'                               => strip_tags($postData['country']),
+                        'first_name'                            => strip_tags($postData['first_name']),
+                        'last_name'                             => strip_tags($postData['last_name']),
+                        'email'                                 => strip_tags($postData['email']),
+                        'country_code'                          => strip_tags($postData['country_code']),
+                        'phone'                                 => strip_tags($postData['phone']),
+                        'city_id'                               => strip_tags($postData['city_id']),
+                        'emarati'                               => strip_tags($postData['emarati']),
+                        'business_license'                      => strip_tags($postData['business_license']),
+                        'tax_registration_number'               => strip_tags($postData['tax_registration_number']),
+                        'company_type'                          => strip_tags($postData['company_type']),
+                        'employer_identification_no'            => strip_tags($postData['employer_identification_no']),
+                        'updated_at'                            => date('Y-m-d H:i:s'),
+                    ];
+                    DB::table('user_details')->where('user_id', '=', $id)->update($fields2);
                     return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Updated Successfully !!!');
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
@@ -126,16 +206,19 @@ class MemberController extends Controller
     /* change status */
         public function change_status(Request $request, $id){
             $id                             = Helper::decoded($id);
-            $model                          = User::find($id);
-            if ($model->status == 1)
+            $model                          = DB::table('users')->where('id', '=', $id)->first();
+            if ($model->status)
             {
-                $model->status  = 0;
-                $msg            = 'Deactivated';
+                $status  = 0;
+                $msg     = 'Deactivated';
             } else {
-                $model->status  = 1;
-                $msg            = 'Activated';
-            }            
-            $model->save();
+                $status  = 1;
+                $msg     = 'Activated';
+            }
+            $fields = [
+                'status'             => $status
+            ];
+            DB::table('users')->where('id', '=', $id)->update($fields);
             return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' '.$msg.' Successfully !!!');
         }
     /* change status */
