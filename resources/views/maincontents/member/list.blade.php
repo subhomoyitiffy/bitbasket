@@ -79,6 +79,8 @@ $controllerRoute = $module['controller_route'];
                                  <?php }?>
                                  <br><br>
                                  <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-info btn-sm" title="Membership History"><i class="fa-solid fa-tags"></i>&nbsp;Membership History</a>
+                                 <br><br>
+                                 <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Manage Team Members"><i class="fa-solid fa-users"></i>&nbsp;Manage Team Members</a>
                               </td>
                         </tr>
                      <?php } }?>
