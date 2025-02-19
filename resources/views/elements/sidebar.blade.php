@@ -79,42 +79,42 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
    <!-- Membership Plans -->
    <li class="menu-item <?=(($pageSegment == 'package')?'active':'')?>">
       <a href="<?=url('package/list')?>" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+         <i class="menu-icon tf-icons fa-solid fa-tag"></i>
          <div data-i18n="Membership Plans">Membership Plans</div>
       </a>
    </li>
    <!-- Members -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'list')?'active':'')?>">
+      <a href="<?=url('member/list')?>" class="menu-link">
+         <i class="menu-icon tf-icons fa-solid fa-users"></i>
          <div data-i18n="Members">Members</div>
       </a>
    </li>
    <!-- Member's Membership Plan -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'all-member-membership-plan')?'active':'')?>">
+      <a href="<?=url('member/all-member-membership-plan')?>" class="menu-link">
+         <i class="menu-icon tf-icons fa-solid fa-tags"></i>
          <div data-i18n="Member's Membership Plan">Member's Membership Plan</div>
       </a>
    </li>
    <!-- Member's Membership History -->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+   <li class="menu-item <?=(($pageSegment == 'member' && $pageFunction == 'all-membership-history')?'active':'')?>">
+      <a href="<?=url('member/all-membership-history')?>" class="menu-link">
+         <i class="menu-icon tf-icons fa fa-list"></i>
          <div data-i18n="Member's Membership History">Member's Membership History</div>
       </a>
    </li>
    <!-- Lesson Plans -->
    <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
       <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+         <i class="menu-icon tf-icons fa-solid fa-person-chalkboard"></i>
          <div data-i18n="Lesson Plans">Lesson Plans</div>
       </a>
    </li>
    <!-- View Chat History -->
    <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
       <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+         <i class="menu-icon tf-icons fa-brands fa-rocketchat"></i>
          <div data-i18n="View Chat History">View Chat History</div>
       </a>
    </li>
@@ -126,16 +126,16 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
    </li>
    <!-- Subscribed Users-->
-   <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-      <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-users"></i>
+   <li class="menu-item <?=(($pageSegment == 'subscriber')?'active':'')?>">
+      <a href="<?=url('subscriber/list')?>" class="menu-link">
+         <i class="menu-icon tf-icons fa-solid fa-at"></i>
          <div data-i18n="Subscribed Users">Subscribed Users</div>
       </a>
    </li>
    <!-- Notifications-->
    <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
       <a href="javascript:void(0);" class="menu-link">
-         <i class="menu-icon tf-icons fa fa-envelope"></i>
+         <i class="menu-icon tf-icons fa fa-bell"></i>
          <div data-i18n="Notifications">Notifications</div>
       </a>
    </li>

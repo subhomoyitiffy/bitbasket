@@ -12,17 +12,17 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       <style>
         .dt-buttons button{
           padding: 2px 20px;
-          background-color: #FFF;
+          background-color: #fdf7d3;
           color: #040273;
           border-radius: 50px;
-          border:2px solid #FFF;
+          border:2px solid #fdf7d3;
           transition: all .3s ease-in-out;
           box-shadow: 0 9px 20px -10px #a5a5a5;
         }
         .dt-buttons button:hover{
           background: transparent;
-          color: #040273;
-          border:2px solid #FFF;
+          color: #FFF;
+          border:2px solid #fdf7d3;
         }
         .dataTables_wrapper .dataTables_top {
             display: flex;

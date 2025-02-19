@@ -89,7 +89,7 @@ $user_type = session('type');
                                     <i class="bx bx-reset d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Reset</span>
                                  </a>
-                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF</p>
                               </div>
                            </div>
                         </div>
@@ -230,7 +230,7 @@ $user_type = session('type');
                                     <i class="bx bx-reset d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Reset</span>
                                  </a> -->
-                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF</p>
                               </div>
                            </div>
                         </div>
@@ -250,7 +250,7 @@ $user_type = session('type');
                                     <i class="bx bx-reset d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Reset</span>
                                  </a> -->
-                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF</p>
                               </div>
                            </div>
                         </div>
@@ -270,7 +270,7 @@ $user_type = session('type');
                                     <i class="bx bx-reset d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Reset</span>
                                  </a> -->
-                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF.</p>
+                                 <p class="mb-0">Allowed JPG, GIF, PNG, JPEG, WEBP, AVIF</p>
                               </div>
                            </div>
                         </div>
