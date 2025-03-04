@@ -1,4 +1,6 @@
 <?php
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MemberController;
@@ -36,6 +38,22 @@ use Illuminate\Support\Facades\Route;
             Route::post('seo-settings', [UserController::class, 'seo_settings']);
             Route::post('payment-settings', [UserController::class, 'payment_settings']);
         /* setting */
+        /* access & permission */
+            /* modules */
+                Route::get('module/list', [ModuleController::class, 'list']);
+                Route::match(['get', 'post'], 'module/add', [ModuleController::class, 'add']);
+                Route::match(['get', 'post'], 'module/edit/{id}', [ModuleController::class, 'edit']);
+                Route::get('module/delete/{id}', [ModuleController::class, 'delete']);
+                Route::get('module/change-status/{id}', [ModuleController::class, 'change_status']);
+            /* modules */
+            /* roles */
+                Route::get('role/list', [RoleController::class, 'list']);
+                Route::match(['get', 'post'], 'role/add', [RoleController::class, 'add']);
+                Route::match(['get', 'post'], 'role/edit/{id}', [RoleController::class, 'edit']);
+                Route::get('role/delete/{id}', [RoleController::class, 'delete']);
+                Route::get('role/change-status/{id}', [RoleController::class, 'change_status']);
+            /* roles */
+        /* access & permission */
         /* FAQs */
             /* faq category */
                 Route::get('faq-category/list', [FaqCategoryController::class, 'list']);

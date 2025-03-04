@@ -27,26 +27,26 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
    </li>
    <!-- Access & Permission -->
-   <li class="menu-item active <?=(($pageSegment == 'faq-category' || $pageSegment == 'faq')?'open':'')?>">
+   <li class="menu-item active <?=(($pageSegment == 'module' || $pageSegment == 'role')?'open':'')?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
          <i class="menu-icon tf-icons fa fa-key"></i>
          <div data-i18n="Access & Permission">Access & Permission</div>
          <!-- <div class="badge bg-primary rounded-pill ms-auto">5</div> -->
       </a>
       <ul class="menu-sub">
-         <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-            <a href="javascript:void(0);" class="menu-link">
+         <li class="menu-item <?=(($pageSegment == 'module')?'active':'')?>">
+            <a href="<?=url('module/list')?>" class="menu-link">
                <div data-i18n="Modules">Modules</div>
             </a>
          </li>
-         <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-            <a href="javascript:void(0);" class="menu-link">
+         <li class="menu-item <?=(($pageSegment == 'role')?'active':'')?>">
+            <a href="<?=url('role/list')?>" class="menu-link">
                <div data-i18n="Roles">Roles</div>
             </a>
          </li>
          <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
             <a href="javascript:void(0);" class="menu-link">
-               <div data-i18n="Sub Users">Sub Users</div>
+               <div data-i18n="Admmin Users">Admmin Users</div>
             </a>
          </li>
          <!-- <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
