@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MemberController;
@@ -53,6 +54,13 @@ use Illuminate\Support\Facades\Route;
                 Route::get('role/delete/{id}', [RoleController::class, 'delete']);
                 Route::get('role/change-status/{id}', [RoleController::class, 'change_status']);
             /* roles */
+            /* admin users */
+                Route::get('admin-users/list', [AdminUserController::class, 'list']);
+                Route::match(['get', 'post'], 'admin-users/add', [AdminUserController::class, 'add']);
+                Route::match(['get', 'post'], 'admin-users/edit/{id}', [AdminUserController::class, 'edit']);
+                Route::get('admin-users/delete/{id}', [AdminUserController::class, 'delete']);
+                Route::get('admin-users/change-status/{id}', [AdminUserController::class, 'change_status']);
+            /* admin users */
         /* access & permission */
         /* FAQs */
             /* faq category */

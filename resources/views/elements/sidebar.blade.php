@@ -27,7 +27,7 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
       </a>
    </li>
    <!-- Access & Permission -->
-   <li class="menu-item active <?=(($pageSegment == 'module' || $pageSegment == 'role')?'open':'')?>">
+   <li class="menu-item active <?=(($pageSegment == 'module' || $pageSegment == 'role' || $pageSegment == 'admin-users')?'open':'')?>">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
          <i class="menu-icon tf-icons fa fa-key"></i>
          <div data-i18n="Access & Permission">Access & Permission</div>
@@ -44,9 +44,9 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
                <div data-i18n="Roles">Roles</div>
             </a>
          </li>
-         <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">
-            <a href="javascript:void(0);" class="menu-link">
-               <div data-i18n="Admmin Users">Admmin Users</div>
+         <li class="menu-item <?=(($pageSegment == 'admin-users')?'active':'')?>">
+            <a href="<?=url('admin-users/list')?>" class="menu-link">
+               <div data-i18n="Admin Users">Admin Users</div>
             </a>
          </li>
          <!-- <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">

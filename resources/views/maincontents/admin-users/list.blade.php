@@ -1,5 +1,5 @@
 <?php
-use App\Models\Module;
+use App\Models\Role;
 use App\Helpers\Helper;
 $controllerRoute = $module['controller_route'];
 ?>
@@ -35,7 +35,12 @@ $controllerRoute = $module['controller_route'];
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Role</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Country Code</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Profile Image</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -43,19 +48,18 @@ $controllerRoute = $module['controller_route'];
                         <?php if($rows){ $sl=1; foreach($rows as $row){?>
                             <tr>
                                 <th scope="row"><?=$sl++?></th>
-                                <td><?=$row->role_name?></td>
                                 <td>
-                                    <div class="row">
-                                        <?php
-                                        $module_id = json_decode($row->module_id);
-                                        if(!empty($module_id)){ for($m=0;$m<count($module_id);$m++){
-                                          $module = Module::where('id', '=', $module_id[$m])->first();
-                                        ?>
-                                        <div class="col-md-4">
-                                          <span class="badge bg-info"><i class="bi bi-collection me-1"></i> <?=(($module)?$module->name:'')?></span>
-                                        </div>
-                                        <?php } }?>
-                                    </div>
+                                    <?php
+                                    $getRole                 = Role::select('role_name')->where('id', '=', $row->role_id)->first();
+                                    echo (($getRole)?$getRole->role_name:'');
+                                    ?>
+                                </td>
+                                <td><?=$row->name?></td>
+                                <td><?=$row->email?></td>
+                                <td><?=$row->country_code?></td>
+                                <td><?=$row->phone?></td>
+                                <td>
+                                    <img src="<?=(($row->profile_image != '')?env('UPLOADS_URL').$row->profile_image:env('NO_IMAGE_AVATAR'))?>" alt="<?=$row->name?>" class="d-block" style="height: 100px; width: 100px; border-radius: 50%;" />
                                 </td>
                                 <td>
                                   <a href="<?=url($controllerRoute . '/edit/'.Helper::encoded($row->id))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$module['title']?>"><i class="fa fa-edit"></i></a>

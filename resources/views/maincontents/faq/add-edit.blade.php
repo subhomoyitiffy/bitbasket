@@ -41,7 +41,7 @@ $controllerRoute = $module['controller_route'];
                @csrf
                <div class="row">
                   <div class="mb-3 col-md-12">
-                     <label for="faq_category_id" class="form-label">Name</label>
+                     <label for="faq_category_id" class="form-label">FAQ Category</label>
                      <select name="faq_category_id" class="select2 form-select" id="faq_category_id" required>
                        <option value="" selected>Select FAQ Category</option>
                        <?php if($cats){ foreach($cats as $row){?>

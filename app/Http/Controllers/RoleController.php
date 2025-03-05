@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\GeneralSetting;
 use App\Models\Role;
+use App\Models\Module;
 use App\Helpers\Helper;
 use Auth;
 use Session;
@@ -43,6 +44,7 @@ class RoleController extends Controller
                 if($this->validate($request, $rules)){
                     $fields = [
                         'role_name'         => strip_tags($postData['role_name']),
+                        'module_id'         => json_encode($postData['module_id']),
                     ];
                     Role::insert($fields);
                     return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Inserted Successfully !!!');
@@ -54,6 +56,7 @@ class RoleController extends Controller
             $title                          = $this->data['title'].' Add';
             $page_name                      = 'role.add-edit';
             $data['row']                    = [];
+            $data['modules']                = Module::select('id', 'name')->where('status', '=', 1)->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* add */
@@ -64,7 +67,7 @@ class RoleController extends Controller
             $title                          = $this->data['title'].' Update';
             $page_name                      = 'role.add-edit';
             $data['row']                    = Role::where($this->data['primary_key'], '=', $id)->first();
-
+            $data['modules']                = Module::select('id', 'name')->where('status', '=', 1)->get();
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
@@ -72,7 +75,8 @@ class RoleController extends Controller
                 ];
                 if($this->validate($request, $rules)){
                     $fields = [
-                        'role_name'                  => strip_tags($postData['role_name'])
+                        'role_name'         => strip_tags($postData['role_name']),
+                        'module_id'         => json_encode($postData['module_id']),
                     ];
                     Role::where($this->data['primary_key'], '=', $id)->update($fields);
                     return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Updated Successfully !!!');
