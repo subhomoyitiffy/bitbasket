@@ -17,32 +17,46 @@ use Session;
 use Hash;
 use DB;
 
-class MemberController extends Controller
+class MemberUserController extends Controller
 {
     public function __construct()
     {        
         $this->data = array(
-            'title'             => 'Member',
-            'controller'        => 'MemberController',
-            'controller_route'  => 'member',
+            'title'             => 'Member User',
+            'controller'        => 'MemberUserController',
+            'controller_route'  => 'member-user',
             'primary_key'       => 'id',
         );
     }
     /* list */
-        public function list(){
+        public function list($member_id = ''){
             $data['module']                 = $this->data;
-            $title                          = $this->data['title'].' List';
-            $page_name                      = 'member.list';
-            $data['rows']                   = DB::table('users')
+            $page_name                      = 'member-user.list';
+            if($member_id == 'all'){
+                $title                          = $this->data['title'].' List : All';
+                $data['rows']                   = DB::table('users')
                                                 ->join('user_details', 'users.id', '=', 'user_details.user_id')
                                                 ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
-                                                ->leftjoin('user_subscriptions', 'users.id', '=', 'user_subscriptions.user_id')
-                                                ->leftjoin('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
-                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'user_subscriptions.subscription_start', 'user_subscriptions.subscription_end', 'packages.name as package_name')
+                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'users.parent_id')
                                                 ->where('users.status', '!=', 3)
-                                                ->where('users.role_id', '=', 2)
+                                                ->where('users.role_id', '=', 3)
                                                 ->orderBy('users.id', 'DESC')
                                                 ->get();
+            } else {
+                $member_id                      = Helper::decoded($member_id);
+                $getParentUser                  = User::select('name')->where('id', '=', $member_id)->first();
+                $title                          = $this->data['title'].' List : ' . (($getParentUser)?$getParentUser->name:'');
+                $data['rows']                   = DB::table('users')
+                                                ->join('user_details', 'users.id', '=', 'user_details.user_id')
+                                                ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
+                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'users.parent_id')
+                                                ->where('users.status', '!=', 3)
+                                                ->where('users.role_id', '=', 3)
+                                                ->where('users.parent_id', '=', $member_id)
+                                                ->orderBy('users.id', 'DESC')
+                                                ->get();
+            }
+            
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* list */
@@ -52,6 +66,7 @@ class MemberController extends Controller
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
+                    'parent_id'                     => 'required',
                     'first_name'                    => 'required',
                     'last_name'                     => 'required',
                     'email'                         => 'required',
@@ -75,8 +90,8 @@ class MemberController extends Controller
                         }
                     /* profile image */
                     $fields = [
-                        'parent_id'         => 0,
-                        'role_id'           => 2,
+                        'parent_id'         => $postData['parent_id'],
+                        'role_id'           => 3,
                         'name'              => strip_tags($fullname),
                         'email'             => strip_tags($postData['email']),
                         'country_code'      => strip_tags($postData['country_code']),
@@ -107,17 +122,18 @@ class MemberController extends Controller
                     ];
                     // Helper::pr($fields2);
                     UserDetails::insert($fields2);
-                    return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Inserted Successfully !!!');
+                    return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['parent_id']))->with('success_message', $this->data['title'].' Inserted Successfully !!!');
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
             }
             $data['module']                 = $this->data;
             $title                          = $this->data['title'].' Add';
-            $page_name                      = 'member.add-edit';
+            $page_name                      = 'member-user.add-edit';
             $data['row']                    = [];
             $data['row2']                   = [];
             $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
+            $data['parentUsers']            = User::select('id', 'name')->where('status', '=', 1)->where('role_id', '=', 2)->orderBy('name', 'ASC')->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* add */
@@ -126,14 +142,16 @@ class MemberController extends Controller
             $data['module']                 = $this->data;
             $id                             = Helper::decoded($id);
             $title                          = $this->data['title'].' Update';
-            $page_name                      = 'member.add-edit';
+            $page_name                      = 'member-user.add-edit';
             $data['row']                    = DB::table('users')->where($this->data['primary_key'], '=', $id)->first();
             $data['row2']                   = DB::table('user_details')->where('user_id', '=', $id)->first();
             $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
+            $data['parentUsers']            = User::select('id', 'name')->where('status', '=', 1)->where('role_id', '=', 2)->orderBy('name', 'ASC')->get();
 
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
+                    'parent_id'                     => 'required',
                     'first_name'                    => 'required',
                     'last_name'                     => 'required',
                     'email'                         => 'required',
@@ -158,7 +176,7 @@ class MemberController extends Controller
                     /* profile image */
                     if($postData['password'] != ''){
                         $fields = [
-                            'parent_id'         => 0,
+                            'parent_id'         => $postData['parent_id'],
                             'name'              => strip_tags($fullname),
                             'email'             => strip_tags($postData['email']),
                             'country_code'      => strip_tags($postData['country_code']),
@@ -169,7 +187,7 @@ class MemberController extends Controller
                         ];
                     } else {
                         $fields = [
-                            'parent_id'         => 0,
+                            'parent_id'         => $postData['parent_id'],
                             'name'              => strip_tags($fullname),
                             'email'             => strip_tags($postData['email']),
                             'country_code'      => strip_tags($postData['country_code']),
@@ -198,7 +216,7 @@ class MemberController extends Controller
                         'updated_at'                            => date('Y-m-d H:i:s'),
                     ];
                     DB::table('user_details')->where('user_id', '=', $id)->update($fields2);
-                    return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Updated Successfully !!!');
+                    return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['parent_id']))->with('success_message', $this->data['title'].' Updated Successfully !!!');
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
@@ -209,12 +227,13 @@ class MemberController extends Controller
     /* delete */
         public function delete(Request $request, $id){
             $id                             = Helper::decoded($id);
+            $model                          = DB::table('users')->where('id', '=', $id)->first();
             $fields = [
                 'status'             => 3,
                 'deleted_at'         => date('Y-m-d H:i:s'),
             ];
             User::where($this->data['primary_key'], '=', $id)->update($fields);
-            return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' Deleted Successfully !!!');
+            return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($model->parent_id))->with('success_message', $this->data['title'].' Deleted Successfully !!!');
         }
     /* delete */
     /* change status */
@@ -233,55 +252,7 @@ class MemberController extends Controller
                 'status'             => $status
             ];
             DB::table('users')->where('id', '=', $id)->update($fields);
-            return redirect($this->data['controller_route'] . "/list")->with('success_message', $this->data['title'].' '.$msg.' Successfully !!!');
+            return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($model->parent_id))->with('success_message', $this->data['title'].' '.$msg.' Successfully !!!');
         }
     /* change status */
-    /* membership history */
-        public function membershipHistory(Request $request, $id){
-            $data['module']                 = $this->data;
-            $id                             = Helper::decoded($id);
-            $data['member']                 = DB::table('users')->where('id', '=', $id)->first();
-            $data['rows']                   = DB::table('user_subscriptions')
-                                                ->join('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
-                                                ->select('user_subscriptions.*', 'packages.name as package_name')
-                                                ->where('user_subscriptions.is_active', '=', 1)
-                                                ->where('user_subscriptions.user_id', '=', $id)
-                                                ->orderBy('user_subscriptions.id', 'DESC')
-                                                ->get();
-            $title                          = 'Membership History : ' . (($data['member'])?$data['member']->name:'');
-            $page_name                      = 'member.membership-history';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
-        public function allMembershipHistory(Request $request){
-            $data['module']                 = $this->data;
-            $data['rows']                   = DB::table('user_subscriptions')
-                                                ->join('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
-                                                ->join('users', 'user_subscriptions.user_id', '=', 'users.id')
-                                                ->select('user_subscriptions.*', 'packages.name as package_name', 'users.name as user_name', 'users.email as user_email')
-                                                ->where('user_subscriptions.is_active', '=', 1)
-                                                ->orderBy('user_subscriptions.id', 'DESC')
-                                                ->get();
-            $title                          = 'All Membership History';
-            $page_name                      = 'member.all-membership-history';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
-    /* membership history */
-    /* membership plan */
-        public function allMemberMembershipPlan(){
-            $data['module']                 = $this->data;
-            $title                          = $this->data['title'].' Membership List';
-            $page_name                      = 'member.all-member-membership-plan';
-            $data['rows']                   = DB::table('users')
-                                                ->join('user_details', 'users.id', '=', 'user_details.user_id')
-                                                ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
-                                                ->leftjoin('user_subscriptions', 'users.id', '=', 'user_subscriptions.user_id')
-                                                ->leftjoin('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
-                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'user_subscriptions.subscription_start', 'user_subscriptions.subscription_end', 'packages.name as package_name')
-                                                ->where('users.status', '!=', 3)
-                                                ->where('users.role_id', '=', 2)
-                                                ->orderBy('users.id', 'DESC')
-                                                ->get();
-            echo $this->admin_after_login_layout($title,$page_name,$data);
-        }
-    /* membership plan */
 }

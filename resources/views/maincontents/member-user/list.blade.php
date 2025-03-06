@@ -1,4 +1,5 @@
 <?php
+use App\Models\User;
 use App\Helpers\Helper;
 $controllerRoute = $module['controller_route'];
 ?>
@@ -34,12 +35,12 @@ $controllerRoute = $module['controller_route'];
                   <thead>
                      <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Parent Member</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Country</th>
                         <th scope="col">State</th>
-                        <th scope="col">Membership Plan</th>
                         <th scope="col">Action</th>
                      </tr>
                   </thead>
@@ -48,17 +49,18 @@ $controllerRoute = $module['controller_route'];
                         <tr>
                               <th scope="row"><?=$sl++?></th>
                               <td>
-                                 <!-- <img src="<?=(($row->profile_image != '')?env('UPLOADS_URL').'user/'.$row->profile_image:env('NO_IMAGE_AVATAR'))?>" alt="<?=$row->first_name?>" class="d-block" height="100" width="100" id="uploadedAvatar" style="border-radius:50%;" /><br> -->
+                                 <?php
+                                 $getParentUser                 = User::select('name')->where('id', '=', $row->parent_id)->first();
+                                 echo (($getParentUser)?$getParentUser->name:'');
+                                 ?>
+                              </td>
+                              <td>
                                  <?=$row->name?>
                               </td>
                               <td><?=$row->user_email?></td>
                               <td><?=$row->user_phone?></td>
                               <td><?=$row->country?></td>
                               <td><?=$row->state_name?></td>
-                              <td>
-                              <span class="badge bg-info"><?=$row->package_name?></span><br>
-                              (<?=date_format(date_create($row->subscription_start), "M d, Y")?> - <?=date_format(date_create($row->subscription_end), "M d, Y")?>)
-                              </td>
                               <td>
                                  <a href="<?=url($controllerRoute . '/edit/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$module['title']?>"><i class="fa fa-edit"></i></a>
                                  <a href="<?=url($controllerRoute . '/delete/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$module['title']?>" onclick="return confirm('Do You Want To Delete This <?=$module['title']?>');"><i class="fa fa-trash"></i></a>
@@ -77,10 +79,6 @@ $controllerRoute = $module['controller_route'];
                                  <?php } elseif($row->user_status == 2){?>
                                     <span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Declined by admin</span>
                                  <?php }?>
-                                 <br><br>
-                                 <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-info btn-sm" title="Membership History"><i class="fa-solid fa-tags"></i>&nbsp;Membership History</a>
-                                 <br><br>
-                                 <a target="_blank" href="<?=url('/member-user/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-users"></i>&nbsp;Team Users</a>
                               </td>
                         </tr>
                      <?php } }?>

@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         User::insert([
             [
                 'role_id'=> 0,
+                'parent_id'=> 0,
                 'name' => 'Admin User',
                 'email' => 'admin@bitbasket.com',
                 'password' => Hash::make('password'),
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'role_id'=> 2,
+                'parent_id'=> 0,
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => Hash::make('password'),
