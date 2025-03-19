@@ -36,6 +36,7 @@ $controllerRoute = $module['controller_route'];
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Modules</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -52,7 +53,7 @@ $controllerRoute = $module['controller_route'];
                                           $module = Module::where('id', '=', $module_id[$m])->first();
                                         ?>
                                         <div class="col-md-4">
-                                          <span class="badge bg-info"><i class="bi bi-collection me-1"></i> <?=(($module)?$module->name:'')?></span>
+                                          <p class="badge bg-primary"><i class="bi bi-collection me-1"></i> <?=(($module)?$module->name:'')?></p>
                                         </div>
                                         <?php } }?>
                                     </div>

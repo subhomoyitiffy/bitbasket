@@ -56,8 +56,10 @@ $controllerRoute = $module['controller_route'];
                               <td><?=$row->country?></td>
                               <td><?=$row->state_name?></td>
                               <td>
-                              <span class="badge bg-info"><?=$row->package_name?></span><br>
-                              (<?=date_format(date_create($row->subscription_start), "M d, Y")?> - <?=date_format(date_create($row->subscription_end), "M d, Y")?>)
+                                 <span class="badge bg-info"><?=$row->package_name?></span><br>
+                                 <?php if($row->package_name != ''){?>
+                                    (<?=date_format(date_create($row->subscription_start), "M d, Y")?> - <?=date_format(date_create($row->subscription_end), "M d, Y")?>)
+                                 <?php }?>
                               </td>
                               <td>
                                  <a href="<?=url($controllerRoute . '/edit/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$module['title']?>"><i class="fa fa-edit"></i></a>
@@ -77,8 +79,13 @@ $controllerRoute = $module['controller_route'];
                                  <?php } elseif($row->user_status == 2){?>
                                     <span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Declined by admin</span>
                                  <?php }?>
+
+                                 <br><br>
+                                 <a href="<?=url($controllerRoute . '/membership-select-package/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-success btn-sm" title="Renew Membership"><i class="fa-solid fa-dollar-sign"></i>&nbsp;Renew</a>
+
                                  <br><br>
                                  <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-info btn-sm" title="Membership History"><i class="fa-solid fa-tags"></i>&nbsp;Membership History</a>
+
                                  <br><br>
                                  <a target="_blank" href="<?=url('/member-user/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-users"></i>&nbsp;Team Users</a>
                               </td>

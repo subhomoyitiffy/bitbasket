@@ -30,7 +30,7 @@ class AdminUserController extends Controller
             $data['module']                 = $this->data;
             $title                          = $this->data['title'].' List';
             $page_name                      = 'admin-users.list';
-            $data['rows']                   = User::where('status', '!=', 3)->where('role_id', '=', 1)->orderBy('id', 'DESC')->get();
+            $data['rows']                   = User::where('status', '!=', 3)->where('role_id', '>=', 6)->orderBy('id', 'DESC')->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* list */
@@ -83,7 +83,7 @@ class AdminUserController extends Controller
             $title                          = $this->data['title'].' Add';
             $page_name                      = 'admin-users.add-edit';
             $data['row']                    = [];
-            $data['roles']                  = Role::select('id', 'role_name')->where('status', '=', 1)->where('id', '=', 1)->get();
+            $data['roles']                  = Role::select('id', 'role_name')->where('status', '=', 1)->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* add */
@@ -94,7 +94,7 @@ class AdminUserController extends Controller
             $title                          = $this->data['title'].' Update';
             $page_name                      = 'admin-users.add-edit';
             $data['row']                    = User::where($this->data['primary_key'], '=', $id)->first();
-            $data['roles']                  = Role::select('id', 'role_name')->where('status', '=', 1)->where('id', '=', 1)->get();
+            $data['roles']                  = Role::select('id', 'role_name')->where('status', '=', 1)->get();
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
@@ -117,7 +117,7 @@ class AdminUserController extends Controller
                                 return redirect()->back()->with(['error_message' => $uploadedFile['message']]);
                             }
                         } else {
-                            $profile_image = $row->profile_image;
+                            $profile_image = $data['row']->profile_image;
                         }
                     /* profile image */
                     if($postData['password'] != ''){

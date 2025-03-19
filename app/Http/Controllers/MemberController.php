@@ -284,4 +284,42 @@ class MemberController extends Controller
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* membership plan */
+    /* membership renew */
+        public function membershipSelectPackage(Request $request, $id){
+            $data['module']                 = $this->data;
+            $id                             = Helper::decoded($id);
+            $data['member_id']              = $id;
+            $data['member']                 = DB::table('users')->where('id', '=', $id)->first();
+            $data['current_package']        = DB::table('user_subscriptions')
+                                                ->join('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
+                                                ->select('user_subscriptions.*', 'packages.name as package_name')
+                                                ->where('user_subscriptions.is_active', '=', 1)
+                                                ->where('user_subscriptions.user_id', '=', $id)
+                                                ->orderBy('user_subscriptions.id', 'DESC')
+                                                ->first();
+            $data['packages']               = Package::where('status', '=', 1)->orderBy('id', 'ASC')->get();
+            $title                          = 'Membership Renew : ' . (($data['member'])?$data['member']->name:'');
+            $page_name                      = 'member.membership-select-package';
+            echo $this->admin_after_login_layout($title,$page_name,$data);
+        }
+        public function subscriptionCheckout(Request $request, $package_id, $member_id){
+            $data['module']                 = $this->data;
+            $package_id                     = Helper::decoded($package_id);
+            $member_id                      = Helper::decoded($member_id);
+            $data['package_id']             = $package_id;
+            $data['member_id']              = $package_id;
+            $data['member']                 = DB::table('users')->where('id', '=', $member_id)->first();
+            $data['package']                = Package::where('id', '=', $package_id)->first();
+            $data['current_package']        = DB::table('user_subscriptions')
+                                                ->join('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
+                                                ->select('user_subscriptions.*', 'packages.name as package_name')
+                                                ->where('user_subscriptions.is_active', '=', 1)
+                                                ->where('user_subscriptions.user_id', '=', $member_id)
+                                                ->orderBy('user_subscriptions.id', 'DESC')
+                                                ->first();
+            $title                          = 'Membership Subscription : ' . (($data['member'])?$data['member']->name:'') . ' ' . (($data['package'])?$data['package']->name:'');
+            $page_name                      = 'member.subscription-checkout';
+            echo $this->admin_after_login_layout($title,$page_name,$data);
+        }
+    /* membership renew */
 }

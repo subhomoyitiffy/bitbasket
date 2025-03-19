@@ -96,6 +96,8 @@ use Illuminate\Support\Facades\Route;
             Route::get('member/membership-history/{id}', [MemberController::class, 'membershipHistory']);
             Route::get('member/all-membership-history', [MemberController::class, 'allMembershipHistory']);
             Route::get('member/all-member-membership-plan', [MemberController::class, 'allMemberMembershipPlan']);
+            Route::get('member/membership-select-package/{id}', [MemberController::class, 'membershipSelectPackage']);
+            Route::get('member/subscription-checkout/{id}/{id2}', [MemberController::class, 'subscriptionCheckout']);
         /* members */
         /* users */
             Route::get('member-user/list/{id}', [MemberUserController::class, 'list']);

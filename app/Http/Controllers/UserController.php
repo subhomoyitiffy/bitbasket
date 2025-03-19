@@ -30,7 +30,7 @@ class UserController extends Controller
                 if($this->validate($request, $rules)){
                     $email      = strip_tags($postData['email']);
                     $password   = strip_tags($postData['password']);
-                    if(Auth::guard('user')->attempt(['email' => $email, 'password' => $password, 'status' => 1, 'role_id' => 0])){
+                    if(Auth::guard('user')->attempt(['email' => $email, 'password' => $password, 'status' => 1, 'role_id' => 1])){
                         // Helper::pr(Auth::guard('user')->user());
                         $sessionData = Auth::guard('user')->user();
                         $request->session()->put('user_id', $sessionData->id);
