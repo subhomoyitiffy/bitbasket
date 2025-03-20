@@ -98,6 +98,7 @@ use Illuminate\Support\Facades\Route;
             Route::get('member/all-member-membership-plan', [MemberController::class, 'allMemberMembershipPlan']);
             Route::get('member/membership-select-package/{id}', [MemberController::class, 'membershipSelectPackage']);
             Route::get('member/subscription-checkout/{id}/{id2}', [MemberController::class, 'subscriptionCheckout']);
+            Route::match(['get', 'post'], 'member/subscription-payment', [MemberController::class, 'subscriptionPayment']);
         /* members */
         /* users */
             Route::get('member-user/list/{id}', [MemberUserController::class, 'list']);

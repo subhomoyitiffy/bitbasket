@@ -311,31 +311,31 @@ class GeneralSettingSeeder extends Seeder
             [
                 'key'=> 'stripe_payment_type',
                 'slug' => 'stripe_payment_type',
-                'value' => '',
+                'value' => 1,
                 'is_active' => 1
             ],
             [
                 'key'=> 'stripe_sandbox_sk',
                 'slug' => 'stripe_sandbox_sk',
-                'value' => '',
+                'value' => 'sk_test_51GuDMPEUApiV5UmVJBXIgt4xzRJPeaKVgvQwBc3uV43Y2cb1p6UvzWVnXtaszPirgO1r9H0SMoxnk4K2vxDW7iND00E9JCfAEy',
                 'is_active' => 1
             ],
             [
                 'key'=> 'stripe_sandbox_pk',
                 'slug' => 'stripe_sandbox_pk',
-                'value' => '',
+                'value' => 'pk_test_51GuDMPEUApiV5UmVatwZJfnA8JPPpOCAHd3HIaD6ohQZnyTSIe1oADaTTFd9vLPQEXlw8KcIVfkTQ3pL8HGYStnr00Fe5GdQjy',
                 'is_active' => 1
             ],
             [
                 'key'=> 'stripe_live_sk',
                 'slug' => 'stripe_live_sk',
-                'value' => '',
+                'value' => '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',
                 'is_active' => 1
             ],
             [
                 'key'=> 'stripe_live_pk',
                 'slug' => 'stripe_live_pk',
-                'value' => '',
+                'value' => 'pk_live_51JbJczLqlZ30N6HrFWRo2lKF3JJoJKcm5KfwiQkBS7nrfJwvV4reSQi9qHMYb8CwzEII7daW7YJW5uMlNK72NQIQ00kR5Kh3Wd',
                 'is_active' => 1
             ],
             [

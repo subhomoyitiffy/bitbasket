@@ -16,6 +16,7 @@ use Auth;
 use Session;
 use Hash;
 use DB;
+use stripe;
 
 class MemberController extends Controller
 {
@@ -34,7 +35,7 @@ class MemberController extends Controller
             $title                          = $this->data['title'].' List';
             $page_name                      = 'member.list';
             $data['rows']                   = DB::table('users')
-                                                ->join('user_details', 'users.id', '=', 'user_details.user_id')
+                                                ->leftjoin('user_details', 'users.id', '=', 'user_details.user_id')
                                                 ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
                                                 ->leftjoin('user_subscriptions', 'users.id', '=', 'user_subscriptions.user_id')
                                                 ->leftjoin('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
@@ -42,6 +43,7 @@ class MemberController extends Controller
                                                 ->where('users.status', '!=', 3)
                                                 ->where('users.role_id', '=', 2)
                                                 ->orderBy('users.id', 'DESC')
+                                                // ->orderBy('user_subscriptions.id', 'DESC')
                                                 ->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
@@ -321,5 +323,164 @@ class MemberController extends Controller
             $page_name                      = 'member.subscription-checkout';
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
+        public function subscriptionPayment(Request $request){
+            $apiStatus                      = TRUE;
+            $apiMessage                     = '';
+            $apiResponse                    = [];
+            $package_id                     = $request->package_id;
+            $uId                            = $request->user_id;
+            $user                           = User::where('id', '=', $uId)->first();
+            if($request->package_id == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Package Required !!!';
+            } elseif($request->cardNo == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Card No Required !!!';
+            } elseif($request->cardHolderName == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Card Holder Name Required !!!';
+            } elseif($request->cardExpiryMM == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Card Expiry Month Required !!!';
+            } elseif($request->cardExpiryYY == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Card Expiry Year Required !!!';
+            } elseif($request->cardCvv == ''){
+                $apiStatus = FALSE;
+                $apiMessage = 'Card Cvv Required !!!';
+            } else {
+                $renewalPackage                 = Package::where('id', '=', $package_id)->first();
+                $price                          = (($renewalPackage)?(int)$renewalPackage->price:0);
+                $postData['cardNo']             = $request->cardNo;
+                $postData['cardHolderName']     = $request->cardHolderName;
+                $postData['cardExpiryMM']       = $request->cardExpiryMM;
+                $postData['cardExpiryYY']       = $request->cardExpiryYY;
+                $postData['cardCvv']            = $request->cardCvv;                
+                // Helper::pr($postData);
+                $stripeData         = $this->commonStripePayment($user, $postData, $price, 'Payment for '.$renewalPackage->name.' Subscription Package on ' . date('Y-m-d H:i:s'));
+                // Helper::pr($stripeData);
+                if($stripeData['status']){
+                    UserSubscription::where('user_id','=',$user['id'])->update(['is_active' => 0]);
+                    
+                    $service_from   = date('Y-m-d');
+                    $service_to     = date('Y-m-d', strtotime("+".$renewalPackage->duration." months"));
+                    $userSubscriptionData = [
+                        'subscription_id'               => $package_id,
+                        'user_id'                       => $user['id'],
+                        'coupon_id'                     => 0,
+                        'coupon_discount'               => 0,
+                        'coupon_code'                   => '',
+                        'payable_amount'                => (($renewalPackage)?(int)$renewalPackage->price:0.00),
+                        'stripe_subscription_id'        => $stripeData['transaction_id'],
+                        'subscription_start'            => $service_from,
+                        'subscription_end'              => $service_to,
+                        'is_active'                     => 1,
+                        'created_at'                    => date('Y-m-d H:i:s'),
+                        'updated_at'                    => date('Y-m-d H:i:s'),
+                    ];
+                    // Helper::pr($userSubscriptionData);
+                    $ref_id = UserSubscription::insertGetId($userSubscriptionData);
+                    $apiStatus = TRUE;
+                    $apiMessage = 'Subscription Payment Successfully Completed !!!';
+                } else {
+                    $apiStatus = FALSE;
+                    $apiMessage = 'Payment Failed !!! Please Try Again Later !!!';
+                }
+            }
+            
+            $data                       = array("status" => $apiStatus, "message" => $apiMessage, "response" => $apiResponse);
+            header("Content-Type: application/json");
+            echo json_encode($data);
+        }
+        /* Common Stripe Payment */
+            private function commonStripePayment($user, $postData, $price, $msg = ''){
+                $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
+                $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
+                $stripe_sandbox_pk = Helper::getSettingValue('stripe_sandbox_pk');
+                $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
+                $stripe_live_pk = Helper::getSettingValue('stripe_live_pk');
+                $stripeSecret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
+                // echo $stripeSecret;die;
+                $stripe         = new \Stripe\StripeClient($stripeSecret);
+                try {
+                    $stripeToken    = $stripe->tokens->create([
+                        'card' => [
+                            'number'    => $postData['cardNo'],
+                            'exp_month' => $postData['cardExpiryMM'],
+                            'exp_year'  => $postData['cardExpiryYY'],
+                            'cvc'       => $postData['cardCvv'],
+                            'name'      => $postData['cardHolderName'],
+                        ],
+                    ]);
+                } catch (\Stripe\Exception\OAuth\OAuthErrorException $e) {
+                    //exit('Error: ' . $e->getMessage());
+                    $return = array(
+                        'status'    => FALSE,
+                        'message'   => 'Something Went Wrong !!! Please Try Again !!!',
+                    );
+                }
+                try {
+                    $customer       = $stripe->customers->create([
+                        'email'     => $user->email,
+                        'name'      => (!empty($user->name)) ? $user->name : 'New User',
+                        'address'   => [
+                            'line1'         => 'Demo Address',
+                            'postal_code'   => '2000',
+                            'city'          => 'Sydney',
+                            'state'         => 'NSW',
+                            'country'       => 'AU',
+                        ],
+                        'source'    => $stripeToken
+                    ]);
+                } catch (\Stripe\Exception\OAuth\OAuthErrorException $e) {
+                    $return = array(
+                        'status'    => FALSE,
+                        'message'   => 'Something Went Wrong !!! Please Try Again !!!',
+                    );
+                }
+                try {
+                    $charge = $stripe->charges->create([
+                        'amount'        => $price,
+                        'currency'      => 'usd',
+                        'description'   => $msg,
+                        'customer'      => $customer->id,
+                        //'metadata'      => $msg
+                    ]);
+                } catch (\Stripe\Exception\OAuth\OAuthErrorException $e) {
+                    $return = array(
+                        'status'    => FALSE,
+                        'message'   => 'Something Went Wrong !!! Please Try Again !!!',
+                    );
+                }
+                if (isset($charge->status)) :                    
+                    if ($charge->status == 'succeeded') :
+                        $return = array(
+                            'status'                => TRUE,
+                            'payment_gateway_id'    => $charge->id,
+                            'transaction_id'        => $charge->balance_transaction,
+                            'customer_id'           => $charge->customer,
+                            'customer_card_id'      => $charge->payment_method,
+                            'currency'              => $charge->currency,
+                            'particulars'           => $charge->description,
+                            'card_last_4_digits'    => $charge->payment_method_details->card->last4,
+                            'expiry_month'          => $charge->payment_method_details->card->exp_month,
+                            'expiry_year'           => $charge->payment_method_details->card->exp_year,
+                        );
+                        // Helper::pr($return);
+                    else :
+                        $return = array(
+                            'status'    => FALSE,
+                            'message'   => 'Payment Failed !!! Please Try Again !!!',
+                        );
+                    endif;
+                else :
+                    $return = array(
+                        'status'    => FALSE,
+                        'message'   => 'Something Went Wrong !!! Please Try Again !!!',
+                    );
+                endif;
+                return $return;
+            }
+        /* Common Stripe Payment */
     /* membership renew */
 }
