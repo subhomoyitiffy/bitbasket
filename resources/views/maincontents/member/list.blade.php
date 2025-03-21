@@ -51,7 +51,8 @@ $controllerRoute = $module['controller_route'];
                         <tr>
                               <th scope="row"><?=$sl++?></th>
                               <td>
-                                 <!-- <img src="<?=(($row->profile_image != '')?env('UPLOADS_URL').'user/'.$row->profile_image:env('NO_IMAGE_AVATAR'))?>" alt="<?=$row->first_name?>" class="d-block" height="100" width="100" id="uploadedAvatar" style="border-radius:50%;" /><br> -->
+                                 <!-- <img src="<?=(($row->profile_image != '')?env('UPLOADS_URL').'user/'.$row->profile_image:env('NO_IMAGE_AVATAR'))?>" alt="<?=$row->first_name?>" class="d-block" height="100" width="100" id="uploadedAvatar" style="border-radius:50%;" />
+                                 <br> -->
                                  <?=$row->name?>
                               </td>
                               <td><?=$row->user_email?></td>
