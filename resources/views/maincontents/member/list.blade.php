@@ -1,5 +1,8 @@
 <?php
+use App\Models\Package;
+use App\Models\UserSubscription;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\DB;
 $controllerRoute = $module['controller_route'];
 ?>
 <h4><?=$page_header?></h4>
@@ -56,9 +59,20 @@ $controllerRoute = $module['controller_route'];
                               <td><?=$row->country?></td>
                               <td><?=$row->state_name?></td>
                               <td>
-                                 <span class="badge bg-info"><?=$row->package_name?></span><br>
-                                 <?php if($row->package_name != ''){?>
-                                    (<?=date_format(date_create($row->subscription_start), "M d, Y")?> - <?=date_format(date_create($row->subscription_end), "M d, Y")?>)
+                                 <?php
+                                 $getCurrentPackage = DB::table('user_subscriptions')
+                                                      ->join('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
+                                                      ->select('user_subscriptions.subscription_start', 'user_subscriptions.subscription_end', 'packages.name as package_name')
+                                                      ->where('user_subscriptions.is_active', '=', 1)
+                                                      ->where('user_subscriptions.user_id', '=', $row->user_id)
+                                                      ->orderBy('user_subscriptions.id', 'DESC')
+                                                      ->first();
+                                 if($getCurrentPackage){
+                                 ?>
+                                    <span class="badge bg-info"><?=$getCurrentPackage->package_name?></span><br>
+                                    <?php if($getCurrentPackage->package_name != ''){?>
+                                       (<?=date_format(date_create($getCurrentPackage->subscription_start), "M d, Y")?> - <?=date_format(date_create($getCurrentPackage->subscription_end), "M d, Y")?>)
+                                    <?php }?>
                                  <?php }?>
                               </td>
                               <td>

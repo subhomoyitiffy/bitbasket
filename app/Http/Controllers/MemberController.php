@@ -34,12 +34,21 @@ class MemberController extends Controller
             $data['module']                 = $this->data;
             $title                          = $this->data['title'].' List';
             $page_name                      = 'member.list';
+            // $data['rows']                   = DB::table('users')
+            //                                     ->leftjoin('user_details', 'users.id', '=', 'user_details.user_id')
+            //                                     ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
+            //                                     ->leftjoin('user_subscriptions', 'users.id', '=', 'user_subscriptions.user_id')
+            //                                     ->leftjoin('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
+            //                                     ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'user_subscriptions.subscription_start', 'user_subscriptions.subscription_end', 'packages.name as package_name')
+            //                                     ->where('users.status', '!=', 3)
+            //                                     ->where('users.role_id', '=', 2)
+            //                                     ->orderBy('users.id', 'DESC')
+            //                                     // ->orderBy('user_subscriptions.id', 'DESC')
+            //                                     ->get();
             $data['rows']                   = DB::table('users')
                                                 ->leftjoin('user_details', 'users.id', '=', 'user_details.user_id')
                                                 ->leftjoin('states', 'user_details.city_id', '=', 'states.id')
-                                                ->leftjoin('user_subscriptions', 'users.id', '=', 'user_subscriptions.user_id')
-                                                ->leftjoin('packages', 'user_subscriptions.subscription_id', '=', 'packages.id')
-                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name', 'user_subscriptions.subscription_start', 'user_subscriptions.subscription_end', 'packages.name as package_name')
+                                                ->select('users.name', 'users.email as user_email', 'users.country_code as user_country_code', 'users.phone as user_phone', 'users.profile_image', 'users.status as user_status', 'user_details.*', 'states.name as state_name')
                                                 ->where('users.status', '!=', 3)
                                                 ->where('users.role_id', '=', 2)
                                                 ->orderBy('users.id', 'DESC')
