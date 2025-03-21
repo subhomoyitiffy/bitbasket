@@ -21,6 +21,8 @@ class UserSeeder extends Seeder
                 'name' => 'Admin User',
                 'email' => 'admin@bitbasket.com',
                 'password' => Hash::make('password'),
+                'country_code' => '+91',
+                'phone' => '7894561237',
                 'status'    => 1
             ],
             [
@@ -29,6 +31,8 @@ class UserSeeder extends Seeder
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'password' => Hash::make('password'),
+                'country_code' => '+91',
+                'phone' => '8981374269',
                 'status'    => 1
             ]
         ]);

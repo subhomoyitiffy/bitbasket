@@ -15,10 +15,20 @@ class RoleSeeder extends Seeder
     {
         Role::insert([
             [
-                'role_name' => 'Admin'
+                'role_name' => 'Master Admin',
+                'module_id' => '["1","2","3","4","5","6","7","8","9","10","11","12","14","15","16","17","18","13"]'
             ],
             [
-                'role_name' => 'Member'
+                'role_name' => 'Member',
+                'module_id' => ''
+            ],
+            [
+                'role_name' => 'User',
+                'module_id' => ''
+            ],
+            [
+                'role_name' => 'Sub Admin',
+                'module_id' => '["1","17","18"]'
             ]
         ]);
     }
