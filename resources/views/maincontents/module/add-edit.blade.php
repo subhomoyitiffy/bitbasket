@@ -28,34 +28,17 @@ $controllerRoute = $module['controller_route'];
          <div class="card-body pb-2">
             <?php
             if($row){
-               $faq_category_id      = $row->faq_category_id;
-               $question             = $row->question;
-               $answer               = $row->answer;
+               $name     = $row->name;
             } else {
-               $faq_category_id      = '';
-               $question             = '';
-               $answer               = '';
+               $name     = '';
             }
             ?>
             <form id="formAccountSettings" action="" method="POST" enctype="multipart/form-data">
                @csrf
                <div class="row">
-                  <div class="mb-3 col-md-12">
-                     <label for="faq_category_id" class="form-label">FAQ Category</label>
-                     <select name="faq_category_id" class="select2 form-select" id="faq_category_id" required>
-                       <option value="" selected>Select FAQ Category</option>
-                       <?php if($cats){ foreach($cats as $row){?>
-                       <option value="<?=$row->id?>" <?=(($row->id == $faq_category_id)?'selected':'')?>><?=$row->name?></option>
-                       <?php } }?>
-                     </select>
-                  </div>
                   <div class="mb-3 col-md-6">
-                     <label for="question" class="form-label">Question</label>
-                     <textarea name="question" class="form-control" id="question" rows="5"><?=$question?></textarea>
-                  </div>
-                  <div class="mb-3 col-md-6">
-                     <label for="answer" class="form-label">Answer</label>
-                     <textarea name="answer" class="form-control" id="answer" rows="5"><?=$answer?></textarea>
+                     <label for="name" class="form-label">Name</label>
+                     <input class="form-control" type="text" id="name" name="name" value="<?=$name?>" required placeholder="Name" autofocus />
                   </div>
                </div>
                <div class="mt-2">

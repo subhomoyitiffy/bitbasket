@@ -28,34 +28,34 @@ $controllerRoute = $module['controller_route'];
          <div class="card-body pb-2">
             <?php
             if($row){
-               $faq_category_id      = $row->faq_category_id;
-               $question             = $row->question;
-               $answer               = $row->answer;
+               $to_user          = $row->to_user;
+               $title            = $row->title;
+               $description      = $row->description;
             } else {
-               $faq_category_id      = '';
-               $question             = '';
-               $answer               = '';
+               $to_user          = '';
+               $title            = '';
+               $description      = '';
             }
             ?>
             <form id="formAccountSettings" action="" method="POST" enctype="multipart/form-data">
                @csrf
                <div class="row">
                   <div class="mb-3 col-md-12">
-                     <label for="faq_category_id" class="form-label">FAQ Category</label>
-                     <select name="faq_category_id" class="select2 form-select" id="faq_category_id" required>
-                       <option value="" selected>Select FAQ Category</option>
-                       <?php if($cats){ foreach($cats as $row){?>
-                       <option value="<?=$row->id?>" <?=(($row->id == $faq_category_id)?'selected':'')?>><?=$row->name?></option>
+                     <label for="to_user" class="form-label">To User</label>
+                     <select name="to_user" class="select2 form-select" id="to_user" required>
+                       <option value="" selected>Select To User</option>
+                       <?php if($users){ foreach($users as $user){?>
+                       <option value="<?=$user->id?>" <?=(($user->id == $to_user)?'selected':'')?>><?=$user->name?></option>
                        <?php } }?>
                      </select>
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="question" class="form-label">Question</label>
-                     <textarea name="question" class="form-control" id="question" rows="5"><?=$question?></textarea>
+                     <label for="title" class="form-label">Title</label>
+                     <input class="form-control" type="text" id="title" name="title" value="<?=$title?>" required placeholder="Title" />
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="answer" class="form-label">Answer</label>
-                     <textarea name="answer" class="form-control" id="answer" rows="5"><?=$answer?></textarea>
+                     <label for="description" class="form-label">Description</label>
+                     <textarea class="form-control" id="description" name="description" required placeholder="Description" rows="5"><?=$description?></textarea>
                   </div>
                </div>
                <div class="mt-2">

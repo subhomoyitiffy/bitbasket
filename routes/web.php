@@ -1,8 +1,13 @@
 <?php
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberUserController;
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +41,29 @@ use Illuminate\Support\Facades\Route;
             Route::post('seo-settings', [UserController::class, 'seo_settings']);
             Route::post('payment-settings', [UserController::class, 'payment_settings']);
         /* setting */
+        /* access & permission */
+            /* modules */
+                Route::get('module/list', [ModuleController::class, 'list']);
+                Route::match(['get', 'post'], 'module/add', [ModuleController::class, 'add']);
+                Route::match(['get', 'post'], 'module/edit/{id}', [ModuleController::class, 'edit']);
+                Route::get('module/delete/{id}', [ModuleController::class, 'delete']);
+                Route::get('module/change-status/{id}', [ModuleController::class, 'change_status']);
+            /* modules */
+            /* roles */
+                Route::get('role/list', [RoleController::class, 'list']);
+                Route::match(['get', 'post'], 'role/add', [RoleController::class, 'add']);
+                Route::match(['get', 'post'], 'role/edit/{id}', [RoleController::class, 'edit']);
+                Route::get('role/delete/{id}', [RoleController::class, 'delete']);
+                Route::get('role/change-status/{id}', [RoleController::class, 'change_status']);
+            /* roles */
+            /* admin users */
+                Route::get('admin-users/list', [AdminUserController::class, 'list']);
+                Route::match(['get', 'post'], 'admin-users/add', [AdminUserController::class, 'add']);
+                Route::match(['get', 'post'], 'admin-users/edit/{id}', [AdminUserController::class, 'edit']);
+                Route::get('admin-users/delete/{id}', [AdminUserController::class, 'delete']);
+                Route::get('admin-users/change-status/{id}', [AdminUserController::class, 'change_status']);
+            /* admin users */
+        /* access & permission */
         /* FAQs */
             /* faq category */
                 Route::get('faq-category/list', [FaqCategoryController::class, 'list']);
@@ -68,12 +96,30 @@ use Illuminate\Support\Facades\Route;
             Route::get('member/membership-history/{id}', [MemberController::class, 'membershipHistory']);
             Route::get('member/all-membership-history', [MemberController::class, 'allMembershipHistory']);
             Route::get('member/all-member-membership-plan', [MemberController::class, 'allMemberMembershipPlan']);
+            Route::get('member/membership-select-package/{id}', [MemberController::class, 'membershipSelectPackage']);
+            Route::get('member/subscription-checkout/{id}/{id2}', [MemberController::class, 'subscriptionCheckout']);
+            Route::match(['get', 'post'], 'member/subscription-payment', [MemberController::class, 'subscriptionPayment']);
         /* members */
+        /* users */
+            Route::get('member-user/list/{id}', [MemberUserController::class, 'list']);
+            Route::match(['get', 'post'], 'member-user/add', [MemberUserController::class, 'add']);
+            Route::match(['get', 'post'], 'member-user/edit/{id}', [MemberUserController::class, 'edit']);
+            Route::get('member-user/delete/{id}', [MemberUserController::class, 'delete']);
+            Route::get('member-user/change-status/{id}', [MemberUserController::class, 'change_status']);
+        /* users */
         /* subscribers */
             Route::get('subscriber/list', [SubscriberController::class, 'list']);
             Route::get('subscriber/delete/{id}', [SubscriberController::class, 'delete']);
             Route::get('subscriber/change-status/{id}', [SubscriberController::class, 'change_status']);
         /* subscribers */
+        /* notifications */
+            Route::get('notification/list', [NotificationController::class, 'list']);
+            Route::match(['get', 'post'], 'notification/add', [NotificationController::class, 'add']);
+            Route::match(['get', 'post'], 'notification/edit/{id}', [NotificationController::class, 'edit']);
+            Route::get('notification/delete/{id}', [NotificationController::class, 'delete']);
+            Route::get('notification/change-status/{id}', [NotificationController::class, 'change_status']);
+            Route::get('notification/change-status-send/{id}', [NotificationController::class, 'change_status_send']);
+        /* notifications */
     });
 /* Admin Panel */
 

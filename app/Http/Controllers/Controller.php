@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\User;
 use App\Models\UserActivity;
 use App\Models\EmailLog;
+use App\Models\Role;
 use Session;
 use App\Helpers\Helper;
 abstract class Controller
@@ -264,12 +265,13 @@ abstract class Controller
         $data['page_header']        = $title;
         $user_id                    = session('user_id');
         $data['user']               = User::find($user_id);
-        // $userAccess                 = UserAccess::where('user_id', '=', $user_id)->where('status', '=', 1)->first();
-        // if($userAccess) {
-        //     $data['module_id']      = json_decode($userAccess->module_id);
-        // } else {
-        //     $data['module_id']      = [];
-        // }
+        $role_id                    = (($data['user'])?$data['user']->role_id:0);
+        $userAccess                 = Role::where('id', '=', $role_id)->where('status', '=', 1)->first();
+        if($userAccess) {
+            $data['module_id']      = json_decode($userAccess->module_id);
+        } else {
+            $data['module_id']      = [];
+        }
         $data['head']               = view('elements.after-head', $data);
         $data['header']             = view('elements.header', $data);
         $data['footer']             = view('elements.footer', $data);
