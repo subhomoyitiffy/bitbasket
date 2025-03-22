@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CommonController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\ForgotpasswordController;
 use App\Http\Controllers\Api\UserSubscriptionController;
+use App\Http\Controllers\Api\MemberUserController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sign-up', [RegistrationController::class, 'registration']);
@@ -32,6 +33,8 @@ Route::group([
     Route::get('/package-list/{status}', [CommonController::class, 'getPackages']);
 
     // Route::resource('/user-subscription', UserSubscriptionController::class);
+
+    Route::resource('/member-user', MemberUserController::class);
 });
 
 /* Route::get('/user', function (Request $request) {
