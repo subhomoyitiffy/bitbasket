@@ -42,7 +42,10 @@ class MemberUserController extends BaseApiController
         return response()->json([
             'success' => true,
             'message' => 'Member Team list',
-            'data' => $list
+            'data' =>[
+                'list'=> $list,
+                'subscription_details'=> auth()->user()->user_subscriptions[0] ?? []
+            ]
         ], 200);
     }
 
@@ -54,6 +57,11 @@ class MemberUserController extends BaseApiController
      */
     public function store(Request $request)
     {
+        $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
+        $total_enrolled_members = User::where('parent_id', auth()->user()->id)->get();
+        if($total_enrolled_members->count() >= $number_of_team_members){
+            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of members.');
+        }
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -93,7 +101,7 @@ class MemberUserController extends BaseApiController
             if($user_id){
                 UserDetails::create([
                     'user_id'=> $user_id,
-                    'country'=> NULL,
+                    'country'=> "0",
                     'first_name'=> $request->first_name,
                     'last_name'=> $request->last_name,
                     'email'=> $request->email,
@@ -110,7 +118,7 @@ class MemberUserController extends BaseApiController
                 $message = 'Your account registration has successfully completed. Now you can login using your registered email & password(phone).';
                 Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message));
 
-                return $this->sendResponse([], 'Your account registration has successfully completed.');
+                return $this->sendResponse([], 'Member account registration has successfully completed.');
             }else{
                 return $this->sendError('Error', 'Sorry!! Unable to register user.');
             }
@@ -149,9 +157,9 @@ class MemberUserController extends BaseApiController
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|email|unique:users,email'.$id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'country_code' => 'required',
-            'phone' => 'required|unique:users,phone'.$id,
+            'phone' => 'required|unique:users,phone,'.$id,
             'status' => 'required',
         ]);
         if($validator->fails()){
@@ -171,7 +179,7 @@ class MemberUserController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('public/uploads/user/', $fileName)) {
+                if ($file->move('uploads/user/', $fileName)) {
                     $data->profile_image = 'public/uploads/user/'.$fileName;
                 }
             }

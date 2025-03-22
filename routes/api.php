@@ -34,6 +34,7 @@ Route::group([
 
     // Route::resource('/user-subscription', UserSubscriptionController::class);
 
+    Route::post('/member-user/change-status/{id}', [MemberUserController::class, 'change_status']);
     Route::resource('/member-user', MemberUserController::class);
 });
 
