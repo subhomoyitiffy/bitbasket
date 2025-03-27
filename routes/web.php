@@ -131,3 +131,10 @@ Route::get('/clear-cache', function() {
     \Artisan::call('view:clear');
     return "Cache cleared!";
 });
+
+Route::get('/check-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),
+        'csrf_token' => csrf_token(),
+    ]);
+});

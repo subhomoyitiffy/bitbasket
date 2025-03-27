@@ -71,6 +71,7 @@ use App\Helpers\Helper;
             <!-- /Logo -->
             <h4 class="mb-2">Welcome to <?=Helper::getSettingValue('site_name')?>! 👋</h4>
             <p class="mb-4">Please sign-in to your account and start the adventure</p>
+            <?php session()->put('test', 'check'); ?>
             <form id="formAuthentication" class="mb-3" action="{{ route('signin') }}" method="POST">
                
                <div class="mb-3">
