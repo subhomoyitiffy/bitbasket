@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 /* Admin Panel */
     Route::match(['get'], '/', [UserController::class, 'login']);
-    Route::post('login', [UserController::class, 'login'])->name('login');
+    Route::post('signin', [UserController::class, 'login'])->name('signin');
     Route::match(['get','post'],'/forgot-password', [UserController::class, 'forgotPassword']);
     Route::match(['get','post'],'/validateOtp/{id}', [UserController::class, 'validateOtp']);
     Route::match(['get','post'],'/resendOtp/{id}', [UserController::class, 'resendOtp']);
