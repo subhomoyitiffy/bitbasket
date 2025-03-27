@@ -23,6 +23,7 @@ class UserController extends Controller
         public function login(Request $request){
             if($request->isMethod('post')){
                 $postData = $request->all();
+                Helper::pr($postData);
                 $rules = [
                             'email'     => 'required|email|max:255',
                             'password'  => 'required|max:30',
