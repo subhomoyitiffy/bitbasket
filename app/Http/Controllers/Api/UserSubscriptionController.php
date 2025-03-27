@@ -96,18 +96,18 @@ class UserSubscriptionController extends BaseApiController
                     //Deactive all existing subscription if have
                     UserSubscription::where('user_id', auth()->user()->id)->update(['is_active'=> 0]);
                     //Active new subscription from now till cancelled
-                    UserSubscription::create([
-                        'subscription_id'=> $subscription->id,
-                        'user_id'=> auth()->user()->id,
-                        'payable_amount'=> $subscription->price,
-                        'stripe_subscription_id'=> $has_subscription->id,
-                        'subscription_start'=> date('Y-m-d H:i:s'),
-                        'subscription_end'=> date('Y-m-d H:i:s', strtotime('+'.$subscription->duration.'months')),
-                        'comment'=> 'User has taken '.$subscription->name,
-                        'is_active'=> 1
-                    ]);
+                    $subscription_id = UserSubscription::insertGetId([
+                                        'subscription_id'=> $subscription->id,
+                                        'user_id'=> auth()->user()->id,
+                                        'payable_amount'=> $subscription->price,
+                                        'stripe_subscription_id'=> $has_subscription->id,
+                                        'subscription_start'=> date('Y-m-d H:i:s'),
+                                        'subscription_end'=> date('Y-m-d H:i:s', strtotime('+'.$subscription->duration.'months')),
+                                        'comment'=> 'User has taken '.$subscription->name,
+                                        'is_active'=> 1
+                                    ]);
 
-                    return $this->sendResponse([], 'User subscription created successfully.');
+                    return $this->sendResponse(['subscription_id'=> $subscription_id], 'User subscription created successfully.');
                 }else{
                     return $this->sendError('Stripe Error', 'Due to some error, unable to create subscription.', 500);
                 }
@@ -116,7 +116,6 @@ class UserSubscriptionController extends BaseApiController
                 return $this->sendError('Stripe Error', $cus_ex->getMessage(), 500);
             }
         }
-
     }
 
     /**
@@ -137,7 +136,7 @@ class UserSubscriptionController extends BaseApiController
 
     /**
      * Remove the specified resource from storage.
-     */
+    */
     public function destroy(int $id)
     {
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
