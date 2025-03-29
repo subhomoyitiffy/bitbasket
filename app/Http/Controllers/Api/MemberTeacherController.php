@@ -12,13 +12,13 @@ use App\Models\User;
 use App\Models\UserDetails;
 use App\Mail\RegistrationSuccess;
 
-class MemberUserController extends BaseApiController
+class MemberTeacherController extends BaseApiController
 {
     private $role_id;
 
     public function __construct()
     {
-        $this->role_id = env('MEMBER_USER_ROLE_ID');
+        $this->role_id = env('MEMBER_TEACHER_ROLE_ID');
     }
 
     /**
@@ -39,10 +39,10 @@ class MemberUserController extends BaseApiController
         $list = $sql->latest()
                 ->paginate(env('LIST_PAGINATION_COUNT'));
 
-        return $this->sendResponse([
-            'list'=> $list,
-            'subscription_details'=> auth()->user()->user_subscriptions[0] ?? []
-        ], 'Member User list.');
+            return $this->sendResponse([
+                'list' => $list,
+                'subscription_details'=> auth()->user()->user_subscriptions[0] ?? []
+            ], 'Member Teacher list.');
     }
 
     /**
@@ -53,11 +53,11 @@ class MemberUserController extends BaseApiController
      */
     public function store(Request $request)
     {
-        $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
+        /* $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
         $total_enrolled_members = User::where('parent_id', auth()->user()->id)->where('role_id', $this->role_id)->get();
         if($total_enrolled_members->count() >= $number_of_team_members){
             return $this->sendError('Error', 'Sorry!! you have already enrolled available number of members.');
-        }
+        } */
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -76,8 +76,8 @@ class MemberUserController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('public/uploads/user/', $fileName)) {
-                    $image_path = 'public/uploads/user/'.$fileName;
+                if ($file->move('public/uploads/teacher/', $fileName)) {
+                    $image_path = 'public/uploads/teacher/'.$fileName;
                 }
             }
             $my_str = "543ZAbcdabXRLcd123PTas@t9876GTDX#EChFIHBnWqY";
@@ -115,9 +115,9 @@ class MemberUserController extends BaseApiController
                 $message = 'Your account registration has successfully completed. Now you can login using your registered email & password('.$pwd.').';
                 Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message));
 
-                return $this->sendResponse([], 'Member account registration has successfully completed.');
+                return $this->sendResponse([], 'Teacher account registration has successfully completed.');
             }else{
-                return $this->sendError('Error', 'Sorry!! Unable to register user.');
+                return $this->sendError('Error', 'Sorry!! Unable to register Teacher.');
             }
         }catch(\Exception $cus_ex){
             // Error through. Some error occurred
@@ -135,7 +135,7 @@ class MemberUserController extends BaseApiController
     {
         $list = User::findOrFail($id);
 
-        return $this->sendResponse($list, 'Teacher details.');
+        return $this->sendResponse($list, 'User details.');
     }
 
     /**
@@ -172,8 +172,8 @@ class MemberUserController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('uploads/user/', $fileName)) {
-                    $data->profile_image = 'public/uploads/user/'.$fileName;
+                if ($file->move('uploads/teacher/', $fileName)) {
+                    $data->profile_image = 'public/uploads/teacher/'.$fileName;
                 }
             }
             $data->save();
@@ -186,7 +186,7 @@ class MemberUserController extends BaseApiController
             $userDetails->phone = $request->phone;
             $userDetails->save();
 
-            return $this->sendResponse([], 'Member data has successfully updated.');
+            return $this->sendResponse([], 'Teacher data has successfully updated.');
         }catch(\Exception $cus_ex){
             // Error through. Some error occurred
             return $this->sendError('Error', $cus_ex->getMessage(), 500);
@@ -206,7 +206,7 @@ class MemberUserController extends BaseApiController
             $data->status = 3;
             $data->delete();
 
-            return $this->sendResponse([], 'Member data has successfully deleted.');
+            return $this->sendResponse([], 'Teacher data has successfully deleted.');
         }catch(\Exception $cus_ex){
             return $this->sendError('Error', $cus_ex->getMessage(), 500);
         }
@@ -229,7 +229,7 @@ class MemberUserController extends BaseApiController
         $data->updated_at = date('Y-m-d H:i:s');
         $data->save();
 
-        return $this->sendResponse([], 'Member status has successfully changed.');
+        return $this->sendResponse([], 'Teacher status has successfully changed.');
     }
 
 }

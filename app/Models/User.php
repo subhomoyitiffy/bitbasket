@@ -80,11 +80,22 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * Get the details list associated with the user.
-     */
+    */
     public function user_subscriptions($is_active = [1]): BelongsToMany
     {
         return $this->belongsToMany(Package::class, 'user_subscriptions', 'user_id', 'subscription_id')
                     ->whereIn('user_subscriptions.is_active', $is_active);
+    }
+
+    /**
+     * Get the details list associated with the user.
+    */
+    public function user_parent_subscriptions()
+    {
+        return Package::where('user_subscriptions.user_id', auth()->user()->parent_id)
+                        ->leftJoin('user_subscriptions', 'user_subscriptions.subscription_id', '=', 'packages.id')
+                        ->where('user_subscriptions.is_active', '1')
+                        ->first();
     }
 
 }
