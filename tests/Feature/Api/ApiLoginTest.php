@@ -29,7 +29,7 @@ class ApiLoginTest extends TestCase
         $response = $this->postJson('/api/login', [
             'email' => $user->email,
             'password' => 'password123',
-            'role_id'=> env('MEMBER_ROLE_ID')
+            // 'role_id'=> env('MEMBER_ROLE_ID')
         ]);
 
         // Assert the response status and check for a token
@@ -40,7 +40,8 @@ class ApiLoginTest extends TestCase
                     'data'=>[
                         'token'=>true,
                         'token_type'=>'bearer',
-                        'user'=>[]
+                        'user'=>[],
+                        'parent_subscription'=>[]
                     ]
                 ]);
 
