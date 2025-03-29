@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\ForgotpasswordController;
 use App\Http\Controllers\Api\UserSubscriptionController;
 use App\Http\Controllers\Api\MemberUserController;
+use App\Http\Controllers\Api\MemberTeacherController;
+use App\Http\Controllers\Api\ContactrequestController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sign-up', [RegistrationController::class, 'registration']);
@@ -19,7 +21,9 @@ Route::post('/forgot-password/otp-verification', [ForgotpasswordController::clas
 Route::post('/forgot-password/reset_password', [ForgotpasswordController::class, 'reset_password']);
 
 Route::get('/state-list', [CommonController::class, 'getStates']);
+Route::get('/faq-list', [CommonController::class, 'getFaqs']);
 
+Route::resource('/contact-request', ContactrequestController::class);
 Route::resource('/user-subscription', UserSubscriptionController::class);
 
 Route::group([
@@ -36,6 +40,9 @@ Route::group([
 
     Route::post('/member-user/change-status/{id}', [MemberUserController::class, 'change_status']);
     Route::resource('/member-user', MemberUserController::class);
+
+    Route::post('/member-teacher/change-status/{id}', [MemberTeacherController::class, 'change_status']);
+    Route::resource('/member-teacher', MemberTeacherController::class);
 });
 
 /* Route::get('/user', function (Request $request) {
