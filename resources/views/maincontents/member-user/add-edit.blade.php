@@ -132,11 +132,11 @@ $controllerRoute = $module['controller_route'];
                      <input class="form-control" type="text" id="employer_identification_no" name="employer_identification_no" value="<?=$employer_identification_no?>" placeholder="Employer Identification Number" />
                   </div>
 
-                  <div class="mb-3 col-md-6">
+                  <!-- <div class="mb-3 col-md-6">
                      <label for="password" class="form-label">Password</label>
                      <input class="form-control" type="password" id="password" name="password" placeholder="Password" <?=((!empty($row))?'':'required')?> />
                      <small class="text-primary">Leave blank if no need to change password</small>
-                  </div>
+                  </div> -->
                   <div class="mb-3 col-md-6">
                      <label for="status" class="form-label">Status</label>
                      <select name="status" class="select2 form-select" id="status" required>
