@@ -31,9 +31,10 @@ class ContactrequestController extends BaseApiController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
             'email' => 'required|email',
-            // 'phone' => 'required',
+            'phone' => 'required|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string'
         ]);
@@ -42,9 +43,10 @@ class ContactrequestController extends BaseApiController
                 return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $data = new Contactrequest();
-            $data->name = $request->name;
+            $data->first_name = $request->first_name;
+            $data->last_name = $request->last_name;
             $data->email = $request->email;
-            // $data->phone = $request->phone;
+            $data->phone = $request->phone;
             $data->subject = $request->subject;
             $data->message = $request->message;
             $data->save();
@@ -99,8 +101,8 @@ class ContactrequestController extends BaseApiController
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
-    public function change_status(Request $request, $id)
+    */
+    /* public function change_status(Request $request, $id)
     {
         $request->validate([
             'status' => 'required|int'
@@ -112,6 +114,6 @@ class ContactrequestController extends BaseApiController
         $data->save();
 
         return $this->sendResponse([], 'Contactrequest '.($request->status == 0 ? 'Inactive' : 'Active').' successfully done.');
-    }
+    } */
 
 }

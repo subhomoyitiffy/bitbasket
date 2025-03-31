@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('contactrequests', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
+            $table->string('first_name', 50);
+            $table->string('last_name', 50);
+            $table->string('email', 100);
+            $table->string('phone', 20);
             $table->string('subject');
             $table->text('message');
             $table->softDeletes();
