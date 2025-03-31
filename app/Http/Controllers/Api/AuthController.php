@@ -32,7 +32,7 @@ class AuthController extends BaseApiController
         }
 
         $credentials = request(['email', 'password']);
-        $credentials['role_id'] = $this->member_role_id;
+        // $credentials['role_id'] = $this->member_role_id;
         try{
             if (! $token = JWTAuth::attempt($credentials)) {
                 return $this->sendError('Unauthorized', 'Email or Password not matched.', Response::HTTP_UNAUTHORIZED);
@@ -43,14 +43,15 @@ class AuthController extends BaseApiController
             if(auth()->user()->status == 2){
                 return $this->sendError('Unauthorized', 'Your account is declined by the admin. Please contact admin.', Response::HTTP_UNAUTHORIZED);
             }
-
+            $user = new User();
             return $this->sendResponse([
                                         'token_type' => 'bearer',
                                         'token' => $token,
                                         'user' => User::where('id', auth()->user()->id)
                                                         ->with('user_details')
                                                         ->with('user_subscriptions')
-                                                        ->get()
+                                                        ->get(),
+                                        'parent_subscription'=> auth()->user()->role_id != $this->member_role_id ? $user->user_parent_subscriptions() : []
                                     ], 'Login has successfully done.');
         } catch (JWTException $e) {
             return $this->sendError('Error', 'Login has failed.',  Response::HTTP_UNAUTHORIZED);

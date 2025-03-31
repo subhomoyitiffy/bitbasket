@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Stripe;
 use Validator;
-
+use App\Helpers\Helper;
 use App\Models\UserSubscription;
 use App\Models\Package;
 use App\Models\User;
@@ -15,16 +15,27 @@ use App\Models\UserDetails;
 
 class UserSubscriptionController extends BaseApiController
 {
+    private $stripe_secret = '';
+    public function __construct()
+    {
+        $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
+        $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
+        $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
+        $this->stripe_secret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = UserSubscription::where('user_id', auth()->user()->id)
-                                ->orderBy('is_active', 'ASC')
-                                ->get();
+        $sql = UserSubscription::where('user_id', auth()->user()->id)
+                                // ->where('is_active', 1)
+                                ->orderBy('id', 'DESC');
+        if(!empty($request->limit)){
+            $sql->take($request->limit);
+        }
 
-        return $this->sendResponse($list, 'User subscription history.');
+        return $this->sendResponse($sql->get(), 'User subscription history.');
     }
 
     /**
@@ -43,14 +54,12 @@ class UserSubscriptionController extends BaseApiController
 
         $subscription = Package::findOrFail($request->subscription_id);
         if($subscription){
-            Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-
-            $user = UserDetails::where('user_id', auth()->user()->id)->first();
-            $stripe_cust_id = $user->stripe_cust_id;
             try{
-                $cus_status = Stripe\Customer::retrieve($stripe_cust_id, []);
-                if(!$cus_status){
-                    try{
+                Stripe\Stripe::setApiKey($this->stripe_secret);
+                $user = UserDetails::where('user_id', auth()->user()->id)->first();
+                $stripe_cust_id = $user->stripe_cust_id;
+                try{
+                    if(empty($stripe_cust_id)){
                         $customer = Stripe\Customer::create([
                             'name' => auth()->user()->name,
                             'email' => auth()->user()->email,
@@ -60,10 +69,23 @@ class UserSubscriptionController extends BaseApiController
                         $user->stripe_cust_id = $customer->id;
                         $user->save();
                         $stripe_cust_id = $customer->id;
-                    }catch(\Exception $ex){
-                        // Error through. Some error occurred
-                        return $this->sendError('Stripe Error', $ex->getMessage(), 500);
+                    }else{
+                        $cus_status = Stripe\Customer::retrieve($stripe_cust_id, []);
+                        if(!$cus_status){
+                            $customer = Stripe\Customer::create([
+                                'name' => auth()->user()->name,
+                                'email' => auth()->user()->email,
+                                'source' => $request->stripe_token,
+                                'description' => $subscription->name. ' Subscription purchase'
+                            ]);
+                            $user->stripe_cust_id = $customer->id;
+                            $user->save();
+                            $stripe_cust_id = $customer->id;
+                        }
                     }
+                }catch(\Exception $ex){
+                    // Error through. Some error occurred
+                    return $this->sendError('Stripe Error', $ex->getMessage(), 500);
                 }
 
                 //Create proce object for a subscription package
@@ -72,7 +94,7 @@ class UserSubscriptionController extends BaseApiController
                     $price = Stripe\price::create([
                         'unit_amount' => round($subscription->price, 2) * 100,
                         'currency' => 'USD',
-                        'recurring' => ['interval' => 'month', 'interval_count'=> $subscription->duration],
+                        'recurring' => ['interval' => 'month', 'interval_count'=> 1],
                         'product_data' => ['name' => $subscription->name],
                     ]);
                     $stripe_price_id = $price->id;
@@ -139,7 +161,7 @@ class UserSubscriptionController extends BaseApiController
     */
     public function destroy(int $id)
     {
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe\Stripe::setApiKey($this->stripe_secret);
         try{
             /*--------- Check user/member has already active subscription, if found cancel it*/
             $user_has_subscription = UserSubscription::find($id);
