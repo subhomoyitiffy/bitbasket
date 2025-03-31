@@ -53,11 +53,11 @@ class MemberTeacherController extends BaseApiController
      */
     public function store(Request $request)
     {
-        /* $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
+        $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_teachers : 0 ;
         $total_enrolled_members = User::where('parent_id', auth()->user()->id)->where('role_id', $this->role_id)->get();
         if($total_enrolled_members->count() >= $number_of_team_members){
-            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of members.');
-        } */
+            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of teachers.');
+        }
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
