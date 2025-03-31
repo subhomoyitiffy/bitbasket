@@ -24,7 +24,7 @@ Route::get('/state-list', [CommonController::class, 'getStates']);
 Route::get('/faq-list', [CommonController::class, 'getFaqs']);
 
 Route::resource('/contact-request', ContactrequestController::class);
-Route::resource('/user-subscription', UserSubscriptionController::class);
+// Route::resource('/user-subscription', UserSubscriptionController::class);
 
 Route::group([
     'middleware' => ['auth:api'],
@@ -36,7 +36,7 @@ Route::group([
 
     Route::get('/package-list/{status}', [CommonController::class, 'getPackages']);
 
-    // Route::resource('/user-subscription', UserSubscriptionController::class);
+    Route::resource('/user-subscription', UserSubscriptionController::class);
 
     Route::post('/member-user/change-status/{id}', [MemberUserController::class, 'change_status']);
     Route::resource('/member-user', MemberUserController::class);
