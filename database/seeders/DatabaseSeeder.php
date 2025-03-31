@@ -17,7 +17,12 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             StateSeeder::class,
-            PackageSeeder::class
+            PackageSeeder::class,
+            UserSubscriptionSeeder::class,
+            UserDetailSeeder::class,
+            SubscriberTableSeeder::class,
+            GeneralSettingSeeder::class,
+            ModuleTableSeeder::class
         ]);
     }
 }
