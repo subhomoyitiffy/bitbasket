@@ -31,7 +31,7 @@ class BaseApiController extends Controller
                 'user_email'        => Auth::check() ? auth()->user()->email : '',
                 'user_name'         => Auth::check() ? auth()->user()->name : '',
                 'user_type'         => 'USER',
-                'ip_address'        => $_SERVER['REMOTE_ADDR'],
+                'ip_address'        => $_SERVER['REMOTE_ADDR']??'0',
                 'activity_type'     => 1,
                 'activity_details'  => $message,
                 'platform_type'     => 'MOBILE',
@@ -49,7 +49,7 @@ class BaseApiController extends Controller
     {
     	$response = [
             'success' => false,
-            'error' => $errorMessages,
+            'error' => $error.': '.$errorMessages,
         ];
 
         /* if(!empty($errorMessages)){
