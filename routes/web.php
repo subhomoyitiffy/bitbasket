@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 /* Admin Panel */
-    Route::match(['get', 'post'], '/', [UserController::class, 'login']);
+    Route::match(['get'], '/', [UserController::class, 'login']);
+    Route::post('signin', [UserController::class, 'login'])->name('signin');
     Route::match(['get','post'],'/forgot-password', [UserController::class, 'forgotPassword']);
     Route::match(['get','post'],'/validateOtp/{id}', [UserController::class, 'validateOtp']);
     Route::match(['get','post'],'/resendOtp/{id}', [UserController::class, 'resendOtp']);
@@ -129,4 +130,11 @@ Route::get('/clear-cache', function() {
     \Artisan::call('route:clear');
     \Artisan::call('view:clear');
     return "Cache cleared!";
+});
+
+Route::get('/check-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),
+        'csrf_token' => csrf_token(),
+    ]);
 });

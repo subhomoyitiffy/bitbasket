@@ -89,6 +89,7 @@ class MemberUserController extends Controller
                             $profile_image = '';
                         }
                     /* profile image */
+                    $password_number = rand(100000,999999);
                     $fields = [
                         'parent_id'         => $postData['parent_id'],
                         'role_id'           => 3,
@@ -96,7 +97,7 @@ class MemberUserController extends Controller
                         'email'             => strip_tags($postData['email']),
                         'country_code'      => strip_tags($postData['country_code']),
                         'phone'             => strip_tags($postData['phone']),
-                        'password'          => Hash::make(strip_tags($postData['password'])),
+                        'password'          => Hash::make($password_number),
                         'profile_image'     => $profile_image,
                         'status'            => strip_tags($postData['status']),
                     ];
@@ -174,28 +175,38 @@ class MemberUserController extends Controller
                             $profile_image = $data['row']->profile_image;
                         }
                     /* profile image */
-                    if($postData['password'] != ''){
-                        $fields = [
-                            'parent_id'         => $postData['parent_id'],
-                            'name'              => strip_tags($fullname),
-                            'email'             => strip_tags($postData['email']),
-                            'country_code'      => strip_tags($postData['country_code']),
-                            'phone'             => strip_tags($postData['phone']),
-                            'password'          => Hash::make(strip_tags($postData['password'])),
-                            'profile_image'     => $profile_image,
-                            'status'            => strip_tags($postData['status']),
-                        ];
-                    } else {
-                        $fields = [
-                            'parent_id'         => $postData['parent_id'],
-                            'name'              => strip_tags($fullname),
-                            'email'             => strip_tags($postData['email']),
-                            'country_code'      => strip_tags($postData['country_code']),
-                            'phone'             => strip_tags($postData['phone']),
-                            'profile_image'     => $profile_image,
-                            'status'            => strip_tags($postData['status']),
-                        ];
-                    }
+                    $password_number = rand(100000,999999);
+                    $fields = [
+                        'parent_id'         => $postData['parent_id'],
+                        'name'              => strip_tags($fullname),
+                        'email'             => strip_tags($postData['email']),
+                        'country_code'      => strip_tags($postData['country_code']),
+                        'phone'             => strip_tags($postData['phone']),
+                        'profile_image'     => $profile_image,
+                        'status'            => strip_tags($postData['status']),
+                    ];
+                    // if($postData['password'] != ''){
+                    //     $fields = [
+                    //         'parent_id'         => $postData['parent_id'],
+                    //         'name'              => strip_tags($fullname),
+                    //         'email'             => strip_tags($postData['email']),
+                    //         'country_code'      => strip_tags($postData['country_code']),
+                    //         'phone'             => strip_tags($postData['phone']),
+                    //         'password'          => Hash::make(strip_tags($postData['password'])),
+                    //         'profile_image'     => $profile_image,
+                    //         'status'            => strip_tags($postData['status']),
+                    //     ];
+                    // } else {
+                    //     $fields = [
+                    //         'parent_id'         => $postData['parent_id'],
+                    //         'name'              => strip_tags($fullname),
+                    //         'email'             => strip_tags($postData['email']),
+                    //         'country_code'      => strip_tags($postData['country_code']),
+                    //         'phone'             => strip_tags($postData['phone']),
+                    //         'profile_image'     => $profile_image,
+                    //         'status'            => strip_tags($postData['status']),
+                    //     ];
+                    // }
                     DB::table('users')->where('id', '=', $id)->update($fields);
                     $user_id = $id;
 
