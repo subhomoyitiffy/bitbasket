@@ -49,7 +49,8 @@ class BaseApiController extends Controller
     {
     	$response = [
             'success' => false,
-            'error' => $error.': '.$errorMessages,
+            'error' => $errorMessages,
+            'error_str'=> $error
         ];
 
         /* if(!empty($errorMessages)){
