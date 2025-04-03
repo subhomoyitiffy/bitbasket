@@ -18,10 +18,12 @@ class UserSubscriptionController extends BaseApiController
     private $stripe_secret = '';
     public function __construct()
     {
-        $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
-        $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
-        $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
-        $this->stripe_secret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
+        // $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
+        // $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
+        // $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
+        // $this->stripe_secret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
+
+        $this->stripe_secret = env('STRIPE_SECRET');
     }
     /**
      * Display a listing of the resource.
@@ -64,19 +66,52 @@ class UserSubscriptionController extends BaseApiController
                             'name' => auth()->user()->name,
                             'email' => auth()->user()->email,
                             'source' => $request->stripe_token,
-                            'description' => $subscription->name. ' Subscription purchase'
+                            'description' => $subscription->name. ' Subscription purchase',
+                            'address' => [
+                                'line1' => '123 Main Street', // Customer's address line 1
+                                'city' => 'Mumbai', // Customer's city
+                                'state' => 'Maharashtra', // Customer's state
+                                'postal_code' => '400001', // Customer's postal code
+                                'country' => 'IN', // Country code for India
+                            ],
                         ]);
                         $user->stripe_cust_id = $customer->id;
                         $user->save();
                         $stripe_cust_id = $customer->id;
                     }else{
-                        $cus_status = Stripe\Customer::retrieve($stripe_cust_id, []);
-                        if(!$cus_status){
+                        try{
+                            $cus_status = Stripe\Customer::retrieve($stripe_cust_id, []);
+                            if(!$cus_status){
+                                $customer = Stripe\Customer::create([
+                                    'name' => auth()->user()->name,
+                                    'email' => auth()->user()->email,
+                                    'source' => $request->stripe_token,
+                                    'description' => $subscription->name. ' Subscription purchase',
+                                    'address' => [
+                                        'line1' => '123 Main Street', // Customer's address line 1
+                                        'city' => 'Mumbai', // Customer's city
+                                        'state' => 'Maharashtra', // Customer's state
+                                        'postal_code' => '400001', // Customer's postal code
+                                        'country' => 'IN', // Country code for India
+                                    ],
+                                ]);
+                                $user->stripe_cust_id = $customer->id;
+                                $user->save();
+                                $stripe_cust_id = $customer->id;
+                            }
+                        }catch(\Exception $ex){
                             $customer = Stripe\Customer::create([
                                 'name' => auth()->user()->name,
                                 'email' => auth()->user()->email,
                                 'source' => $request->stripe_token,
-                                'description' => $subscription->name. ' Subscription purchase'
+                                'description' => $subscription->name. ' Subscription purchase',
+                                'address' => [
+                                    'line1' => '123 Main Street', // Customer's address line 1
+                                    'city' => 'Mumbai', // Customer's city
+                                    'state' => 'Maharashtra', // Customer's state
+                                    'postal_code' => '400001', // Customer's postal code
+                                    'country' => 'IN', // Country code for India
+                                ],
                             ]);
                             $user->stripe_cust_id = $customer->id;
                             $user->save();
@@ -104,8 +139,13 @@ class UserSubscriptionController extends BaseApiController
                 /*--------- Check user/member has already active subscription, if found cancel it*/
                 $user_has_subscription = UserSubscription::where('user_id', auth()->user()->id)->where('is_active', 1)->first();
                 if($user_has_subscription && !empty($user_has_subscription->stripe_subscription_id)){
-                    $sub = Stripe\Subscription::retrieve($user_has_subscription->stripe_subscription_id);
-                    $sub->cancel();
+                    try{
+                        $sub = Stripe\Subscription::retrieve($user_has_subscription->stripe_subscription_id);
+                        $sub->cancel();
+                    }catch(\Exception $ex){
+                        // Error through. Some error occurred
+                        //return $this->sendError('Stripe Error', $ex->getMessage(), 500);
+                    }
                 }
 
                 $has_subscription = Stripe\subscription::create([
@@ -166,16 +206,50 @@ class UserSubscriptionController extends BaseApiController
             /*--------- Check user/member has already active subscription, if found cancel it*/
             $user_has_subscription = UserSubscription::find($id);
             if($user_has_subscription && !empty($user_has_subscription->stripe_subscription_id)){
-                $sub = Stripe\Subscription::retrieve($user_has_subscription->stripe_subscription_id);
-                $sub->cancel();
+                try{
+                    $sub = Stripe\Subscription::retrieve($user_has_subscription->stripe_subscription_id);
+                    $sub->cancel();
+
+                    $user_has_subscription->is_active = 0;
+                    $user_has_subscription->subscription_end = date('Y-m-d H:i:s');
+                    $user_has_subscription->comment = 'Subscription has cancelled';
+                    $user_has_subscription->save();
+
+                    return $this->sendResponse([], 'User subscription cancelled successfully.');
+                }catch(\Exception $ex){
+                    // Error through. Some error occurred
+                    return $this->sendError('Stripe Error', 'Sorry!! Unable to cancel subscription due to '.$ex->getMessage(), 500);
+                }
             }
+        }catch(\Exception $cus_ex){
+            // Error through. Some error occurred
+            return $this->sendError('Stripe Error', $cus_ex->getMessage(), 500);
+        }
+    }
 
-            $user_has_subscription->is_active = 0;
-            $user_has_subscription->subscription_end = date('Y-m-d H:i:s');
-            $user_has_subscription->comment = 'Subscription has cancelled';
-            $user_has_subscription->save();
+    /**
+     * Remove the specified resource from storage.
+    */
+    public function invoice_list()
+    {
+        Stripe\Stripe::setApiKey($this->stripe_secret);
+        try{
+            /*--------- Check user/member has already active subscription, if found cancel it*/
+            $user_has_subscription = UserSubscription::where('user_id', auth()->user()->id)->where('is_active', 1)->first();
+            $user_details = UserDetails::where('user_id', auth()->user()->id)->first();
+            if($user_has_subscription && !empty($user_has_subscription->stripe_subscription_id)){
+                try{
+                    $list = Stripe\Invoice::all([
+                        'subscription' => $user_has_subscription->stripe_subscription_id
+                        // 'customer' => $user_details->stripe_cust_id,
+                    ]);
 
-            return $this->sendResponse([], 'User subscription cancelled successfully.');
+                    return $this->sendResponse(['list'=> $list], 'User subscription invoice list.');
+                }catch(\Exception $ex){
+                    // Error through. Some error occurred
+                    return $this->sendError('Stripe Error', 'Sorry!! Unable to cancel subscription due to '.$ex->getMessage(), 500);
+                }
+            }
         }catch(\Exception $cus_ex){
             // Error through. Some error occurred
             return $this->sendError('Stripe Error', $cus_ex->getMessage(), 500);

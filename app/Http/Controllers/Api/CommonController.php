@@ -34,11 +34,25 @@ class CommonController extends BaseApiController
     */
     public function getFaqs()
     {
-        $faqs = Faq::where('status', 1)->get();
-        $faq_categorys = FaqCategory::where('status', 1)->get();
+        // $faqs = Faq::where('status', 1)->get();
+        $faqs = FaqCategory::where('status', 1)->with('faqs')->get();
         return $this->sendResponse([
-            'faqs'=> $faqs,
-            'faq_categorys'=> $faq_categorys,
+            'faq_categories'=> $faqs,
+            // 'faq_categorys'=> $faq_categorys,
         ], 'All active FAQ & FAQ category list');
     }
+
+    /**
+     * Return all active FAQ & FAQ category list @JSON.
+    */
+    public function getNotifications()
+    {
+        // $faqs = Faq::where('status', 1)->get();
+        $faqs = FaqCategory::where('status', 1)->with('faqs')->get();
+        return $this->sendResponse([
+            'faq_categories'=> $faqs,
+            // 'faq_categorys'=> $faq_categorys,
+        ], 'All active FAQ & FAQ category list');
+    }
+
 }

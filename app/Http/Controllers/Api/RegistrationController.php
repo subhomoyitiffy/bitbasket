@@ -49,12 +49,22 @@ class RegistrationController extends BaseApiController
             $otp = mt_rand(1111, 9999);
             $otp_mail_hash = base64_encode($otp);
 
+            $image_path = "";
+            if (request()->hasFile('image')) {
+                $file = request()->file('image');
+                $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
+                if ($file->move('public/uploads/user/', $fileName)) {
+                    $image_path = 'public/uploads/user/'.$fileName;
+                }
+            }
+
             $user_id = User::insertGetId([
                 'role_id'=> $this->member_role_id,
                 'name'=> $request->first_name.' '.$request->last_name,
                 'email'=> $request->email,
                 'country_code' => $request->country_code,
                 'phone'=> $request->phone,
+                'profile_image' => $image_path,
                 'password'=> Hash::make($request->password),
                 'status'=> 0,
                 'remember_token' => $otp_mail_hash,

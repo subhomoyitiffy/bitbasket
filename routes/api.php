@@ -31,11 +31,14 @@ Route::group([
     // 'prifix' => 'admin'
 ], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/index', [AuthController::class, 'getUser']);
+    Route::get('/profile', [AuthController::class, 'getUser']);
+    Route::post('/change-password', [AuthController::class, 'change_password']);
+    Route::post('/update-profile', [AuthController::class, 'update_profile']);
 
 
     Route::get('/package-list/{status}', [CommonController::class, 'getPackages']);
 
+    Route::get('/user-subscription/invoice', [UserSubscriptionController::class, 'invoice_list']);
     Route::resource('/user-subscription', UserSubscriptionController::class);
 
     Route::post('/member-user/change-status/{id}', [MemberUserController::class, 'change_status']);

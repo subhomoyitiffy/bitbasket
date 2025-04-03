@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator;
 use JWTAuth;
 use App\Models\User;
+use App\Models\UserDetails;
 
 class AuthController extends BaseApiController
 {
@@ -50,7 +51,7 @@ class AuthController extends BaseApiController
                                         'user' => User::where('id', auth()->user()->id)
                                                         ->with('user_details')
                                                         ->with('user_subscriptions')
-                                                        ->get(),
+                                                        ->first(),
                                         'parent_subscription'=> auth()->user()->role_id != $this->member_role_id ? $user->user_parent_subscriptions() : []
                                     ], 'Login has successfully done.');
         } catch (JWTException $e) {
@@ -70,13 +71,111 @@ class AuthController extends BaseApiController
 
     /**
      * Display auth details.
-     */
+    */
     public function getUser()
     {
         try {
-            return $this->sendResponse(User::where('id', auth()->user()->id)->with('user_details')->get());
+            $user = new User();
+            return $this->sendResponse([
+                'user' => User::where('id', auth()->user()->id)
+                                ->with('user_details')
+                                ->with('user_subscriptions')
+                                ->first(),
+                'parent_subscription'=> auth()->user()->role_id != $this->member_role_id ? $user->user_parent_subscriptions() : []
+            ]);
         } catch (JWTException $exception) {
             return $this->sendError('Error', 'Sorry, the user cannot be logged out.',  Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Change Password.
+     *
+     * @return \Illuminate\Http\JsonResponse
+    */
+    public function change_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:6',
+            'c_password' => 'required|same:password'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try{
+            User::where('id', auth()->user()->id)
+                    ->update([
+                        'password' => Hash::make($request->password),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+            return $this->sendResponse([], 'Password update successfully done.');
+        }catch (\Exception $exception) {
+            return $this->sendError('Error', 'Sorry!! Something went wrong. Unable to update password.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function update_profile(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'country' => 'required',
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'email' => 'required|email|max:100|unique:users,email,'.auth()->user()->id,
+            'country_code' => 'required|max:5',
+            'phone' => 'required|max:15|unique:users,phone,'.auth()->user()->id,
+
+            'city' => 'required_if:country,uae',
+            'emarati' => 'required_if:country,uae',
+            'business_license' => 'required_if:country,uae',
+            'tax_registration_number' => 'required_if:country,uae',
+
+            'company_type' => 'required_if:country,usa',
+            'employer_identification_no' => 'required_if:country,usa'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try{
+            $image_path = "";
+            if (request()->hasFile('image')) {
+                $file = request()->file('image');
+                $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
+                if ($file->move('public/uploads/user/', $fileName)) {
+                    $image_path = 'public/uploads/user/'.$fileName;
+                }
+            }
+
+            User::find(auth()->user()->id)->update([
+                'name'=> $request->first_name.' '.$request->last_name,
+                'email'=> $request->email,
+                'country_code' => $request->country_code,
+                'phone'=> $request->phone,
+                'profile_image' => $image_path
+            ]);
+
+            UserDetails::where('user_id', auth()->user()->id)->update([
+                'country'=> $request->country,
+                'first_name'=> $request->first_name,
+                'last_name'=> $request->last_name,
+                'email'=> $request->email,
+                'country_code' => $request->country_code,
+                'phone'=> $request->phone,
+                'city_id'=> $request->city,
+                'emarati'=> $request->emarati,
+                'business_license'=> $request->business_license,
+                'tax_registration_number'=> $request->tax_registration_number,
+                'company_type' => $request->company_type,
+                'employer_identification_no' => $request->employer_identification_no
+            ]);
+
+            return $this->sendResponse([], 'Profile updated successfully.');
+
+        } catch (JWTException $e) {
+            return $this->sendError('Error', 'Sorry!! Unable to signup.');
         }
     }
 
