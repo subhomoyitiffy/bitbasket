@@ -14,6 +14,6 @@ class FaqCategory extends Model
     */
     public function faqs(): HasMany
     {
-        return $this->hasMany(faq::class, 'faq_category_id');
+        return $this->hasMany(Faq::class, 'faq_category_id');
     }
 }
