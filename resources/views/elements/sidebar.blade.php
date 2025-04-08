@@ -67,7 +67,6 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
          <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons fa fa-question-circle"></i>
             <div data-i18n="FAQ">FAQ</div>
-            <!-- <div class="badge bg-primary rounded-pill ms-auto">5</div> -->
          </a>
          <ul class="menu-sub">
             <?php if(in_array(5, $module_id)){?>
@@ -105,12 +104,21 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
          </a>
       </li>
    <?php }?>
+   <?php if(in_array(21, $module_id)){?>
+      <!-- Member Subject -->
+      <li class="menu-item <?=(($pageSegment == 'subject')?'active':'')?>">
+         <a href="<?=url('member-subject/list/all')?>" class="menu-link">
+            <i class="menu-icon tf-icons fa fa-book"></i>
+            <div data-i18n="Subjects">Subjects</div>
+         </a>
+      </li>
+   <?php }?>
    <?php if(in_array(13, $module_id)){?>
       <!-- Member Users-->
       <li class="menu-item <?=(($pageSegment == 'member-user' && $pageFunction == 'list')?'active':'')?>">
          <a href="<?=url('member-user/list/all')?>" class="menu-link">
             <i class="menu-icon tf-icons fa fa-users"></i>
-            <div data-i18n="Member Users">Member Users</div>
+            <div data-i18n="SMEs">SMEs</div>
          </a>
       </li>
    <?php }?>
@@ -132,6 +140,26 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
          </a>
       </li>
    <?php }?>
+
+   <?php if(in_array(19, $module_id)){?>
+      <!-- Institutes -->
+      <li class="menu-item <?=(($pageSegment == 'institute')?'active':'')?>">
+         <a href="<?=url('institute/list')?>" class="menu-link">
+            <i class="menu-icon tf-icons fa-solid fa-university"></i>
+            <div data-i18n="Institutes">Institutes</div>
+         </a>
+      </li>
+   <?php }?>
+   <?php if(in_array(20, $module_id)){?>
+      <!-- Students -->
+      <li class="menu-item <?=(($pageSegment == 'student')?'active':'')?>">
+         <a href="<?=url('student/list')?>" class="menu-link">
+            <i class="menu-icon tf-icons fa-solid fa-user-graduate"></i>
+            <div data-i18n="Students">Students</div>
+         </a>
+      </li>
+   <?php }?>
+
    <?php if(in_array(11, $module_id)){?>
       <!-- Lesson Plans -->
       <li class="menu-item <?=(($pageSegment == '')?'active':'')?>">

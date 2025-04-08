@@ -22,7 +22,7 @@ class MemberUserController extends Controller
     public function __construct()
     {        
         $this->data = array(
-            'title'             => 'Member User',
+            'title'             => 'SMEs',
             'controller'        => 'MemberUserController',
             'controller_route'  => 'member-user',
             'primary_key'       => 'id',

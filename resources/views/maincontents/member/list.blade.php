@@ -102,7 +102,10 @@ $controllerRoute = $module['controller_route'];
                                  <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-info btn-sm" title="Membership History"><i class="fa-solid fa-tags"></i>&nbsp;Membership History</a>
 
                                  <br><br>
-                                 <a target="_blank" href="<?=url('/member-user/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-users"></i>&nbsp;Team Users</a>
+                                 <a target="_blank" href="<?=url('/member-subject/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-book"></i>&nbsp;Subjects</a>
+
+                                 <br><br>
+                                 <a target="_blank" href="<?=url('/member-user/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-users"></i>&nbsp;SMEs</a>
                               </td>
                         </tr>
                      <?php } }?>
