@@ -66,7 +66,13 @@ class ModuleTableSeeder extends Seeder
                 'name' => 'Login Logs'
             ],
             [
-                'name' => 'Member Users'
+                'name' => 'SMEs'
+            ],
+            [
+                'name' => 'Institutes'
+            ],
+            [
+                'name' => 'Students'
             ]
         ]);
     }

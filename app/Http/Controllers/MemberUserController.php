@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\GeneralSetting;
 use App\Models\Package;
 use App\Models\State;
+use App\Models\Subject;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\Models\UserSubscription;
@@ -22,7 +23,7 @@ class MemberUserController extends Controller
     public function __construct()
     {        
         $this->data = array(
-            'title'             => 'Member User',
+            'title'             => 'SMEs',
             'controller'        => 'MemberUserController',
             'controller_route'  => 'member-user',
             'primary_key'       => 'id',
@@ -113,11 +114,7 @@ class MemberUserController extends Controller
                         'country_code'                          => strip_tags($postData['country_code']),
                         'phone'                                 => strip_tags($postData['phone']),
                         'city_id'                               => strip_tags($postData['city_id']),
-                        'emarati'                               => strip_tags($postData['emarati']),
-                        'business_license'                      => strip_tags($postData['business_license']),
-                        'tax_registration_number'               => strip_tags($postData['tax_registration_number']),
-                        'company_type'                          => strip_tags($postData['company_type']),
-                        'employer_identification_no'            => strip_tags($postData['employer_identification_no']),
+                        'subjects'                              => json_encode($postData['subjects']),
                         'created_at'                            => date('Y-m-d H:i:s'),
                         'updated_at'                            => date('Y-m-d H:i:s'),
                     ];
@@ -135,6 +132,7 @@ class MemberUserController extends Controller
             $data['row2']                   = [];
             $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
             $data['parentUsers']            = User::select('id', 'name')->where('status', '=', 1)->where('role_id', '=', 2)->orderBy('name', 'ASC')->get();
+            $data['subjectList']            = Subject::select('id', 'name')->where('status', '=', 1)->orderBy('name', 'ASC')->get();
             echo $this->admin_after_login_layout($title,$page_name,$data);
         }
     /* add */
@@ -148,7 +146,7 @@ class MemberUserController extends Controller
             $data['row2']                   = DB::table('user_details')->where('user_id', '=', $id)->first();
             $data['states']                 = State::select('id', 'name')->where('country_id', '=', 229)->orderBy('name', 'ASC')->get();
             $data['parentUsers']            = User::select('id', 'name')->where('status', '=', 1)->where('role_id', '=', 2)->orderBy('name', 'ASC')->get();
-
+            $data['subjectList']            = Subject::select('id', 'name')->where('status', '=', 1)->orderBy('name', 'ASC')->get();
             if($request->isMethod('post')){
                 $postData = $request->all();
                 $rules = [
@@ -219,11 +217,7 @@ class MemberUserController extends Controller
                         'country_code'                          => strip_tags($postData['country_code']),
                         'phone'                                 => strip_tags($postData['phone']),
                         'city_id'                               => strip_tags($postData['city_id']),
-                        'emarati'                               => strip_tags($postData['emarati']),
-                        'business_license'                      => strip_tags($postData['business_license']),
-                        'tax_registration_number'               => strip_tags($postData['tax_registration_number']),
-                        'company_type'                          => strip_tags($postData['company_type']),
-                        'employer_identification_no'            => strip_tags($postData['employer_identification_no']),
+                        'subjects'                              => json_encode($postData['subjects']),
                         'updated_at'                            => date('Y-m-d H:i:s'),
                     ];
                     DB::table('user_details')->where('user_id', '=', $id)->update($fields2);

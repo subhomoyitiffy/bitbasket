@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         User::insert([
             [
-                'role_id'=> 0,
+                'role_id'=> 1,
                 'parent_id'=> 0,
                 'name' => 'Admin User',
                 'email' => 'admin@bitbasket.com',
