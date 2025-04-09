@@ -106,7 +106,7 @@ $pageFunction = ((count($pageName)>1)?$pageName[1]:'');
    <?php }?>
    <?php if(in_array(21, $module_id)){?>
       <!-- Member Subject -->
-      <li class="menu-item <?=(($pageSegment == 'subject')?'active':'')?>">
+      <li class="menu-item <?=(($pageSegment == 'member-subject' && $pageFunction == 'list')?'active':'')?>">
          <a href="<?=url('member-subject/list/all')?>" class="menu-link">
             <i class="menu-icon tf-icons fa fa-book"></i>
             <div data-i18n="Subjects">Subjects</div>

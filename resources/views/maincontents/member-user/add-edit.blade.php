@@ -2,6 +2,15 @@
 use App\Helpers\Helper;
 $controllerRoute = $module['controller_route'];
 ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+
+<style type="text/css">
+    .choices__list--multiple .choices__item {
+        background-color: #010f16;
+        border: 1px solid #010f16;
+    }
+</style>
 <h4><?=$page_header?></h4>
 <h6 class="py-3 breadcrumb-wrapper mb-4">
    <span class="text-muted fw-light"><a href="<?=url('dashboard')?>">Dashboard</a> / <a href="<?=url($controllerRoute . '/list/')?>"><?=$module['title']?> List</a> / </span> <?=$page_header?>
@@ -37,11 +46,7 @@ $controllerRoute = $module['controller_route'];
                $phone                           = $row->phone;
                $profile_image                   = $row->profile_image;
                $city_id                         = $row2->city_id;
-               $emarati                         = $row2->emarati;
-               $business_license                = $row2->business_license;
-               $tax_registration_number         = $row2->tax_registration_number;
-               $company_type                    = $row2->company_type;
-               $employer_identification_no      = $row2->employer_identification_no;
+               $subjects                        = (($row2->subjects != '')?json_decode($row2->subjects):[]);
                $status                          = $row->status;
             } else {
                $parent_id                       = '';
@@ -53,11 +58,7 @@ $controllerRoute = $module['controller_route'];
                $phone                           = '';
                $profile_image                   = '';
                $city_id                         = '';
-               $emarati                         = '';
-               $business_license                = '';
-               $tax_registration_number         = '';
-               $company_type                    = '';
-               $employer_identification_no      = '';
+               $subjects                        = [];
                $status                          = '';
             }
             ?>
@@ -109,34 +110,15 @@ $controllerRoute = $module['controller_route'];
                         <?php } }?>
                      </select>
                   </div>
+                  
                   <div class="mb-3 col-md-6">
-                     <label for="emarati" class="form-label">Emarati</label>
-                     <input class="form-control" type="text" id="emarati" name="emarati" value="<?=$emarati?>" placeholder="Emarati" />
+                     <label for="choices-multiple-remove-button" class="form-label">Subjects</label>
+                     <select name="subjects[]" class="form-control" id="choices-multiple-remove-button" multiple required>
+                        <?php if($subjectList){ foreach($subjectList as $subjectRow){?>
+                           <option value="<?=$subjectRow->id?>" <?=((in_array($subjectRow->id, $subjects))?'selected':'')?>><?=$subjectRow->name?></option>
+                        <?php } }?>
+                     </select>
                   </div>
-
-                  <div class="mb-3 col-md-6">
-                     <label for="business_license" class="form-label">Business License</label>
-                     <input class="form-control" type="text" id="business_license" name="business_license" value="<?=$business_license?>" placeholder="Business License" />
-                  </div>
-                  <div class="mb-3 col-md-6">
-                     <label for="tax_registration_number" class="form-label">Tax Registration Number</label>
-                     <input class="form-control" type="text" id="tax_registration_number" name="tax_registration_number" value="<?=$tax_registration_number?>" placeholder="Tax Registration Number" />
-                  </div>
-
-                  <div class="mb-3 col-md-6">
-                     <label for="company_type" class="form-label">Company Type</label>
-                     <input class="form-control" type="text" id="company_type" name="company_type" value="<?=$company_type?>" placeholder="Company Type" />
-                  </div>
-                  <div class="mb-3 col-md-6">
-                     <label for="employer_identification_no" class="form-label">Employer Identification Number</label>
-                     <input class="form-control" type="text" id="employer_identification_no" name="employer_identification_no" value="<?=$employer_identification_no?>" placeholder="Employer Identification Number" />
-                  </div>
-
-                  <!-- <div class="mb-3 col-md-6">
-                     <label for="password" class="form-label">Password</label>
-                     <input class="form-control" type="password" id="password" name="password" placeholder="Password" <?=((!empty($row))?'':'required')?> />
-                     <small class="text-primary">Leave blank if no need to change password</small>
-                  </div> -->
                   <div class="mb-3 col-md-6">
                      <label for="status" class="form-label">Status</label>
                      <select name="status" class="select2 form-select" id="status" required>
@@ -186,4 +168,15 @@ $controllerRoute = $module['controller_route'];
       }
       return true;
    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){    
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount:30,
+            searchResultLimit:30,
+            renderChoiceLimit:30
+        });     
+    });
 </script>

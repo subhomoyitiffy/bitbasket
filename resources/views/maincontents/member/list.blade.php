@@ -47,7 +47,7 @@ $controllerRoute = $module['controller_route'];
                      </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
+                     <?php if(count($rows) > 0){ $sl=1; foreach($rows as $row){?>
                         <tr>
                               <th scope="row"><?=$sl++?></th>
                               <td>
@@ -102,13 +102,17 @@ $controllerRoute = $module['controller_route'];
                                  <a target="_blank" href="<?=url($controllerRoute . '/membership-history/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-info btn-sm" title="Membership History"><i class="fa-solid fa-tags"></i>&nbsp;Membership History</a>
 
                                  <br><br>
-                                 <a target="_blank" href="<?=url('/member-subject/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-book"></i>&nbsp;Subjects</a>
+                                 <a target="_blank" href="<?=url('/member-subject/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-warning btn-sm" title="Subjects"><i class="fa-solid fa-book"></i>&nbsp;Subjects</a>
 
                                  <br><br>
                                  <a target="_blank" href="<?=url('/member-user/list/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Team Users"><i class="fa-solid fa-users"></i>&nbsp;SMEs</a>
                               </td>
                         </tr>
-                     <?php } }?>
+                     <?php } } else {?>
+                        <tr>
+                           <td colspan="8" style="color: red; text-align: center;">No records found</td>
+                        </tr>
+                     <?php }?>
                   </tbody>
                </table>
             </div>

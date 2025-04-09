@@ -1,5 +1,6 @@
 <?php
 use App\Models\User;
+use App\Models\Subject;
 use App\Helpers\Helper;
 $controllerRoute = $module['controller_route'];
 ?>
@@ -41,11 +42,12 @@ $controllerRoute = $module['controller_route'];
                         <th scope="col">Phone</th>
                         <th scope="col">Country</th>
                         <th scope="col">State</th>
+                        <th scope="col">Subjects</th>
                         <th scope="col">Action</th>
                      </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
+                     <?php if(count($rows) > 0){ $sl=1; foreach($rows as $row){?>
                         <tr>
                               <th scope="row"><?=$sl++?></th>
                               <td>
@@ -61,6 +63,17 @@ $controllerRoute = $module['controller_route'];
                               <td><?=$row->user_phone?></td>
                               <td><?=$row->country?></td>
                               <td><?=$row->state_name?></td>
+                              <td>
+                                 <ul>
+                                    <?php
+                                    $subjects = json_decode($row->subjects);
+                                    if(!empty($subjects)){ for($k=0;$k<count($subjects);$k++){
+                                       $getSubject = Subject::select('name')->where('id', $subjects[$k])->first();
+                                    ?>
+                                       <li><?=(($getSubject)?$getSubject->name:'')?></li>
+                                    <?php } } ?>
+                                 </ul>
+                              </td>
                               <td>
                                  <a href="<?=url($controllerRoute . '/edit/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-primary btn-sm" title="Edit <?=$module['title']?>"><i class="fa fa-edit"></i></a>
                                  <a href="<?=url($controllerRoute . '/delete/'.Helper::encoded($row->user_id))?>" class="btn btn-outline-danger btn-sm" title="Delete <?=$module['title']?>" onclick="return confirm('Do You Want To Delete This <?=$module['title']?>');"><i class="fa fa-trash"></i></a>
@@ -81,7 +94,11 @@ $controllerRoute = $module['controller_route'];
                                  <?php }?>
                               </td>
                         </tr>
-                     <?php } }?>
+                     <?php } } else {?>
+                        <tr>
+                           <td colspan="9" style="color: red; text-align: center;">No records found</td>
+                        </tr>
+                     <?php }?>
                   </tbody>
                </table>
             </div>

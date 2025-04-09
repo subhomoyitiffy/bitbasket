@@ -41,7 +41,7 @@ $controllerRoute = $module['controller_route'];
                      </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                     <?php if($rows){ $sl=1; foreach($rows as $row){?>
+                     <?php if(count($rows) > 0){ $sl=1; foreach($rows as $row){?>
                         <tr>
                               <th scope="row"><?=$sl++?></th>
                               <td><?=$row->user_name?></td>
@@ -56,7 +56,11 @@ $controllerRoute = $module['controller_route'];
                                  <?php }?>
                               </td>
                         </tr>
-                     <?php } }?>
+                     <?php } } else {?>
+                        <tr>
+                           <td colspan="4" style="color: red; text-align: center;">No records found</td>
+                        </tr>
+                     <?php }?>
                   </tbody>
                </table>
             </div>
