@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->integer('member_id');
-            $table->string('name', 20);
+            $table->string('name', 100);
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
