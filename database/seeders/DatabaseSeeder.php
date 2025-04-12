@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             UserDetailSeeder::class,
             SubscriberTableSeeder::class,
             GeneralSettingSeeder::class,
-            ModuleTableSeeder::class
+            ModuleTableSeeder::class,
+            StudentSeeder::class,
+            InstituteSeeder::class,
         ]);
     }
 }

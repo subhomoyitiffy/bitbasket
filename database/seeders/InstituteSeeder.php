@@ -10,7 +10,7 @@ class InstituteSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */
+    */
     public function run(): void
     {
         Institute::insert([
