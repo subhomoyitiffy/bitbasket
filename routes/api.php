@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\ForgotpasswordController;
 use App\Http\Controllers\Api\UserSubscriptionController;
 use App\Http\Controllers\Api\MemberUserController;
 use App\Http\Controllers\Api\MemberTeacherController;
+use App\Http\Controllers\Api\MemberSubjectController;
+use App\Http\Controllers\Api\LessonplansController;
 use App\Http\Controllers\Api\ContactrequestController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -22,6 +24,7 @@ Route::post('/forgot-password/reset_password', [ForgotpasswordController::class,
 
 Route::get('/state-list', [CommonController::class, 'getStates']);
 Route::get('/faq-list', [CommonController::class, 'getFaqs']);
+Route::get('/student-list', [CommonController::class, 'getStudents']);
 
 Route::resource('/contact-request', ContactrequestController::class);
 // Route::resource('/user-subscription', UserSubscriptionController::class);
@@ -37,15 +40,25 @@ Route::group([
 
 
     Route::get('/package-list/{status}', [CommonController::class, 'getPackages']);
-
+    /* Route::post('/member-teacher/change-status/{id}', [MemberTeacherController::class, 'change_status']);
+    Route::resource('/member-teacher', MemberTeacherController::class); */
+    /**
+     * For direct member only
+    */
     Route::get('/user-subscription/invoice', [UserSubscriptionController::class, 'invoice_list']);
     Route::resource('/user-subscription', UserSubscriptionController::class);
 
+    // Member user === SME
     Route::post('/member-user/change-status/{id}', [MemberUserController::class, 'change_status']);
     Route::resource('/member-user', MemberUserController::class);
 
-    Route::post('/member-teacher/change-status/{id}', [MemberTeacherController::class, 'change_status']);
-    Route::resource('/member-teacher', MemberTeacherController::class);
+    Route::post('/member-subject/change-status/{id}', [MemberSubjectController::class, 'change_status']);
+    Route::resource('/member-subject', MemberSubjectController::class);
+    /**
+     * For SME only
+    */
+    Route::post('/lesson-plan/change-status/{id}', [LessonplansController::class, 'change_status']);
+    Route::resource('/lesson-plan', LessonplansController::class);
 });
 
 /* Route::get('/user', function (Request $request) {
