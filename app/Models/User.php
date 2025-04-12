@@ -98,4 +98,12 @@ class User extends Authenticatable implements JWTSubject
                         ->first();
     }
 
+    /**
+     * Get the details associated with the user.
+     */
+    public function user_subjects(): HasMany
+    {
+        return $this->hasMany(UserSubject::class, 'user_id');
+    }
+
 }

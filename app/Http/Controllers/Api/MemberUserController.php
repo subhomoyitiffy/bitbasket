@@ -10,15 +10,19 @@ use Validator;
 use Hash;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\Models\UserSubject;
 use App\Mail\RegistrationSuccess;
-
+/**-------------------------- SME -------------------------------- */
 class MemberUserController extends BaseApiController
 {
     private $role_id;
 
     public function __construct()
     {
-        $this->role_id = env('MEMBER_USER_ROLE_ID');
+        $this->role_id = env('SME_ROLE_ID');
+        if(auth()->user()->role_id != $this->member_role_id){
+            return $this->sendError('Error', 'Unauthorize request.');
+        }
     }
 
     /**
@@ -29,15 +33,15 @@ class MemberUserController extends BaseApiController
     public function index(Request $request)
     {
         $sql = User::where('users.role_id', $this->role_id)
-                    ->where('users.parent_id', auth()->user()->id);
+                    ->where('users.parent_id', auth()->user()->id)
+                    ->with('user_subjects');
         if(!empty($request->search)){
             $sql->where('first_name', 'like', '%'.$request->search.'%');
             $sql->orWhere('last_name', 'like', '%'.$request->search.'%');
             $sql->orWhere('email', 'like', '%'.$request->search.'%');
-            $sql->orWhere('phone', 'like', '%'.$request->search.'%');
+            $sql->orWhere('email', 'like', '%'.$request->search.'%');
         }
-        $list = $sql->latest()
-                ->paginate(env('LIST_PAGINATION_COUNT'));
+        $list = $sql->latest();
 
         return $this->sendResponse([
             'list'=> $list,
@@ -56,14 +60,15 @@ class MemberUserController extends BaseApiController
         $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
         $total_enrolled_members = User::where('parent_id', auth()->user()->id)->where('role_id', $this->role_id)->get();
         if($total_enrolled_members->count() >= $number_of_team_members){
-            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of members.');
+            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
         }
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
-            'country_code' => 'required',
-            'phone' => 'required|unique:users',
+            'subjects' => 'required',
+            // 'country_code' => 'required',
+            // 'phone' => 'required|unique:users',
             'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
@@ -88,8 +93,8 @@ class MemberUserController extends BaseApiController
                 'role_id'=> $this->role_id,
                 'name'=> $request->first_name.' '.$request->last_name,
                 'email'=> $request->email,
-                'country_code' => $request->country_code,
-                'phone'=> $request->phone,
+                // 'country_code' => '+1',
+                // 'phone'=> '0000000000',
                 'password'=> Hash::make($pwd),
                 'profile_image'     => $image_path,
                 'status'=> 1
@@ -102,8 +107,8 @@ class MemberUserController extends BaseApiController
                     'first_name'=> $request->first_name,
                     'last_name'=> $request->last_name,
                     'email'=> $request->email,
-                    'country_code' => $request->country_code,
-                    'phone'=> $request->phone,
+                    // 'country_code' => '+1',
+                    // 'phone'=> '0000000000',
                     'city_id'=> NULL,
                     'emarati'=> NULL,
                     'business_license'=> NULL,
@@ -111,9 +116,20 @@ class MemberUserController extends BaseApiController
                     'company_type' => NULL,
                     'employer_identification_no' => NULL
                 ]);
+
+                if(!empty($request->subjects)){
+                    foreach($request->subjects as $subject){
+                        if(!empty($subject)){
+                            UserSubject::create([
+                                'user_id'=> $user_id,
+                                'subject_id'=> $subject
+                            ]);
+                        }
+                    }
+                }
                 $full_name = $request->first_name.' '.$request->last_name;
-                $message = 'Your account registration has successfully completed. Now you can login using your registered email & password('.$pwd.').';
-                Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message));
+                $message = 'Your account registration has successfully completed. Now you can login using your registered email & password';
+                Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message, $pwd));
 
                 return $this->sendResponse([], 'Member account registration has successfully completed.');
             }else{
@@ -151,8 +167,9 @@ class MemberUserController extends BaseApiController
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
-            'country_code' => 'required',
-            'phone' => 'required|unique:users,phone,'.$id,
+            'subjects' => 'required',
+            // 'country_code' => 'required',
+            // 'phone' => 'required|unique:users,phone,'.$id,
             'status' => 'required',
         ]);
         if($validator->fails()){
@@ -162,8 +179,8 @@ class MemberUserController extends BaseApiController
         try{
             $data = User::findOrFail($id);
             $data->name = $request->first_name.' '.$request->last_name;
-            $data->country_code = $request->country_code;
-            $data->phone = $request->phone;
+            // $data->country_code = $request->country_code;
+            // $data->phone = $request->phone;
             $data->email = $request->email;
             $data->status = $request->status;
             if(!empty($request->password)){
@@ -185,6 +202,19 @@ class MemberUserController extends BaseApiController
             $userDetails->country_code = $request->country_code;
             $userDetails->phone = $request->phone;
             $userDetails->save();
+            if(!empty($request->subjects)){
+                UserSubject::where([
+                                    'user_id'=> $id
+                                ])->delete();
+                foreach($request->subjects as $subject){
+                    if(!empty($subject)){
+                        UserSubject::create([
+                            'user_id'=> $id,
+                            'subject_id'=> $subject
+                        ]);
+                    }
+                }
+            }
 
             return $this->sendResponse([], 'Member data has successfully updated.');
         }catch(\Exception $cus_ex){

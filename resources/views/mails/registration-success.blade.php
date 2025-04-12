@@ -225,7 +225,7 @@
                                                 style="padding:5px 25px;padding-top:0;padding-right:35px;padding-left:35px;word-break:break-word;">
                                                 <div style="font-family:Lato, system-ui, sans-serif;font-size:13px;text-align:left;color:white;"
                                                     class="news-content">
-                                                    <p style="margin-bottom: 6px;"> Login Password: Password enter in registration step 1.
+                                                    <p style="margin-bottom: 6px;"> Login Password: {{ !empty($pwd) ? $pwd : 'Password enter in registration step 1.'}}
                                                     </p>
                                                 </div>
                                             </td>

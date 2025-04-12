@@ -18,12 +18,13 @@ class RegistrationSuccess extends Mailable
      *
      * @return void
      */
-    public $email, $full_name, $content;
-    public function __construct($email = '', $full_name = '', $content = '')
+    public $email, $full_name, $content, $pwd;
+    public function __construct($email = '', $full_name = '', $content = '', $pwd = '')
     {
         $this->email = $email;
         $this->full_name = $full_name;
         $this->content = $content;
+        $this->pwd = $pwd;
     }
 
     /**
@@ -51,6 +52,7 @@ class RegistrationSuccess extends Mailable
                 'email' => $this->email,
                 'full_name' => $this->full_name,
                 'content' => $this->content,
+                'pwd' => $this->pwd,
             ],
         );
     }
