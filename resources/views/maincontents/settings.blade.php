@@ -350,6 +350,7 @@ $user_type = session('type');
                         <button type="reset" class="btn btn-label-secondary">Cancel</button>
                      </div>
                   </form>
+                  <a href="<?=url('test-email')?>" class="btn btn-primary btn-sm">Send Test Email</a>
                </div>
                <!-- /Account -->
             </div>
