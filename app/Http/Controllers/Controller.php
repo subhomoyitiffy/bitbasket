@@ -33,7 +33,7 @@ abstract class Controller
         $mailLibrary->SMTPSecure    = 'ssl';
         $mailLibrary->From          = $generalSetting->from_email;
         $mailLibrary->FromName      = $generalSetting->from_name;
-        $mailLibrary->AddReplyTo($generalSetting->from_email, $generalSetting->from_name);
+        // $mailLibrary->AddReplyTo($generalSetting->from_email, $generalSetting->from_name);
         if(is_array($email)) :
             foreach($email as $eml):
                 $mailLibrary->addAddress($eml);

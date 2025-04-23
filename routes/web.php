@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('general-settings', [UserController::class, 'general_settings']);
             Route::post('change-password', [UserController::class, 'change_password']);
             Route::post('email-settings', [UserController::class, 'email_settings']);
+            Route::get('test-email', [UserController::class, 'testEmail']);
             Route::post('email-template', [UserController::class, 'email_template']);
             Route::post('sms-settings', [UserController::class, 'sms_settings']);
             Route::post('footer-settings', [UserController::class, 'footer_settings']);

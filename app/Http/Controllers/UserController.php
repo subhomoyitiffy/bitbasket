@@ -433,6 +433,13 @@ class UserController extends Controller
                 return redirect()->back()->with('error_message', 'All Fields Required !!!');
             }
         }
+        public function testEmail(){
+            $to = 'subhomoy.freelancer.samanta@gmail.com';
+            $subject = "Test Email Subject On " . date('Y-m-d H:i:s');
+            $message = "Test Email Body On " . date('Y-m-d H:i:s');
+            $this->sendMail($to,$subject,$message);
+            return redirect('/settings/')->with('success_message', 'Test Email Sent Successfully !!!');
+        }
         public function email_template(Request $request){
             $postData = $request->all();
             $rules = [
