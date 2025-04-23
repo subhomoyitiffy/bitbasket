@@ -41,7 +41,7 @@ class MemberUserController extends BaseApiController
             $sql->orWhere('email', 'like', '%'.$request->search.'%');
             $sql->orWhere('email', 'like', '%'.$request->search.'%');
         }
-        $list = $sql->latest();
+        $list = $sql->latest()->get();
 
         return $this->sendResponse([
             'list'=> $list,
