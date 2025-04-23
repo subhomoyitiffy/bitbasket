@@ -57,7 +57,7 @@ class MemberSubjectController extends BaseApiController
 
         try{
             $has_subject_count = Subject::where('member_id', auth()->user()->id)
-                                        ->where('name', strtoupper($request->subject_name))
+                                        ->where('name', ucfirst($request->subject_name))
                                         ->where('status', '!=', 3)
                                         ->count();
             if($has_subject_count > 0){
@@ -65,7 +65,7 @@ class MemberSubjectController extends BaseApiController
             }
             Subject::insertGetId([
                 'member_id' => auth()->user()->id,
-                'name'=> strtoupper($request->subject_name),
+                'name'=> ucfirst($request->subject_name),
                 'status'=> 1
             ]);
             return $this->sendResponse([], 'Subject added successfully done.');
@@ -108,14 +108,14 @@ class MemberSubjectController extends BaseApiController
         try{
             $has_subject_count = Subject::where('member_id', auth()->user()->id)
                                         ->where('id', '!=', $id)
-                                        ->where('name', strtoupper($request->subject_name))
+                                        ->where('name', ucfirst($request->subject_name))
                                         ->where('status', '!=', 3)
                                         ->count();
             if($has_subject_count > 0){
                 return $this->sendError('Error', 'Same subject is already in your list.', 200);
             }
             $data = Subject::findOrFail($id);
-            $data->name = strtoupper($request->subject_name);
+            $data->name = ucfirst($request->subject_name);
             $data->status = $request->status;
             $data->save();
 
