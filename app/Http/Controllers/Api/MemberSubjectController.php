@@ -14,9 +14,11 @@ use App\Models\Subject;
 class MemberSubjectController extends BaseApiController
 {
     private $role_id;
+    private $member_role;
     public function __construct()
     {
         $this->role_id = env('SME_ROLE_ID');
+        $this->member_role = env('MEMBER_ROLE_ID');
     }
 
     /**
@@ -26,14 +28,12 @@ class MemberSubjectController extends BaseApiController
     */
     public function index(Request $request)
     {
-        echo 'SME role_id:'.$this->role_id.' | Member role_id: '.$this->member_role_id.' | login:'.auth()->user()->role_id;
         $member_id = "";
         if(auth()->user()->role_id == $this->role_id){
             $member_id = auth()->user()->parent_id;
-        }else if(auth()->user()->role_id == $this->member_role_id){
+        }else if(auth()->user()->role_id == $this->member_role){
             $member_id = auth()->user()->id;
         }
-        echo ' | member_id:'.$member_id;
         $sql = Subject::select('id', 'name', 'status')
                         ->where('member_id', $member_id);
         if(!empty($request->status)){
