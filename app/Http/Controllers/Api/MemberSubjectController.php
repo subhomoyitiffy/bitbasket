@@ -26,7 +26,7 @@ class MemberSubjectController extends BaseApiController
     */
     public function index(Request $request)
     {
-        echo 'SME role_id:'.$this->role_id.' | Member role_id: '.$this->member_role_id.' | login:'.$auth()->user()->role_id;
+        echo 'SME role_id:'.$this->role_id.' | Member role_id: '.$this->member_role_id.' | login:'.auth()->user()->role_id;
         $member_id = "";
         if(auth()->user()->role_id == $this->role_id){
             $member_id = auth()->user()->parent_id;
