@@ -13,10 +13,10 @@ use App\Models\Subject;
 
 class MemberSubjectController extends BaseApiController
 {
-
+    private $role_id;
     public function __construct()
     {
-
+        $this->role_id = env('SME_ROLE_ID');
     }
 
     /**
@@ -26,8 +26,14 @@ class MemberSubjectController extends BaseApiController
     */
     public function index(Request $request)
     {
+        $member_id = "";
+        if(auth()->user()->role_id == $this->role_id){
+            $member_id = auth()->user()->parent_id;
+        }else if(auth()->user()->role_id == $this->member_role_id){
+            $member_id = auth()->user()->id;
+        }
         $sql = Subject::select('id', 'name', 'status')
-                        ->where('member_id', auth()->user()->id);
+                        ->where('member_id', $member_id);
         if(!empty($request->status)){
             $sql->where('status', $request->status);
         }
