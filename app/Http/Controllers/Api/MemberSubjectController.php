@@ -61,7 +61,7 @@ class MemberSubjectController extends BaseApiController
                                         ->where('status', '!=', 3)
                                         ->count();
             if($has_subject_count > 0){
-                return $this->sendError('Error', 'Same subject is already in your list.', 200);
+                return $this->sendError('Error', 'Same subject is already in your list.', 201);
             }
             Subject::insertGetId([
                 'member_id' => auth()->user()->id,
@@ -112,7 +112,7 @@ class MemberSubjectController extends BaseApiController
                                         ->where('status', '!=', 3)
                                         ->count();
             if($has_subject_count > 0){
-                return $this->sendError('Error', 'Same subject is already in your list.', 200);
+                return $this->sendError('Error', 'Same subject is already in your list.', 201);
             }
             $data = Subject::findOrFail($id);
             $data->name = ucfirst($request->subject_name);

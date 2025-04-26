@@ -89,7 +89,7 @@ class LessonplansController extends BaseApiController
             if($Lesson_id){
                 foreach($request->students as $student){
                     LessonplanStudent::insertGetId([
-                        'user_id' => $student,
+                        'student_id' => $student,
                         'lessonplan_id' => $Lesson_id
                     ]);
                 }
@@ -152,7 +152,7 @@ class LessonplansController extends BaseApiController
                 ])->delete();
                 foreach($request->students as $student){
                     LessonplanStudent::insertGetId([
-                        'user_id' => $student,
+                        'student_id' => $student,
                         'lessonplan_id' => $id
                     ]);
                 }
