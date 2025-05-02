@@ -3,7 +3,7 @@ namespace App\Helpers;
 use App\Models\GeneralSetting;
 use Session;
 class Helper{
- 
+
     public static function pr($data, $action = TRUE){
         print "<pre>";
         print_r($data);
@@ -58,7 +58,7 @@ class Helper{
     public static function uptoTwoDecimal($number){
         return number_format((float)$number, 2, '.', '');
     }
-    public static function clean($string) 
+    public static function clean($string)
     {
        $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
        $string2 = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
@@ -77,72 +77,72 @@ class Helper{
     }
     /////////////////////////////////////new fn for time ago/////////////////////////////////////
     public static function time_ago($timestamp)
-    {       
+    {
         $time_ago        = strtotime($timestamp);
         $current_time    = time();
         $time_difference = $current_time - $time_ago;
         $seconds         = $time_difference;
-        
-        $minutes = round($seconds / 60); // value 60 is seconds  
-        $hours   = round($seconds / 3600); //value 3600 is 60 minutes * 60 sec  
-        $days    = round($seconds / 86400); //86400 = 24 * 60 * 60;  
-        $weeks   = round($seconds / 604800); // 7*24*60*60;  
-        $months  = round($seconds / 2629440); //((365+365+365+365+366)/5/12)*24*60*60  
+
+        $minutes = round($seconds / 60); // value 60 is seconds
+        $hours   = round($seconds / 3600); //value 3600 is 60 minutes * 60 sec
+        $days    = round($seconds / 86400); //86400 = 24 * 60 * 60;
+        $weeks   = round($seconds / 604800); // 7*24*60*60;
+        $months  = round($seconds / 2629440); //((365+365+365+365+366)/5/12)*24*60*60
         $years   = round($seconds / 31553280); //(365+365+365+365+366)/5 * 24 * 60 * 60
-                      
-        if ($seconds <= 60){    
-          return "Just Now";    
-        } else if ($minutes <= 60){    
-          if ($minutes == 1){    
-            return "1 minute ago";    
-          } else {    
-            return "$minutes minutes ago";    
-          }    
-        } else if ($hours <= 24){    
-          if ($hours == 1){    
-            return "an hour ago";    
-          } else {    
-            return "$hours hrs ago";    
-          }    
-        } else if ($days <= 7){    
-          if ($days == 1){    
-            return "yesterday";    
-          } else {    
-            return "$days days ago";    
-          }    
-        } else if ($weeks <= 4.3){    
-          if ($weeks == 1){    
-            return "a week ago";    
-          } else {    
-            return "$weeks weeks ago";    
-          }    
-        } else if ($months <= 12){    
-          if ($months == 1){    
-            return "a month ago";    
-          } else {    
-            return "$months months ago";    
-          }    
-        } else {          
-          if ($years == 1){    
-            return "one year ago";    
-          } else {    
-            return "$years years ago";    
+
+        if ($seconds <= 60){
+          return "Just Now";
+        } else if ($minutes <= 60){
+          if ($minutes == 1){
+            return "1 minute ago";
+          } else {
+            return "$minutes minutes ago";
+          }
+        } else if ($hours <= 24){
+          if ($hours == 1){
+            return "an hour ago";
+          } else {
+            return "$hours hrs ago";
+          }
+        } else if ($days <= 7){
+          if ($days == 1){
+            return "yesterday";
+          } else {
+            return "$days days ago";
+          }
+        } else if ($weeks <= 4.3){
+          if ($weeks == 1){
+            return "a week ago";
+          } else {
+            return "$weeks weeks ago";
+          }
+        } else if ($months <= 12){
+          if ($months == 1){
+            return "a month ago";
+          } else {
+            return "$months months ago";
+          }
+        } else {
+          if ($years == 1){
+            return "one year ago";
+          } else {
+            return "$years years ago";
           }
         }
     }
     // Create a formatting function
     public static function formatting($phone){
-        
+
         // Pass phone number in preg_match function
         if(preg_match(
-            '/^\+[0-9]([0-9]{3})([0-9]{3})([0-9]{4})$/', 
+            '/^\+[0-9]([0-9]{3})([0-9]{3})([0-9]{4})$/',
         $phone, $value)) {
-          
+
             // Store value in format variable
             // $format = $value[1] . '-' . $value[2] . '-' . $value[3];
             $format = $value[1] . '-' . $value[2] . '-' . '****';
         }
-        else {             
+        else {
             // If given number is invalid
             $format = "Invalid phone number";
         }
@@ -200,7 +200,7 @@ class Helper{
     public static function getSettingValue($slug){
         $generalSetting     = GeneralSetting::select('value')->where('slug', '=', $slug)->first();
         // echo '<pre>';print_r($generalSetting);die;
-        return $generalSetting->value;
+        return $generalSetting ? $generalSetting->value : '';
     }
 }
 ?>

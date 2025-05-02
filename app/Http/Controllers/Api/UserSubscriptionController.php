@@ -31,6 +31,7 @@ class UserSubscriptionController extends BaseApiController
     public function index(Request $request)
     {
         $sql = UserSubscription::where('user_id', auth()->user()->id)
+                                ->with('subscription_details')
                                 // ->where('is_active', 1)
                                 ->orderBy('id', 'DESC');
         if(!empty($request->limit)){

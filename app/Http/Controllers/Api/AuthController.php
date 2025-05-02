@@ -36,9 +36,12 @@ class AuthController extends BaseApiController
         $credentials = request(['email', 'password']);
         // $credentials['role_id'] = $this->member_role_id;
         try{
-            if (! $token = JWTAuth::attempt($credentials)) {
+            // if (! $token = JWTAuth::attempt($credentials)) {
+            if (! $token = auth('api')->attempt($credentials)) {
                 return $this->sendError('Unauthorized', 'Email or Password not matched.', Response::HTTP_UNAUTHORIZED);
             }
+            // Set guard to "api" for the current request
+            auth()->shouldUse('api');
             if(auth()->user()->status == 0){
                 return $this->sendError('Unauthorized', 'Your account is not verified yet. Please verify your account to login.', Response::HTTP_UNAUTHORIZED);
             }
