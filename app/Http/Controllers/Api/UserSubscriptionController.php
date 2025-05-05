@@ -248,7 +248,7 @@ class UserSubscriptionController extends BaseApiController
                     return $this->sendResponse(['list'=> $list], 'User subscription invoice list.');
                 }catch(\Exception $ex){
                     // Error through. Some error occurred
-                    return $this->sendError('Stripe Error', 'Sorry!! Unable to cancel subscription due to '.$ex->getMessage(), 500);
+                    return $this->sendError('Stripe Error', 'Sorry!! Unable to get subscription details due to '.$ex->getMessage(), 500);
                 }
             }
         }catch(\Exception $cus_ex){
