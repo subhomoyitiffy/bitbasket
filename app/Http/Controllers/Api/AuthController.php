@@ -153,7 +153,7 @@ class AuthController extends BaseApiController
                 }
             }
 
-            User::find(auth()->user()->id)->update([
+            User::where('id', auth()->user()->id)->update([
                 'name'=> $request->first_name.' '.$request->last_name,
                 'email'=> $request->email,
                 'country_code' => $request->country_code,
