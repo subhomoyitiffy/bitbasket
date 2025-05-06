@@ -63,7 +63,7 @@ class CommonController extends BaseApiController
     public function getStudents(Request $request)
     {
         // $faqs = Faq::where('status', 1)->get();
-        $sql = Student::where('status', 1);
+        $sql = Student::where('status', 1)->with('institute');
         $orderBy = !empty($request->order_by) ? $request->order_by : 'ASC';
         if(!empty($request->order_by_column)){
             $sql->orderBy($request->order_by_column, $orderBy);
