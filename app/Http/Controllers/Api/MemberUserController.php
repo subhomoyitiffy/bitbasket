@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BaseApiController as BaseApiController;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Hash;
 use App\Models\User;
@@ -81,9 +82,8 @@ class MemberUserController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('public/uploads/user/', $fileName)) {
-                    $image_path = 'public/uploads/user/'.$fileName;
-                }
+                Storage::disk('public')->put('uploads/user/'.$fileName, file_get_contents($file));
+                $image_path = 'storage/uploads/user/'.$fileName;
             }
             $my_str = "543ZAbcdabXRLcd123PTas@t9876GTDX#EChFIHBnWqY";
             $my_str = str_shuffle($my_str);
@@ -93,8 +93,6 @@ class MemberUserController extends BaseApiController
                 'role_id'=> $this->role_id,
                 'name'=> $request->first_name.' '.$request->last_name,
                 'email'=> $request->email,
-                // 'country_code' => '+1',
-                // 'phone'=> '0000000000',
                 'password'=> Hash::make($pwd),
                 'profile_image'     => $image_path,
                 'status'=> 1
@@ -107,8 +105,6 @@ class MemberUserController extends BaseApiController
                     'first_name'=> $request->first_name,
                     'last_name'=> $request->last_name,
                     'email'=> $request->email,
-                    // 'country_code' => '+1',
-                    // 'phone'=> '0000000000',
                     'city_id'=> NULL,
                     'emarati'=> NULL,
                     'business_license'=> NULL,
@@ -149,9 +145,9 @@ class MemberUserController extends BaseApiController
      */
     public function show($id)
     {
-        $list = User::findOrFail($id);
+        $list = User::where('id', $id)->with('user_subjects')->first();
 
-        return $this->sendResponse($list, 'Teacher details.');
+        return $this->sendResponse($list, 'SME details.');
     }
 
     /**
@@ -168,8 +164,6 @@ class MemberUserController extends BaseApiController
             'last_name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'subjects' => 'required',
-            // 'country_code' => 'required',
-            // 'phone' => 'required|unique:users,phone,'.$id,
             'status' => 'required',
         ]);
         if($validator->fails()){
@@ -179,8 +173,6 @@ class MemberUserController extends BaseApiController
         try{
             $data = User::findOrFail($id);
             $data->name = $request->first_name.' '.$request->last_name;
-            // $data->country_code = $request->country_code;
-            // $data->phone = $request->phone;
             $data->email = $request->email;
             $data->status = $request->status;
             if(!empty($request->password)){
@@ -189,9 +181,8 @@ class MemberUserController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('uploads/user/', $fileName)) {
-                    $data->profile_image = 'public/uploads/user/'.$fileName;
-                }
+                Storage::disk('public')->put('uploads/user/'.$fileName, file_get_contents($file));
+                $data->profile_image = 'storage/uploads/user/'.$fileName;
             }
             $data->save();
 

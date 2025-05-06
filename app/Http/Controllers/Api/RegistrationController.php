@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -53,9 +53,8 @@ class RegistrationController extends BaseApiController
             if (request()->hasFile('image')) {
                 $file = request()->file('image');
                 $fileName = md5($file->getClientOriginalName() .'_'. time()) . "." . $file->getClientOriginalExtension();
-                if ($file->move('public/uploads/user/', $fileName)) {
-                    $image_path = 'public/uploads/user/'.$fileName;
-                }
+                Storage::disk('public')->put('uploads/user/'.$fileName, file_get_contents($file));
+                $image_path = 'storage/uploads/user/'.$fileName;
             }
 
             $user_id = User::insertGetId([
