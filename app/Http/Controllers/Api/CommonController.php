@@ -75,7 +75,7 @@ class CommonController extends BaseApiController
         return $this->sendResponse([
             'students'=> $list,
             'institutes'=> Institute::where('status', 1)->orderBy('name', 'ASC')->get(),
-        ], 'All active FAQ & FAQ category list');
+        ], 'All active students list');
     }
 
 }

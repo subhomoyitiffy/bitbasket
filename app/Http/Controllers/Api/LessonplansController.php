@@ -28,7 +28,8 @@ class LessonplansController extends BaseApiController
     {
         $sql = Lessonplan::where('user_id', auth()->user()->id)
                             ->where('status', '!=', 4) //[4-> Archived]
-                            ->with('students');
+                            ->with('students')
+                            ->with('subject');
         if(!empty($request->status)){
             $sql->where('status', $request->status);
         }
@@ -110,7 +111,7 @@ class LessonplansController extends BaseApiController
      */
     public function show($id)
     {
-        $list = Lessonplan::where('id', $id)->with('students')->first();
+        $list = Lessonplan::where('id', $id)->with('students')->with('subject')->first();
 
         return $this->sendResponse($list, 'Lesson plan details.');
     }
