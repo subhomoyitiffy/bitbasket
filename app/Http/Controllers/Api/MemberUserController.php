@@ -34,8 +34,8 @@ class MemberUserController extends BaseApiController
     public function index(Request $request)
     {
         $sql = User::where('users.role_id', $this->role_id)
-                    ->where('users.parent_id', auth()->user()->id)
-                    ->with('user_subjects');
+                    ->where('users.parent_id', auth()->user()->id);
+                    // ->with('user_subjects');
         if(!empty($request->search)){
             $sql->where('first_name', 'like', '%'.$request->search.'%');
             $sql->orWhere('last_name', 'like', '%'.$request->search.'%');
@@ -43,7 +43,14 @@ class MemberUserController extends BaseApiController
             $sql->orWhere('email', 'like', '%'.$request->search.'%');
         }
         $list = $sql->latest()->get();
-
+        if($list->count() > 0){
+            foreach($list as $index => $val){
+                $list[$index]->user_subjects = UserSubject::where('user_id', $val->id)
+                                                            ->get()
+                                                            ->pluck('id')
+                                                            ->toArray();
+            }
+        }
         return $this->sendResponse([
             'list'=> $list,
             'subscription_details'=> auth()->user()->user_subscriptions[0] ?? []
@@ -146,8 +153,11 @@ class MemberUserController extends BaseApiController
      */
     public function show($id)
     {
-        $list = User::where('id', $id)->with('user_subjects')->first();
-
+        $list = User::where('id', $id)->first();
+        $list->user_subjects = UserSubject::where('user_id', $list->id)
+                                            ->get()
+                                            ->pluck('id')
+                                            ->toArray();
         return $this->sendResponse($list, 'SME details.');
     }
 
