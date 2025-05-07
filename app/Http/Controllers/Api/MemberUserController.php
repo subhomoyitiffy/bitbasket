@@ -64,13 +64,14 @@ class MemberUserController extends BaseApiController
             return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
         }
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users',
-            'subjects' => 'required',
-            // 'country_code' => 'required',
-            // 'phone' => 'required|unique:users',
-            'image' => 'required|mimes:jpeg,png,jpg,gif,svg',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|max:150|unique:users,email,' . $request->id,
+            'subjects' => 'required|array|min:1',
+            'subjects.*' => 'integer|exists:subjects,id',
+            // 'country_code' => 'required|string|max:5',
+            // 'phone' => 'required|digits_between:10,15|unique:users,phone,' . $request->id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if($validator->fails()){
@@ -160,11 +161,12 @@ class MemberUserController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'subjects' => 'required',
-            'status' => 'required',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|max:150|unique:users,email,' . $id,
+            'subjects' => 'required|array|min:1',
+            'subjects.*' => 'integer|exists:subjects,id',
+            'status' => 'required|boolean',  // Assuming status is a boolean (1 or 0)
         ]);
         if($validator->fails()){
             return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
