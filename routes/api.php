@@ -9,10 +9,10 @@ use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\ForgotpasswordController;
 use App\Http\Controllers\Api\UserSubscriptionController;
 use App\Http\Controllers\Api\MemberUserController;
-use App\Http\Controllers\Api\MemberTeacherController;
 use App\Http\Controllers\Api\MemberSubjectController;
 use App\Http\Controllers\Api\LessonplansController;
 use App\Http\Controllers\Api\ContactrequestController;
+use App\Http\Controllers\Api\StudentLessonplanController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sign-up', [RegistrationController::class, 'registration']);
@@ -25,6 +25,11 @@ Route::post('/forgot-password/reset_password', [ForgotpasswordController::class,
 Route::get('/state-list', [CommonController::class, 'getStates']);
 Route::get('/faq-list', [CommonController::class, 'getFaqs']);
 Route::get('/student-list', [CommonController::class, 'getStudents']);
+
+Route::get('/lessonplan-explanation', [StudentLessonplanController::class, 'index']);
+Route::post('/lessonplan-explanation', [StudentLessonplanController::class, 'store']);
+Route::get('/lessonplan-explanation/edit/{id}', [StudentLessonplanController::class, 'enable_edit']);
+Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']);
 
 Route::resource('/contact-request', ContactrequestController::class);
 // Route::resource('/user-subscription', UserSubscriptionController::class);
