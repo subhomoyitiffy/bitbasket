@@ -172,14 +172,14 @@ class LessonplansController extends BaseApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function archived($id)
     {
         try{
             $data = Lessonplan::findOrFail($id);
-            $data->status = 3;
+            $data->status = 4;
             $data->delete();
 
-            return $this->sendResponse([], 'Lesson plan has successfully deleted.');
+            return $this->sendResponse([], 'Lesson plan has successfully archived.');
         }catch(\Exception $cus_ex){
             return $this->sendError('Error', $cus_ex->getMessage(), 500);
         }

@@ -58,6 +58,7 @@ Route::group([
      * For SME only
     */
     Route::post('/lesson-plan/change-status/{id}', [LessonplansController::class, 'change_status']);
+    Route::get('/lesson-plan/archived/{id}', [LessonplansController::class, 'archived']);
     Route::resource('/lesson-plan', LessonplansController::class);
 });
 

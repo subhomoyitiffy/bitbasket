@@ -179,7 +179,7 @@ class AuthController extends BaseApiController
             return $this->sendResponse([], 'Profile updated successfully.');
 
         } catch (JWTException $e) {
-            return $this->sendError('Error', 'Sorry!! Unable to signup.');
+            return $this->sendError('Error', 'Sorry!! Unable to update profile.');
         }
     }
 

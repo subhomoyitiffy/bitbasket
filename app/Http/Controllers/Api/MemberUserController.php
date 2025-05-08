@@ -45,9 +45,10 @@ class MemberUserController extends BaseApiController
         $list = $sql->latest()->get();
         if($list->count() > 0){
             foreach($list as $index => $val){
-                $list[$index]->user_subjects = UserSubject::where('user_id', $val->id)
+                $list[$index]->user_subjects = UserSubject::select('subjects.id', 'subjects.name')
+                                                            ->join('subjects', 'subjects.id', '=', 'user_subjects.subject_id')
+                                                            ->where('user_subjects.user_id', $val->id)
                                                             ->get()
-                                                            ->pluck('id')
                                                             ->toArray();
             }
         }
@@ -154,9 +155,10 @@ class MemberUserController extends BaseApiController
     public function show($id)
     {
         $list = User::where('id', $id)->first();
-        $list->user_subjects = UserSubject::where('user_id', $list->id)
+        $list->user_subjects = UserSubject::select('subjects.id', 'subjects.name')
+                                            ->join('subjects', 'subjects.id', '=', 'user_subjects.subject_id')
+                                            ->where('user_subjects.user_id', $list->id)
                                             ->get()
-                                            ->pluck('id')
                                             ->toArray();
         return $this->sendResponse($list, 'SME details.');
     }
