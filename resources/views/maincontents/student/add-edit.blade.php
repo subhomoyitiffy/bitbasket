@@ -69,8 +69,8 @@ $controllerRoute = $module['controller_route'];
                      <input class="form-control" type="text" id="work_email" name="work_email" value="<?=$work_email?>" required placeholder="Email" />
                   </div>
                   <div class="col-lg-4 col-md-4">
-                     <label for="phone" class="form-label">Phone <small class="text-danger">*</small></label>
-                     <input class="form-control" type="text" id="phone" name="phone" value="<?=$phone?>" required placeholder="Phone" />
+                     <label for="phone" class="form-label">API KEY <small class="text-danger">*</small></label>
+                     <input class="form-control" type="text" id="phone" name="phone" value="<?=$phone?>" required placeholder="API KEY" />
                   </div>
                   <div class="col-lg-4 col-md-4">
                      <label for="username" class="form-label d-block">Status <small class="text-danger">*</small></label>
