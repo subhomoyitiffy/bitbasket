@@ -27,13 +27,13 @@ class StudentLessonplanController extends BaseApiController
                     ->join('lessonplans', 'lessonplans.id', '=', 'lessonplan_student_code_explanations.lessonplan_id')
                     ->join('students', 'students.id', '=', 'lessonplan_student_code_explanations.student_id')
                     ->join('institutes', 'institutes.id', '=', 'students.institute_id')
-                    ->where('students.token', $request->token);
+                    ->where('students.token', $request->token)
+                    ->orderBy('lessonplan_student_code_explanations.id', 'desc');
         if(!empty($request->limit)){
-            $sql->take($request->limit);
+            $list = $sql->take($request->limit)->get();
+        }else{
+            $list = $sql->withTrashed()->get();
         }
-        $list = $sql->orderBy('lessonplan_student_code_explanations.id', 'desc')
-                    ->get();
-                    // ->with('user_subjects');
 
         return $this->sendResponse([
             $list
@@ -126,5 +126,24 @@ class StudentLessonplanController extends BaseApiController
         return $this->sendResponse([], 'Code saved for student.');
     }
 
+    public function get_student_lessonplan(Request $request, $token){
+        if(empty($token)){
+            return $this->sendError('Authentication Error', 'Token is missing.', 201);
+        }
+
+        $student_with_lessonplan = Student::with('lessonplan')
+                                        ->where('token', $token)->first();
+        if(!$student_with_lessonplan){
+            return $this->sendError('Authentication Error', 'Unable to identify student.', 201);
+        }
+
+        return $this->sendResponse([
+            $student_with_lessonplan
+        ], 'Student lessonplan list.');
+    }
+
+    public function chat_conversion(Request $request){
+
+    }
 
 }

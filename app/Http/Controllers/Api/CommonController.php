@@ -70,12 +70,17 @@ class CommonController extends BaseApiController
         }else{
             $sql->orderBy('first_name', $orderBy);
         }
+        $message = "All active students list";
+        if(!empty($request->token)){
+            $sql->where('token', $request->token);
+            $message = "Get students list";
+        }
 
         $list = $sql->get();
         return $this->sendResponse([
             'students'=> $list,
             'institutes'=> Institute::where('status', 1)->orderBy('name', 'ASC')->get(),
-        ], 'All active students list');
+        ], $message);
     }
 
 }

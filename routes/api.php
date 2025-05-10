@@ -30,6 +30,7 @@ Route::get('/lessonplan-explanation', [StudentLessonplanController::class, 'inde
 Route::post('/lessonplan-explanation', [StudentLessonplanController::class, 'store']);
 Route::get('/lessonplan-explanation/edit/{id}', [StudentLessonplanController::class, 'enable_edit']);
 Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']);
+Route::get('/get-lessonplan/{token}', [StudentLessonplanController::class, 'get_student_lessonplan']);
 
 Route::resource('/contact-request', ContactrequestController::class);
 // Route::resource('/user-subscription', UserSubscriptionController::class);
