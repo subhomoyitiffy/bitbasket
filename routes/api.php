@@ -26,7 +26,7 @@ Route::get('/state-list', [CommonController::class, 'getStates']);
 Route::get('/faq-list', [CommonController::class, 'getFaqs']);
 Route::get('/student-list', [CommonController::class, 'getStudents']);
 
-Route::get('/lessonplan-explanation', [StudentLessonplanController::class, 'index']);
+Route::get('/lessonplan-explanation/{lessonplan_id}', [StudentLessonplanController::class, 'index']);
 Route::post('/lessonplan-explanation', [StudentLessonplanController::class, 'store']);
 Route::get('/lessonplan-explanation/edit/{id}', [StudentLessonplanController::class, 'enable_edit']);
 Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']);

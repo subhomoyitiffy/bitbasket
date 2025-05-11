@@ -19,7 +19,7 @@ class StudentLessonplanController extends BaseApiController
      *
      * @return \Illuminate\Http\Response
     */
-    public function index(Request $request)
+    public function index(Request $request, $lessonplan_id)
     {
         $has_active_student = Student::where('token', $request->token)->first();
         if(!$has_active_student){
@@ -31,6 +31,7 @@ class StudentLessonplanController extends BaseApiController
                     ->join('students', 'students.id', '=', 'lessonplan_student_code_explanations.student_id')
                     ->join('institutes', 'institutes.id', '=', 'students.institute_id')
                     ->where('students.token', $request->token)
+                    ->where('lessonplan_student_code_explanations.lessonplan_id', $lessonplan_id)
                     ->orderBy('lessonplan_student_code_explanations.id', 'desc');
         if(!empty($request->limit)){
             $list = $sql->take($request->limit)->get();
