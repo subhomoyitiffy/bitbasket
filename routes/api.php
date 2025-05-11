@@ -32,6 +32,11 @@ Route::get('/lessonplan-explanation/edit/{id}', [StudentLessonplanController::cl
 Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']);
 Route::get('/get-lessonplan/{token}', [StudentLessonplanController::class, 'get_student_lessonplan']);
 
+
+Route::post('/sme-chat-conversion', [StudentLessonplanController::class, 'post_sme_chat_conversion']);
+Route::post('/student-chat-conversion', [StudentLessonplanController::class, 'post_student_chat_conversion']);
+Route::get('/get-chat-conversion/{lesson_id}', [StudentLessonplanController::class, 'get_chat_conversion']);
+
 Route::resource('/contact-request', ContactrequestController::class);
 // Route::resource('/user-subscription', UserSubscriptionController::class);
 

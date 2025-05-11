@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('student_id')->references('id')->on('students')->nullable();
             $table->integer('user_id')->references('id')->on('users')->nullable(); // SME for us
             $table->boolean('is_group')->default(false);
-            $table->string('message')->nullable();
+            $table->text('message')->nullable(); // json
             $table->timestamps();
         });
     }

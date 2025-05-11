@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Validator;
 use App\Models\lessonplanStudentCodeExplanation as CodeExplanation;
 use App\Models\Student;
+use App\Models\Lessonplan;
+use App\Models\lessonplanConversions;
+use App\Models\LessonplanStudent;
 
 class StudentLessonplanController extends BaseApiController
 {
@@ -142,8 +145,163 @@ class StudentLessonplanController extends BaseApiController
         ], 'Student lessonplan list.');
     }
 
-    public function chat_conversion(Request $request){
+    public function post_sme_chat_conversion(Request $request){
+        $validator = Validator::make($request->all(), [
+            'lessonplan' => 'required|integer',
+            'sme' => 'required|integer',
+            'channel' => 'required|string|in:group,individual', //['group', 'individual']
+            'student' => 'required_if:channel,individual',
+            'message' => 'required|string'
+        ]);
 
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+         $has_lessonplan = Lessonplan::where('id', $request->lessonplan)
+                        ->where('user_id', $request->sme)
+                        ->where('status', 1)
+                        ->get();
+        if($has_lessonplan->count() != 1){
+            return $this->sendError('Unauthorize access error', 'Unauthorize access error', 201);
+        }
+        if($request->channel == 'individual'){
+            $has_student_relation = LessonplanStudent::where('lessonplan_id', $request->lessonplan)
+                                                    ->where('student_id', $request->student)
+                                                    ->get();
+            if($has_student_relation->count() != 1){
+                return $this->sendError('Unauthorize access error', 'Student Lessonplan relation not found.', 201);
+            }
+        }
+        try{
+            $data_array = [
+                'lessonplan_id'=> $request->lessonplan,
+                'user_id'=> $request->sme
+            ];
+            if($request->channel == 'group'){
+                $data_array['is_group'] = true;
+                $receiver = 'group';
+            }else{
+                $data_array['student_id'] = $request->student;
+                $data_array['is_group'] = false;
+                $receiver = $request->student;
+            }
+
+            $conversion_node = [
+                                'sme'=> true,
+                                'student' => false,
+                                'message'=> $request->message,
+                                'sender'=> $request->sme,
+                                'receiver'=> $receiver,
+                                'timestamp'=> date('Y-m-d H:i:s')
+                            ];
+
+            $has_conversion = lessonplanConversions::where($data_array)->first();
+            if($has_conversion){
+                $conversion = json_decode($has_conversion->message, true);
+                array_push($conversion, $conversion_node);
+                $array_reverse = array_reverse($conversion);
+                lessonplanConversions::where('id', $has_conversion->id)->update([
+                    'message' => json_encode($array_reverse)
+                ]);
+            }else{
+                $conversion[] = $conversion_node;
+                $data_array['message'] = json_encode($conversion);
+                lessonplanConversions::create($data_array);
+            }
+            return $this->sendResponse([], 'Conversion saved successfully.');
+        }catch(\Exception $cus_ex){
+            // Error through. Some error occurred
+            return $this->sendError('Unable to save conversion.', $cus_ex->getMessage(), 500);
+        }
+    }
+
+    public function post_student_chat_conversion(Request $request){
+        $validator = Validator::make($request->all(), [
+            'lessonplan' => 'required|integer',
+            // 'user' => 'required|integer', //sme
+            'channel' => 'required|string|in:group,individual', //['group', 'individual']
+            'student' => 'required|integer',
+            'message' => 'required|string'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+         $has_lessonplan = Lessonplan::where('id', $request->lessonplan)
+                        ->where('status', 1)
+                        ->get();
+        if($has_lessonplan->count() != 1){
+            return $this->sendError('Unauthorize access error', 'Unauthorize access error', 201);
+        }
+        if($request->channel == 'individual'){
+            $has_student_relation = LessonplanStudent::where('lessonplan_id', $request->lessonplan)
+                                                    ->where('student_id', $request->student)
+                                                    ->get();
+            if($has_student_relation->count() != 1){
+                return $this->sendError('Unauthorize access error', 'Student Lessonplan relation not found.', 201);
+            }
+        }
+        try{
+            $sme_id = $has_lessonplan[0]->user_id;
+            $data_array = [
+                'lessonplan_id'=> $request->lessonplan,
+                'user_id'=> $sme_id
+            ];
+            if($request->channel == 'group'){
+                $data_array['is_group'] = true;
+                $receiver = 'group';
+            }else{
+                $data_array['student_id'] = $request->student;
+                $data_array['is_group'] = false;
+                $receiver = $sme_id;
+            }
+            $conversion_node = [
+                                'sme'=> false,
+                                'student' => true,
+                                'message'=> $request->message,
+                                'sender'=> $request->student,
+                                'receiver'=> $receiver,
+                                'timestamp'=> now()
+                            ];
+
+            $has_conversion = lessonplanConversions::where($data_array)->first();
+            $conversion = [];
+            if($has_conversion){
+                $conversion = json_decode($has_conversion->message, true);
+                array_push($conversion, $conversion_node);
+                $array_reverse = array_reverse($conversion);
+                lessonplanConversions::where('id', $has_conversion->id)->update([
+                    'message' => $array_reverse
+                ]);
+            }else{
+                $conversion[] = $conversion_node;
+                $data_array['message'] = $conversion_node;
+                lessonplanConversions::create($data_array);
+            }
+            return $this->sendResponse([], 'Conversion saved successfully.');
+        }catch(\Exception $cus_ex){
+            // Error through. Some error occurred
+            return $this->sendError('Unable to save conversion.', $cus_ex->getMessage(), 500);
+        }
+    }
+
+    public function get_chat_conversion(Request $request, $lesson_id){
+        $sql = lessonplanConversions::where('lessonplan_id', $lesson_id);
+        if(!empty($request->student_id)){
+            $sql->where('student_id', $request->student_id);
+        }
+        if(!empty($request->is_group)){
+            $sql->where('is_group', ($request->is_group == 1 ? true : false));
+        }
+        if(!empty($request->sme_id)){
+            $sql->where('user_id', $request->sme_id);
+        }
+
+        $data = $sql->get();
+
+        return $this->sendResponse($data, 'Conversion list.');
     }
 
 }
