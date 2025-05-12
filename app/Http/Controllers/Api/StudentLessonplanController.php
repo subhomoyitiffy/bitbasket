@@ -201,9 +201,9 @@ class StudentLessonplanController extends BaseApiController
             if($has_conversion){
                 $conversion = json_decode($has_conversion->message, true);
                 array_push($conversion, $conversion_node);
-                $array_reverse = array_reverse($conversion);
+                // $array_reverse = array_reverse($conversion);
                 lessonplanConversions::where('id', $has_conversion->id)->update([
-                    'message' => json_encode($array_reverse)
+                    'message' => json_encode($conversion)
                 ]);
             }else{
                 $conversion[] = $conversion_node;
@@ -272,9 +272,9 @@ class StudentLessonplanController extends BaseApiController
             if($has_conversion){
                 $conversion = json_decode($has_conversion->message, true);
                 array_push($conversion, $conversion_node);
-                $array_reverse = array_reverse($conversion);
+                // $array_reverse = array_reverse($conversion);
                 lessonplanConversions::where('id', $has_conversion->id)->update([
-                    'message' => $array_reverse
+                    'message' => $conversion
                 ]);
             }else{
                 $conversion[] = $conversion_node;
