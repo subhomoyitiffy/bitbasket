@@ -274,11 +274,11 @@ class StudentLessonplanController extends BaseApiController
                 array_push($conversion, $conversion_node);
                 // $array_reverse = array_reverse($conversion);
                 lessonplanConversions::where('id', $has_conversion->id)->update([
-                    'message' => $conversion
+                    'message' => json_encode($conversion)
                 ]);
             }else{
                 $conversion[] = $conversion_node;
-                $data_array['message'] = $conversion_node;
+                $data_array['message'] = json_encode($conversion);
                 lessonplanConversions::create($data_array);
             }
             return $this->sendResponse([], 'Conversion saved successfully.');
