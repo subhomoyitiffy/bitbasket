@@ -190,7 +190,7 @@ class StudentLessonplanController extends BaseApiController
 
             $conversion_node = [
                                 'sme'=> true,
-                                'student' => false,
+                                'student' => [],
                                 'message'=> $request->message,
                                 'sender'=> $request->sme,
                                 'receiver'=> $receiver,
@@ -258,9 +258,10 @@ class StudentLessonplanController extends BaseApiController
                 $data_array['is_group'] = false;
                 $receiver = $sme_id;
             }
+            $student_details =Student::find($request->student);
             $conversion_node = [
                                 'sme'=> false,
-                                'student' => true,
+                                'student' => ['id'=> $request->student, 'name'=> $student_details->first_name.' '.$student_details->last_name],
                                 'message'=> $request->message,
                                 'sender'=> $request->student,
                                 'receiver'=> $receiver,
