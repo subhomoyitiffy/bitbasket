@@ -5,12 +5,10 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
 use App\Models\GeneralSetting;
 use App\Models\EmailLog;
 use App\Models\UserActivity;
 use App\Models\User;
-
 use Auth;
 use Session;
 use App\Helpers\Helper;
