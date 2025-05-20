@@ -73,7 +73,7 @@ use App\Helpers\Helper;
             <p class="mb-4">Please sign-in to your account and start the adventure</p>
             <?php session()->put('test', 'check'); ?>
             <form id="formAuthentication" class="mb-3" action="{{ route('signin') }}" method="POST">
-               @csrf
+            @csrf
                <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
                   <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus>
