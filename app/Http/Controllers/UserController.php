@@ -105,7 +105,7 @@ class UserController extends Controller
             $data                           = [];
             $title                          = 'Forgot Password';
             $page_name                      = 'forgot-password';
-            echo $this->admin_before_login_layout($title,$page_name,$data);
+            return $this->admin_before_login_layout($title,$page_name,$data);
         }
         public function validateOtp(Request $request, $id){
             $id                             = Helper::decoded($id);
@@ -193,7 +193,7 @@ class UserController extends Controller
             $data['user']                   = User::where('id','=',$ID)->first();
             $title                          = 'Reset Password';
             $page_name                      = 'reset-password';
-            echo $this->admin_before_login_layout($title,$page_name,$data);
+            return $this->admin_before_login_layout($title,$page_name,$data);
         }
         public function logout(Request $request){
             $user_email                             = $request->session()->get('email');
@@ -260,7 +260,7 @@ class UserController extends Controller
             $data['user']                   = User::where('id', '=', $uId)->first();
             $title                          = 'Settings';
             $page_name                      = 'settings';
-            echo $this->admin_after_login_layout($title,$page_name,$data);
+            return $this->admin_after_login_layout($title,$page_name,$data);
         }
         public function profile_settings(Request $request){
             $uId        = $request->session()->get('user_id');
