@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lessonplan extends Model
@@ -25,6 +26,22 @@ class Lessonplan extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    /**
+     * Get the details associated with the user.
+    */
+    public function conversions(): HasMany
+    {
+        return $this->hasMany(lessonplanConversions::class, 'lessonplan_id');
+    }
+
+    /**
+     * Get the details associated with the user.
+    */
+    public function code_explanations(): HasMany
+    {
+        return $this->hasMany(lessonplanStudentCodeExplanation::class, 'lessonplan_id');
     }
 
 }

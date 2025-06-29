@@ -28,17 +28,19 @@ class RegistrationController extends BaseApiController
             'last_name' => 'required|max:50',
             'email' => 'required|email|max:100|unique:users',
             'country_code' => 'required|max:5',
-            'phone' => 'required|max:15|unique:users',
+            'phone' => 'required|integer|regex:/^[0-9]{8,9}$/|unique:users',
             'password' => 'required|min:6',
             'c_password' => 'required|same:password',
 
-            'city' => 'required_if:country,uae',
-            'emarati' => 'required_if:country,uae',
-            'business_license' => 'required_if:country,uae',
-            'tax_registration_number' => 'required_if:country,uae',
+            'city' => 'required|integer',
+            'emarati' => 'required|integer',
+            'business_license' => 'required|integer|regex:/^\d{7,8}.\d{1-2}$/',
+            'vat' => 'required|digits:15',
 
-            'company_type' => 'required_if:country,usa',
-            'employer_identification_no' => 'required_if:country,usa'
+            // 'company_type' => 'required_if:country,usa',
+            // 'employer_identification_no' => 'required_if:country,usa'
+        ],[
+            'phone.regex' => 'Phone number must be between 8 and 9 digits.',
         ]);
 
         if($validator->fails()){
@@ -83,8 +85,8 @@ class RegistrationController extends BaseApiController
                     'emarati'=> $request->emarati,
                     'business_license'=> $request->business_license,
                     'tax_registration_number'=> $request->tax_registration_number,
-                    'company_type' => $request->company_type,
-                    'employer_identification_no' => $request->employer_identification_no
+                    // 'company_type' => $request->company_type,
+                    // 'employer_identification_no' => $request->employer_identification_no
                 ]);
                 $full_name = $request->first_name.' '.$request->last_name;
                 $message = 'Registration step 1 has successfully done. Please verify activation OTP.';

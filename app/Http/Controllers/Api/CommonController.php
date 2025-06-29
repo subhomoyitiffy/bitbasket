@@ -18,7 +18,7 @@ class CommonController extends BaseApiController
     */
     public function getStates()
     {
-            $states = State::select('id', 'name')->get();
+            $states = State::select('id', 'name')->orderBy('name', 'ASC')->get();
             return $this->sendResponse($states, 'UAE State list');
     }
 

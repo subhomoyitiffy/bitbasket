@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseApiController as BaseApiController;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 use App\Models\Lessonplan;
@@ -65,6 +65,21 @@ class LessonplansController extends BaseApiController
      */
     public function store(Request $request)
     {
+        /**
+         * Stop checking number of Member User/SME as per Feedback point
+         * Membership Plan: Change No. Of Users to No. Of Lesson Plans.
+        */
+        /* $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
+        $total_enrolled_members = User::where('parent_id', auth()->user()->id)->where('role_id', $this->role_id)->get();
+        if($total_enrolled_members->count() >= $number_of_team_members){
+            return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
+        } */
+        $number_of_lesson_plans = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_lesson_plans : 0 ;
+        $total_lessonplan = Lessonplan::where('user_id', auth()->user()->id)->get();
+        if($total_lessonplan->count() >= $number_of_lesson_plans){
+            return $this->sendError('Error', 'Sorry!! you have already completed your lesson plan quota. To add more upgrade your membership.');
+        }
+
         $validator = Validator::make($request->all(), [
             'plan_name' => 'required|string|max:255',
             'description' => 'required',
@@ -171,7 +186,7 @@ class LessonplansController extends BaseApiController
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
+    */
     public function archived($id)
     {
         try{
@@ -203,6 +218,60 @@ class LessonplansController extends BaseApiController
         $data->save();
 
         return $this->sendResponse([], 'Lesson plan status has successfully changed.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+    */
+    public function get_archived(REquest $request)
+    {
+        try{
+            $sql = Lessonplan::where('user_id', auth()->user()->id)
+                            ->where('status', 4) //[4-> Archived]
+                            ->with('students')
+                            ->with('subject');
+            if(empty($request->id)){
+                $data = $sql->latest()
+                        ->paginate(env('LIST_PAGINATION_COUNT'))->toArray();
+            }else{
+                $data = $sql->where('id', $request->id)->first();
+            }
+
+            return $this->sendResponse($data, 'Archived Lesson plan.');
+        }catch(\Exception $cus_ex){
+            return $this->sendError('Error', $cus_ex->getMessage(), 500);
+        }
+    }
+
+    public function download_archived(REquest $request)
+    {
+        try{
+            $sql = Lessonplan::where('user_id', auth()->user()->id)
+                                ->where('status', 4); //[4-> Archived]
+            if(!empty($request->id)){
+                $sql->where('id', $request->id);
+            }
+            $data = $sql->latest()->get()->toArray();
+
+            $content = "# Sample Markdown File\n\nThis is a test markdown file created by Laravel.";
+
+            $fileName = 'x_lessonplan.md';
+            // Storage::disk('public')->put('uploads/user/'.$fileName, file_get_contents($file));
+            Storage::disk('public')->put('uploads/user/lessonplan/'.$fileName, $content);
+            $upload_path = 'storage/uploads/user/lessonplan/'.$fileName;
+
+            // return Response::make($content, 200, [
+            //     'Content-Type' => 'text/markdown',
+            //     'Content-Disposition' => "attachment; filename={$fileName}",
+            // ]);
+
+            return $this->sendResponse(['file_path'=> $upload_path], 'Download file.');
+        }catch(\Exception $cus_ex){
+            return $this->sendError('Error', $cus_ex->getMessage(), 500);
+        }
     }
 
 }

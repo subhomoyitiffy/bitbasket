@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MemberSubjectController;
 use App\Http\Controllers\Api\LessonplansController;
 use App\Http\Controllers\Api\ContactrequestController;
 use App\Http\Controllers\Api\StudentLessonplanController;
+use App\Http\Controllers\Api\DashboardController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/sign-up', [RegistrationController::class, 'registration']);
@@ -39,6 +40,8 @@ Route::get('/get-chat-conversion/{lesson_id}', [StudentLessonplanController::cla
 
 Route::resource('/contact-request', ContactrequestController::class);
 // Route::resource('/user-subscription', UserSubscriptionController::class);
+
+Route::get('/lesson-plan/download-archived', [LessonplansController::class, 'download_archived']);
 
 Route::group([
     'middleware' => ['auth:api'],
@@ -70,7 +73,11 @@ Route::group([
     */
     Route::post('/lesson-plan/change-status/{id}', [LessonplansController::class, 'change_status']);
     Route::get('/lesson-plan/archived/{id}', [LessonplansController::class, 'archived']);
+    Route::get('/lesson-plan/get-archived', [LessonplansController::class, 'get_archived']);
+    // Route::get('/lesson-plan/download-archived', [LessonplansController::class, 'download_archived']);
     Route::resource('/lesson-plan', LessonplansController::class);
+
+    Route::get('/get-dashboard', [DashboardController::class, 'index']);
 });
 
 /* Route::get('/user', function (Request $request) {

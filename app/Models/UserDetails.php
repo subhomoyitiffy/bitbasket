@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserDetails extends Model
 {
@@ -23,4 +24,13 @@ class UserDetails extends Model
         'company_type',
         'employer_identification_no'
     ];
+
+    /**
+     * Get the details associated with the user.
+    */
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class, 'city_id');
+    }
+
 }

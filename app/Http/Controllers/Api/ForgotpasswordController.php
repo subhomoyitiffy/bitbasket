@@ -48,7 +48,7 @@ class ForgotpasswordController extends BaseApiController
         // $email = 'work.chayan2020@gmail.com';
         Mail::to($request->input('email'))->send(new ForgotPassword($otp));
 
-        return $this->sendResponse([], 'Reset password OTP has sent successfully to your register email.');
+        return $this->sendResponse(['otp'=> $otp], 'Reset password OTP has sent successfully to your register email.');
     }
 
     /**

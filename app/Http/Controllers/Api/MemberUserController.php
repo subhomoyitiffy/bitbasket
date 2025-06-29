@@ -66,11 +66,15 @@ class MemberUserController extends BaseApiController
      */
     public function store(Request $request)
     {
-        $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
+        /**
+         * Stop checking number of Member User/SME as per Feedback point
+         * Membership Plan: Change No. Of Users to No. Of Lesson Plans.
+        */
+        /* $number_of_team_members = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_users : 0 ;
         $total_enrolled_members = User::where('parent_id', auth()->user()->id)->where('role_id', $this->role_id)->get();
         if($total_enrolled_members->count() >= $number_of_team_members){
             return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
-        }
+        } */
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
