@@ -46,7 +46,7 @@ $controllerRoute = $module['controller_route'];
                $first_name                      = '';
                $last_name                       = '';
                $email                           = '';
-               $country_code                    = 229;
+               $country_code                    = 971;
                $country                         = 'UAE';
                $phone                           = '';
                $profile_image                   = '';
@@ -77,7 +77,7 @@ $controllerRoute = $module['controller_route'];
                   </div>
                   <div class="mb-3 col-md-6">
                      <label for="phone" class="form-label">Phone</label>
-                     <input class="form-control" type="text" id="phone" name="phone" value="<?=$phone?>" required placeholder="Phone" />
+                     <input class="form-control" type="text" id="phone" name="phone" value="<?=$phone?>" required placeholder="Phone" minlength="8" maxlength="9" onkeypress="return isNumber(event)" />
                   </div>
 
                   <div class="mb-3 col-md-6">
@@ -90,26 +90,26 @@ $controllerRoute = $module['controller_route'];
                   </div>
 
                   <div class="mb-3 col-md-6">
-                     <label for="city_id" class="form-label">City</label>
+                     <label for="city_id" class="form-label">Emirate</label>
                      <select name="city_id" class="select2 form-select" id="city_id" required>
-                        <option value="" selected>Select City</option>
+                        <option value="" selected>Select Emirate</option>
                         <?php if($states){ foreach($states as $state){?>
                            <option value="<?=$state->id?>" <?=(($city_id == $state->id)?'selected':'')?>><?=$state->name?></option>
                         <?php } }?>
                      </select>
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="emarati" class="form-label">Emarati</label>
-                     <input class="form-control" type="text" id="emarati" name="emarati" value="<?=$emarati?>" placeholder="Emarati" />
+                     <label for="emarati" class="form-label">Emirate ID (optional)</label>
+                     <input class="form-control" type="text" id="emarati" name="emarati" value="<?=$emarati?>" placeholder="Emirate ID (optional)" />
                   </div>
 
                   <div class="mb-3 col-md-6">
                      <label for="business_license" class="form-label">Business License</label>
-                     <input class="form-control" type="text" id="business_license" name="business_license" value="<?=$business_license?>" placeholder="Business License" />
+                     <input class="form-control" type="text" id="business_license" name="business_license" value="<?=$business_license?>" placeholder="Business License" required minlength="7" maxlength="8" onkeypress="return isNumber(event)" />
                   </div>
                   <div class="mb-3 col-md-6">
                      <label for="tax_registration_number" class="form-label">Tax Registration Number</label>
-                     <input class="form-control" type="text" id="tax_registration_number" name="tax_registration_number" value="<?=$tax_registration_number?>" placeholder="Tax Registration Number" />
+                     <input class="form-control" type="text" id="tax_registration_number" name="tax_registration_number" value="<?=$tax_registration_number?>" placeholder="Tax Registration Number" minlength="15" maxlength="15" onkeypress="return isNumber(event)" />
                   </div>
 
                   <div class="mb-3 col-md-6">
