@@ -137,8 +137,8 @@ class StudentLessonplanController extends BaseApiController
             return $this->sendError('Authentication Error', 'Token is missing.', 201);
         }
 
-        $student = Student::select('first_name', 'last_name', 'work_email', 'phone', 'token')
-                                            ->where('token', $token)->first();
+        $student = Student::select('id', 'first_name', 'last_name', 'work_email', 'phone', 'token')
+                            ->where('token', $token)->first();
         if(!$student){
             return $this->sendError('Authentication Error', 'Unable to identify student.', 201);
         }
@@ -153,7 +153,8 @@ class StudentLessonplanController extends BaseApiController
                                         ->where('id', $student->institute_id)
                                         ->first();
         return $this->sendResponse([
-            $student
+            $student,
+            $mapped_lessonplan
         ], 'Student lessonplan list.');
     }
 
