@@ -12,6 +12,7 @@ use App\Models\Lessonplan;
 use App\Models\User;
 use App\Models\LessonplanStudent;
 use App\Models\Institute;
+use App\Models\Package;
 
 class LessonplansController extends BaseApiController
 {
@@ -75,8 +76,10 @@ class LessonplansController extends BaseApiController
         if($total_enrolled_members->count() >= $number_of_team_members){
             return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
         } */
-        $user = new User();
-        $parent_subscriptions = $user->user_parent_subscriptions;
+        $parent_subscriptions = Package::where('user_subscriptions.user_id', auth()->user()->parent_id)
+                                        ->leftJoin('user_subscriptions', 'user_subscriptions.subscription_id', '=', 'packages.id')
+                                        ->where('user_subscriptions.is_active', '1')
+                                        ->first();
         $number_of_lesson_plans = $parent_subscriptions ? $parent_subscriptions->no_of_lesson_plans : 0 ;
         $total_lessonplan = Lessonplan::where('user_id', auth()->user()->id)->get();
         if($total_lessonplan->count() >= $number_of_lesson_plans){
