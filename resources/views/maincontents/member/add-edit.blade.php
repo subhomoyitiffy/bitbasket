@@ -26,6 +26,7 @@ $controllerRoute = $module['controller_route'];
       <?php }?>
       <div class="card">
          <div class="card-body pb-2">
+            <h6 class="text-danger">Star (*) marks fields are mandatory</h6>
             <?php
             if($row){
                $first_name                      = $row2->first_name;
@@ -63,34 +64,34 @@ $controllerRoute = $module['controller_route'];
                @csrf
                <div class="row">
                   <div class="mb-3 col-md-6">
-                     <label for="first_name" class="form-label">First Name</label>
+                     <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
                      <input class="form-control" type="text" id="first_name" name="first_name" value="<?=$first_name?>" required placeholder="First Name" autofocus />
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="last_name" class="form-label">Last Name</label>
+                     <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
                      <input class="form-control" type="text" id="last_name" name="last_name" value="<?=$last_name?>" required placeholder="Last Name" />
                   </div>
 
                   <div class="mb-3 col-md-6">
-                     <label for="email" class="form-label">Email</label>
+                     <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                      <input class="form-control" type="email" id="email" name="email" value="<?=$email?>" required placeholder="Email" />
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="phone" class="form-label">Phone</label>
+                     <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                      <input class="form-control" type="text" id="phone" name="phone" value="<?=$phone?>" required placeholder="Phone" minlength="8" maxlength="9" onkeypress="return isNumber(event)" />
                   </div>
 
                   <div class="mb-3 col-md-6">
-                     <label for="country_code" class="form-label">Country Code</label>
-                     <input class="form-control" type="text" id="country_code" name="country_code" value="<?=$country_code?>" placeholder="Country Code" />
+                     <label for="country_code" class="form-label">Country Code <span class="text-danger">*</span></label>
+                     <input class="form-control" type="text" id="country_code" name="country_code" value="<?=$country_code?>" placeholder="Country Code" required />
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="country" class="form-label">Country</label>
-                     <input class="form-control" type="text" id="country" name="country" value="<?=$country?>" placeholder="Country" />
+                     <label for="country" class="form-label">Country <span class="text-danger">*</span></label>
+                     <input class="form-control" type="text" id="country" name="country" value="<?=$country?>" placeholder="Country" required />
                   </div>
 
                   <div class="mb-3 col-md-6">
-                     <label for="city_id" class="form-label">Emirate</label>
+                     <label for="city_id" class="form-label">Emirate <span class="text-danger">*</span></label>
                      <select name="city_id" class="select2 form-select" id="city_id" required>
                         <option value="" selected>Select Emirate</option>
                         <?php if($states){ foreach($states as $state){?>
@@ -104,7 +105,7 @@ $controllerRoute = $module['controller_route'];
                   </div>
 
                   <div class="mb-3 col-md-6">
-                     <label for="business_license" class="form-label">Business License</label>
+                     <label for="business_license" class="form-label">Business License <span class="text-danger">*</span></label>
                      <input class="form-control" type="text" id="business_license" name="business_license" value="<?=$business_license?>" placeholder="Business License" required minlength="7" maxlength="8" onkeypress="return isNumber(event)" />
                   </div>
                   <div class="mb-3 col-md-6">
@@ -127,7 +128,7 @@ $controllerRoute = $module['controller_route'];
                      <small class="text-primary">Leave blank if no need to change password</small>
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="status" class="form-label">Status</label>
+                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                      <select name="status" class="select2 form-select" id="status" required>
                         <option value="" selected>Select Status</option>
                         <option value="0" <?=(($status == 0)?'selected':'')?>>Verification pending</option>
