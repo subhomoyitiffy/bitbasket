@@ -66,8 +66,8 @@ $controllerRoute = $module['controller_route'];
                      <input class="form-control" type="text" id="price" name="price" value="<?=$price?>" required placeholder="Price" autofocus />
                   </div>
                   <div class="mb-3 col-md-6">
-                     <label for="no_of_users" class="form-label">No. Of Users</label>
-                     <input class="form-control" type="text" id="no_of_users" name="no_of_users" value="<?=$no_of_users?>" required placeholder="No. Of Users" onkeypress="return isNumber(event)" autofocus />
+                     <label for="no_of_users" class="form-label">No. Of Lesson Plans</label>
+                     <input class="form-control" type="text" id="no_of_users" name="no_of_users" value="<?=$no_of_users?>" required placeholder="No. Of Lesson Plans" onkeypress="return isNumber(event)" autofocus />
                   </div>
                   <div class="mb-3 col-md-12">
                      <label for="description" class="form-label">Description</label>
