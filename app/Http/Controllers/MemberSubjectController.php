@@ -68,13 +68,18 @@ class MemberSubjectController extends Controller
                     'status'                        => 'required',
                 ];
                 if($this->validate($request, $rules)){
-                    $fields = [
-                        'member_id'         => $postData['member_id'],
-                        'name'              => strip_tags($postData['name']),
-                        'status'            => strip_tags($postData['status']),
-                    ];
-                    Subject::insert($fields);
-                    return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['member_id']))->with('success_message', $this->data['title'].' Inserted Successfully !!!');
+                    $checkSubject = Subject::where('status', '!=', 3)->where('member_id', '=', $postData['member_id'])->where('name', '=', $postData['name'])->count();
+                    if($checkSubject <= 0){
+                        $fields = [
+                            'member_id'         => $postData['member_id'],
+                            'name'              => strip_tags($postData['name']),
+                            'status'            => strip_tags($postData['status']),
+                        ];
+                        Subject::insert($fields);
+                        return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['member_id']))->with('success_message', $this->data['title'].' Inserted Successfully !!!');
+                    } else {
+                        return redirect()->back()->with('error_message', 'Subject Already Exists For The Selected Member !!!');
+                    }
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
@@ -104,13 +109,18 @@ class MemberSubjectController extends Controller
                     'status'                        => 'required',
                 ];
                 if($this->validate($request, $rules)){
-                    $fields = [
-                        'member_id'         => $postData['member_id'],
-                        'name'              => strip_tags($postData['name']),
-                        'status'            => strip_tags($postData['status']),
-                    ];
-                    DB::table('subjects')->where('id', '=', $id)->update($fields);
-                    return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['member_id']))->with('success_message', $this->data['title'].' Updated Successfully !!!');
+                    $checkSubject = Subject::where('status', '!=', 3)->where('member_id', '=', $postData['member_id'])->where('name', '=', $postData['name'])->where('id', '!=', $id)->count();
+                    if($checkSubject <= 0){
+                        $fields = [
+                            'member_id'         => $postData['member_id'],
+                            'name'              => strip_tags($postData['name']),
+                            'status'            => strip_tags($postData['status']),
+                        ];
+                        DB::table('subjects')->where('id', '=', $id)->update($fields);
+                        return redirect($this->data['controller_route'] . "/list/" . Helper::encoded($postData['member_id']))->with('success_message', $this->data['title'].' Updated Successfully !!!');
+                    } else {
+                        return redirect()->back()->with('error_message', 'Subject Already Exists For The Selected Member !!!');
+                    }
                 } else {
                     return redirect()->back()->with('error_message', 'All Fields Required !!!');
                 }
