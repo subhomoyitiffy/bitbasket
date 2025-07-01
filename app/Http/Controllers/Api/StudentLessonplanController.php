@@ -153,8 +153,7 @@ class StudentLessonplanController extends BaseApiController
                                         ->where('id', $student->institute_id)
                                         ->first();
         return $this->sendResponse([
-            $student,
-            $mapped_lessonplan
+            $student
         ], 'Student lessonplan list.');
     }
 
