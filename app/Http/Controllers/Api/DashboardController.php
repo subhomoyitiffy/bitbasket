@@ -30,7 +30,9 @@ class DashboardController extends BaseApiController
         if(auth()->user()->role_id != $this->sme_role_id){
             //Subscriber member login
             $user_id_array = array();
-            $sme_users = User::select('id', 'first_name', 'last_name', 'email')->where('parent_id', auth()->user()->id)->get(); //->pluck('id')->toArray();
+            $sme_users = User::select('id', 'name', 'email')
+                                ->where('parent_id', auth()->user()->id)
+                                ->get(); //->pluck('id')->toArray();
 
             if($sme_users->count() > 0){
                 foreach($sme_users as $sme){
@@ -74,8 +76,8 @@ class DashboardController extends BaseApiController
         $completed_lessonplan_students = LessonplanStudent::whereIn('lessonplan_id', $completed_lessonplan_array)->count();
 
         return $this->sendResponse([
-            'total_lessonplan_array' => count($total_lessonplan_array),
-            'completed_lessonplan_array' => count($completed_lessonplan_array),
+            'total_lessonplan' => count($total_lessonplan_array),
+            'completed_lessonplan' => count($completed_lessonplan_array),
             'lessonplan_students' => $lessonplan_students,
             'completed_lessonplan_students' => $completed_lessonplan_students,
             'sme_wise_lessonplan'=> $sme_wise_lessonplan,

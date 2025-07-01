@@ -220,19 +220,62 @@ class LessonplansController extends BaseApiController
         return $this->sendResponse([], 'Lesson plan status has successfully changed.');
     }
 
+    public function lessonplan_edit(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'plan_name' => 'required|string|max:255',
+            'description' => 'required',
+            'explanation' => 'required|string'
+        ]);
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $data = Lessonplan::findOrFail($id);
+        $data->plan_name = $request->plan_name;
+        $data->description = $request->description;
+        $data->explanation = $request->explanation;
+        $data->updated_at = date('Y-m-d H:i:s');
+        $data->save();
+
+        return $this->sendResponse([], 'Edit lessonplan saved successfully.');
+    }
+
+    /**
+     * Change the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+    */
+    public function code_published(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'explanation' => 'required|string'
+        ]);
+        if($validator->fails()){
+            return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $data = Lessonplan::findOrFail($id);
+        $data->explanation = $request->explanation;
+        $data->published = true;
+        $data->status = 4; //4::Archived
+        $data->updated_at = date('Y-m-d H:i:s');
+        $data->save();
+
+        return $this->sendResponse([], 'Code archived for student.');
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
     */
-    public function get_archived(REquest $request)
+    public function get_archived(Request $request)
     {
         try{
             $sql = Lessonplan::where('user_id', auth()->user()->id)
-                            ->where('status', 4) //[4-> Archived]
-                            ->with('students')
-                            ->with('subject');
+                            ->where('status', 4); //[4-> Archived]
             if(empty($request->id)){
                 $data = $sql->latest()
                         ->paginate(env('LIST_PAGINATION_COUNT'))->toArray();
@@ -246,19 +289,16 @@ class LessonplansController extends BaseApiController
         }
     }
 
-    public function download_archived(REquest $request)
+    public function download_archived(Request $request, $id)
     {
         try{
-            $sql = Lessonplan::where('user_id', auth()->user()->id)
+            $sql = Lessonplan::where('id', $id)
+                                ->where('user_id', auth()->user()->id)
                                 ->where('status', 4); //[4-> Archived]
-            if(!empty($request->id)){
-                $sql->where('id', $request->id);
-            }
-            $data = $sql->latest()->get()->toArray();
+            $lessonplan = $sql->first();
 
-            $content = "# Sample Markdown File\n\nThis is a test markdown file created by Laravel.";
-
-            $fileName = 'x_lessonplan.md';
+            $content = $lessonplan->explanation;
+            $fileName = auth()->user()->id.'_'.strtolower(str_replace(' ', '_', $lessonplan->name)).'.md';
             // Storage::disk('public')->put('uploads/user/'.$fileName, file_get_contents($file));
             Storage::disk('public')->put('uploads/user/lessonplan/'.$fileName, $content);
             $upload_path = 'storage/uploads/user/lessonplan/'.$fileName;
@@ -268,7 +308,7 @@ class LessonplansController extends BaseApiController
             //     'Content-Disposition' => "attachment; filename={$fileName}",
             // ]);
 
-            return $this->sendResponse(['file_path'=> $upload_path], 'Download file.');
+            return $this->sendResponse(['file'=> $upload_path], 'Download file.');
         }catch(\Exception $cus_ex){
             return $this->sendError('Error', $cus_ex->getMessage(), 500);
         }

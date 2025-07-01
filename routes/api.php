@@ -27,14 +27,13 @@ Route::get('/state-list', [CommonController::class, 'getStates']);
 Route::get('/faq-list', [CommonController::class, 'getFaqs']);
 Route::get('/student-list', [CommonController::class, 'getStudents']);
 
-Route::get('/lessonplan-explanation/{lessonplan_id}', [StudentLessonplanController::class, 'index']);
+/* Route::get('/lessonplan-explanation/{lessonplan_id}', [StudentLessonplanController::class, 'index']);
 Route::post('/lessonplan-explanation', [StudentLessonplanController::class, 'store']);
 Route::get('/lessonplan-explanation/edit/{id}', [StudentLessonplanController::class, 'enable_edit']);
-Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']);
+Route::get('/lessonplan-explanation/publish/{id}', [StudentLessonplanController::class, 'code_published']); */
+
 Route::get('/get-lessonplan/{token}', [StudentLessonplanController::class, 'get_student_lessonplan']);
 
-
-Route::post('/sme-chat-conversion', [StudentLessonplanController::class, 'post_sme_chat_conversion']);
 Route::post('/student-chat-conversion', [StudentLessonplanController::class, 'post_student_chat_conversion']);
 Route::get('/get-chat-conversion/{lesson_id}', [StudentLessonplanController::class, 'get_chat_conversion']);
 
@@ -74,10 +73,16 @@ Route::group([
     Route::post('/lesson-plan/change-status/{id}', [LessonplansController::class, 'change_status']);
     Route::get('/lesson-plan/archived/{id}', [LessonplansController::class, 'archived']);
     Route::get('/lesson-plan/get-archived', [LessonplansController::class, 'get_archived']);
-    // Route::get('/lesson-plan/download-archived', [LessonplansController::class, 'download_archived']);
+    Route::get('/lesson-plan/download-archived/{id}', [LessonplansController::class, 'download_archived']);
+    Route::post('/lesson-plan/edit/{id}', [LessonplansController::class, 'lessonplan_edit']);
+    Route::post('/lesson-plan/publish/{id}', [LessonplansController::class, 'code_published']);
     Route::resource('/lesson-plan', LessonplansController::class);
 
     Route::get('/get-dashboard', [DashboardController::class, 'index']);
+    /**
+     * SME Chat post
+    */
+    Route::post('/sme-chat-conversion', [StudentLessonplanController::class, 'post_sme_chat_conversion']);
 });
 
 /* Route::get('/user', function (Request $request) {
