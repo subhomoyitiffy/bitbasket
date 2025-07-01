@@ -237,7 +237,7 @@ class LessonplansController extends BaseApiController
             return $this->sendError('Validation Error', $validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $data = Lessonplan::findOrFail($id);
-        $data->plan_name = $request->plan_name;
+        $data->name = $request->plan_name;
         $data->description = $request->description;
         $data->explanation = $request->explanation;
         $data->updated_at = date('Y-m-d H:i:s');
