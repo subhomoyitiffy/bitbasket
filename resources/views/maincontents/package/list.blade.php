@@ -38,7 +38,7 @@ $controllerRoute = $module['controller_route'];
                         <th scope="col">Description</th>
                         <th scope="col">Duration</th>
                         <th scope="col">Price</th>
-                        <th scope="col">No. Of Users</th>
+                        <th scope="col">No. Of Lesson Plans</th>
                         <th scope="col">Action</th>
                      </tr>
                   </thead>
