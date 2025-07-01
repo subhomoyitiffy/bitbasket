@@ -74,7 +74,7 @@ class LessonplansController extends BaseApiController
         if($total_enrolled_members->count() >= $number_of_team_members){
             return $this->sendError('Error', 'Sorry!! you have already enrolled available number of SME.');
         } */
-        $number_of_lesson_plans = auth()->user()->user_subscriptions ? auth()->user()->user_subscriptions[0]->no_of_lesson_plans : 0 ;
+        $number_of_lesson_plans = auth()->user()->user_parent_subscriptions ? auth()->user()->user_parent_subscriptions[0]->no_of_lesson_plans : 0 ;
         $total_lessonplan = Lessonplan::where('user_id', auth()->user()->id)->get();
         if($total_lessonplan->count() >= $number_of_lesson_plans){
             return $this->sendError('Error', 'Sorry!! you have already completed your lesson plan quota. To add more upgrade your membership.');
