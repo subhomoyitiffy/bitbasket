@@ -21,7 +21,7 @@ class UserSubscriptionController extends BaseApiController
         $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
         $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
         $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
-        $this->stripe_secret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
+        $this->stripe_secret   = $stripe_payment_type ? $stripe_sandbox_sk : $stripe_live_sk;
 
         // $this->stripe_secret = env('STRIPE_SECRET');
     }
@@ -58,6 +58,7 @@ class UserSubscriptionController extends BaseApiController
         $subscription = Package::findOrFail($request->subscription_id);
         if($subscription){
             //try{
+                echo $this->stripe_secret;
                 Stripe\Stripe::setApiKey($this->stripe_secret);
                 $user = UserDetails::where('user_id', auth()->user()->id)->first();
                 $stripe_cust_id = $user->stripe_cust_id;
