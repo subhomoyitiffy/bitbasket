@@ -131,13 +131,10 @@ class AuthController extends BaseApiController
             'country_code' => 'required|max:5',
             'phone' => 'required|max:15|unique:users,phone,'.auth()->user()->id,
 
-            'city' => 'required_if:country,uae',
-            'emarati' => 'required_if:country,uae',
-            'business_license' => 'required_if:country,uae',
-            'tax_registration_number' => 'required_if:country,uae',
-
-            'company_type' => 'required_if:country,usa',
-            'employer_identification_no' => 'required_if:country,usa'
+            'city' => 'required|integer',
+            // 'emarati' => 'required|string',
+            'business_license' => 'required',
+            'vat' => 'required|digits:15',
         ]);
 
         if($validator->fails()){
@@ -171,9 +168,7 @@ class AuthController extends BaseApiController
                 'city_id'=> $request->city,
                 'emarati'=> $request->emarati,
                 'business_license'=> $request->business_license,
-                'tax_registration_number'=> $request->tax_registration_number,
-                'company_type' => $request->company_type,
-                'employer_identification_no' => $request->employer_identification_no
+                'tax_registration_number'=> $request->vat
             ]);
 
             return $this->sendResponse([], 'Profile updated successfully.');
