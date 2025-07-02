@@ -137,7 +137,7 @@ class StudentLessonplanController extends BaseApiController
             return $this->sendError('Authentication Error', 'Token is missing.', 201);
         }
 
-        $student = Student::select('id', 'first_name', 'last_name', 'work_email', 'phone', 'token')
+        $student = Student::select('id', 'first_name', 'last_name', 'work_email', 'phone', 'institute_id', 'token')
                             ->where('token', $token)->first();
         if(!$student){
             return $this->sendError('Authentication Error', 'Unable to identify student.', 201);

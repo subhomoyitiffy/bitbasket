@@ -78,7 +78,7 @@ class MemberUserController extends BaseApiController
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'email' => 'required|email|max:150|unique:users,email,' . $request->id,
+            'email' => 'required|email|max:100|unique:users',
             'subjects' => 'required|array|min:1',
             'subjects.*' => 'integer|exists:subjects,id',
             // 'country_code' => 'required|string|max:5',
