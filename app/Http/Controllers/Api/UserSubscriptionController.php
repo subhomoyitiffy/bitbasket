@@ -22,7 +22,7 @@ class UserSubscriptionController extends BaseApiController
         $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
         $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
         // $this->stripe_secret   = $stripe_payment_type ? $stripe_sandbox_sk : $stripe_live_sk;
-        $this->stripe_secret  = 'pk_test_51HDloiEyvqDh0TGqrA2pKiwasfrVV1r3zXuVCXkHQSIoOmzLD9772aCpD1BZg3D75MxZFGrrbjLW8cZ2QQjYxq4f00ADUTodhX';
+        $this->stripe_secret  = 'sk_test_51HDloiEyvqDh0TGqK7OO1p0X6rPEy0S3bcVnGpu2Gti7SUqA2SOiyXooMaoyTITcUNvpCmbsRuLicke4qgpXQPsK00Lu7smiuX';
 
         // $this->stripe_secret = env('STRIPE_SECRET');
     }
