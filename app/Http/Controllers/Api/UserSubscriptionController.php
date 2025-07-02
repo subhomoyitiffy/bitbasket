@@ -121,7 +121,7 @@ class UserSubscriptionController extends BaseApiController
                     }
                 }catch(\Exception $ex){
                     // Error through. Some error occurred
-                    return $this->sendError('Stripe Error', $ex->getMessage(), 500);
+                    return $this->sendError('Stripe Error| Customer create failed', $ex->getMessage(), 500);
                 }
 
                 //Create proce object for a subscription package
@@ -176,7 +176,7 @@ class UserSubscriptionController extends BaseApiController
                 }
             }catch(\Exception $cus_ex){
                 // Error through. Some error occurred
-                return $this->sendError('Stripe Error', $cus_ex->getMessage(), 500);
+                return $this->sendError('Stripe Error main cache', $cus_ex->getMessage(), 500);
             }
         }
     }
