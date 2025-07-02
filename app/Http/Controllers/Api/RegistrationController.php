@@ -33,8 +33,8 @@ class RegistrationController extends BaseApiController
             'c_password' => 'required|same:password',
 
             'city' => 'required|integer',
-            'emarati' => 'required|string',
-            'business_license' => 'required|digits|regex:/^\d{7,8}.\d{1-2}$/',
+            // 'emarati' => 'required|string',
+            'business_license' => 'required',
             'vat' => 'required|digits:15',
 
             // 'company_type' => 'required_if:country,usa',
@@ -84,7 +84,7 @@ class RegistrationController extends BaseApiController
                     'city_id'=> $request->city,
                     'emarati'=> $request->emarati,
                     'business_license'=> $request->business_license,
-                    'tax_registration_number'=> $request->tax_registration_number,
+                    'tax_registration_number'=> $request->vat,
                     // 'company_type' => $request->company_type,
                     // 'employer_identification_no' => $request->employer_identification_no
                 ]);
