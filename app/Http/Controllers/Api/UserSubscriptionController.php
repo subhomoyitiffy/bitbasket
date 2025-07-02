@@ -21,7 +21,8 @@ class UserSubscriptionController extends BaseApiController
         $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
         $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
         $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
-        $this->stripe_secret   = $stripe_payment_type ? $stripe_sandbox_sk : $stripe_live_sk;
+        // $this->stripe_secret   = $stripe_payment_type ? $stripe_sandbox_sk : $stripe_live_sk;
+        $this->stripe_secret  = 'pk_test_51HDloiEyvqDh0TGqrA2pKiwasfrVV1r3zXuVCXkHQSIoOmzLD9772aCpD1BZg3D75MxZFGrrbjLW8cZ2QQjYxq4f00ADUTodhX';
 
         // $this->stripe_secret = env('STRIPE_SECRET');
     }
