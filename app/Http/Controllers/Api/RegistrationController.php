@@ -34,7 +34,7 @@ class RegistrationController extends BaseApiController
 
             'city' => 'required|integer',
             'emarati' => 'required|string',
-            'business_license' => 'required|integer|regex:/^\d{7,8}.\d{1-2}$/',
+            'business_license' => 'required|digits|regex:/^\d{7,8}.\d{1-2}$/',
             'vat' => 'required|digits:15',
 
             // 'company_type' => 'required_if:country,usa',
