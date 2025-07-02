@@ -21,8 +21,7 @@ class UserSubscriptionController extends BaseApiController
         $stripe_payment_type = Helper::getSettingValue('stripe_payment_type');
         $stripe_sandbox_sk = Helper::getSettingValue('stripe_sandbox_sk');
         $stripe_live_sk = Helper::getSettingValue('stripe_live_sk');
-        // $this->stripe_secret   = $stripe_payment_type ? $stripe_sandbox_sk : $stripe_live_sk;
-        $this->stripe_secret  = 'sk_test_51HDloiEyvqDh0TGqK7OO1p0X6rPEy0S3bcVnGpu2Gti7SUqA2SOiyXooMaoyTITcUNvpCmbsRuLicke4qgpXQPsK00Lu7smiuX';
+        $this->stripe_secret   = ($stripe_payment_type) ? $stripe_sandbox_sk : $stripe_live_sk;
 
         // $this->stripe_secret = env('STRIPE_SECRET');
     }
@@ -58,12 +57,11 @@ class UserSubscriptionController extends BaseApiController
 
         $subscription = Package::findOrFail($request->subscription_id);
         if($subscription){
-            //try{
-                echo $this->stripe_secret;
+            try{
                 Stripe\Stripe::setApiKey($this->stripe_secret);
                 $user = UserDetails::where('user_id', auth()->user()->id)->first();
                 $stripe_cust_id = $user->stripe_cust_id;
-                //try{
+                try{
                     if(empty($stripe_cust_id)){
                         $customer = Stripe\Customer::create([
                             'name' => auth()->user()->name,
@@ -82,9 +80,8 @@ class UserSubscriptionController extends BaseApiController
                         $user->save();
                         $stripe_cust_id = $customer->id;
                     }else{
-                        //try{
+                        try{
                             $cus_status = Stripe\Customer::retrieve($stripe_cust_id, []);
-                            print_r($cus_status);
                             if(!$cus_status){
                                 $customer = Stripe\Customer::create([
                                     'name' => auth()->user()->name,
@@ -103,29 +100,29 @@ class UserSubscriptionController extends BaseApiController
                                 $user->save();
                                 $stripe_cust_id = $customer->id;
                             }
-                        // }catch(\Exception $ex){
-                        //     $customer = Stripe\Customer::create([
-                        //         'name' => auth()->user()->name,
-                        //         'email' => auth()->user()->email,
-                        //         'source' => $request->stripe_token,
-                        //         'description' => $subscription->name. ' Subscription purchase',
-                        //         'address' => [
-                        //             'line1' => '123 Main Street', // Customer's address line 1
-                        //             'city' => 'Mumbai', // Customer's city
-                        //             'state' => 'Maharashtra', // Customer's state
-                        //             'postal_code' => '400001', // Customer's postal code
-                        //             'country' => 'IN', // Country code for India
-                        //         ],
-                        //     ]);
-                        //     $user->stripe_cust_id = $customer->id;
-                        //     $user->save();
-                        //     $stripe_cust_id = $customer->id;
-                        // }
+                        }catch(\Exception $ex){
+                            $customer = Stripe\Customer::create([
+                                'name' => auth()->user()->name,
+                                'email' => auth()->user()->email,
+                                'source' => $request->stripe_token,
+                                'description' => $subscription->name. ' Subscription purchase',
+                                'address' => [
+                                    'line1' => '123 Main Street', // Customer's address line 1
+                                    'city' => 'Mumbai', // Customer's city
+                                    'state' => 'Maharashtra', // Customer's state
+                                    'postal_code' => '400001', // Customer's postal code
+                                    'country' => 'IN', // Country code for India
+                                ],
+                            ]);
+                            $user->stripe_cust_id = $customer->id;
+                            $user->save();
+                            $stripe_cust_id = $customer->id;
+                        }
                     }
-                // }catch(\Exception $ex){
-                //     // Error through. Some error occurred
-                //     return $this->sendError('Stripe Error| Customer create failed', $ex->getMessage(), 500);
-                // }
+                }catch(\Exception $ex){
+                    // Error through. Some error occurred
+                    return $this->sendError('Stripe Error| Customer create failed', $ex->getMessage(), 500);
+                }
 
                 //Create proce object for a subscription package
                 $stripe_price_id = $subscription->stripe_price_id;
@@ -177,10 +174,10 @@ class UserSubscriptionController extends BaseApiController
                 }else{
                     return $this->sendError('Stripe Error', 'Due to some error, unable to create subscription.', 500);
                 }
-            // }catch(\Exception $cus_ex){
-            //     // Error through. Some error occurred
-            //     return $this->sendError('Stripe Error main cache', $cus_ex->getMessage(), 500);
-            // }
+            }catch(\Exception $cus_ex){
+                // Error through. Some error occurred
+                return $this->sendError('Stripe Error main cache', $cus_ex->getMessage(), 500);
+            }
         }
     }
 
