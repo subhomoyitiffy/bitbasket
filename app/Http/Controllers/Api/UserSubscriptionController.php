@@ -57,7 +57,7 @@ class UserSubscriptionController extends BaseApiController
 
         $subscription = Package::findOrFail($request->subscription_id);
         if($subscription){
-            try{
+            //try{
                 Stripe\Stripe::setApiKey($this->stripe_secret);
                 $user = UserDetails::where('user_id', auth()->user()->id)->first();
                 $stripe_cust_id = $user->stripe_cust_id;
@@ -175,10 +175,10 @@ class UserSubscriptionController extends BaseApiController
                 }else{
                     return $this->sendError('Stripe Error', 'Due to some error, unable to create subscription.', 500);
                 }
-            }catch(\Exception $cus_ex){
-                // Error through. Some error occurred
-                return $this->sendError('Stripe Error main cache', $cus_ex->getMessage(), 500);
-            }
+            // }catch(\Exception $cus_ex){
+            //     // Error through. Some error occurred
+            //     return $this->sendError('Stripe Error main cache', $cus_ex->getMessage(), 500);
+            // }
         }
     }
 
