@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('country_code', 5)->unique()->nullable();
             $table->string('phone', 15)->unique()->nullable();
             $table->integer('city_id')->nullable();
-            $table->string('emarati', 10)->nullable();
+            $table->string('emarati', 50)->nullable();
             $table->string('business_license')->nullable();
             $table->string('tax_registration_number')->nullable();
             $table->string('company_type')->nullable();

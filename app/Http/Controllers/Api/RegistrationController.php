@@ -33,7 +33,7 @@ class RegistrationController extends BaseApiController
             'c_password' => 'required|same:password',
 
             'city' => 'required|integer',
-            'emarati' => 'required|integer',
+            'emarati' => 'required|string',
             'business_license' => 'required|integer|regex:/^\d{7,8}.\d{1-2}$/',
             'vat' => 'required|digits:15',
 
