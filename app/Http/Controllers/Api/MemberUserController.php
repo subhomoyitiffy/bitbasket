@@ -138,7 +138,7 @@ class MemberUserController extends BaseApiController
                 }
                 $full_name = $request->first_name.' '.$request->last_name;
                 $message = 'Your account registration has successfully completed. Now you can login using your registered email & password';
-                Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message, $pwd));
+                //Mail::to($request->email)->send(new RegistrationSuccess($request->email, $full_name, $message, $pwd));
 
                 return $this->sendResponse([], 'Member account registration has successfully completed.');
             }else{
